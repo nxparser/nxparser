@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- build.xml file used with ant-->
+
+<project name="nxparser" default="dist" basedir=".">
+	<!-- variables -->
+	<property name="app.name" value="nxparser" />
+	<property name="app.version" value="1.2" />
+	<property name="src.home" value="src" />
+	<property name="lib" value="lib" />
+
+	<property name="build.home" value="bin" />
+	<property name="dist.home" value="dist" />
+
+
+	<!-- All Target -->
+
+	<target name="lite" depends="clean,litejar" description="only build NxParser-lite" />
+	<target name="full" depends="clean,compile-full" description="build NxParser-full" />
+
+	<target name="all" depends="lite,dist,javadoc-lite" description="Clean build and dist, then compile" />
+
+	<path id="classpath">
+		<pathelement location="${build}" />
+
+		<fileset dir="${lib}/">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Clean Target -->
+	<target name="clean" description="Delete old build and dist directories">
+		<delete dir="${build.home}" />
+		<delete dir="${dist.home}" />
+	</target>
+
+	<!-- Prepare Target -->
+	<target name="prepare">
+		<!-- Create build directory -->
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${dist.home}" />
+	</target>
+
+	<!-- Javac Target -->
+	<target name="javac" depends="prepare" description="Compile Java sources">
+
+		<!-- Compile Java classes as necessary -->
+		<mkdir dir="${build.home}" />
+		<javac srcdir="${src.home}" destdir="${build.home}">
+			<classpath refid="classpath" />
+
+		</javac>
+
+	</target>
+
+	<!-- Compile Target -->
+	<target name="compile-lite" depends="javac">
+		<copy file="license-lite.txt" tofile="${build.home}/META-INF/license.txt" />
+	</target>
+
+	<target name="compile-full" depends="javac">
+		<copy file="license-full.txt" tofile="${build.home}/META-INF/license.txt" />
+		<copy file="${src.home}/org/semanticweb/yars/tld/tld.dat" tofile="${build.home}/org/semanticweb/yars/tld/tld.dat" />
+	</target>
+
+
+	<!-- Jar target does not include dependencies -->
+	<target name="jar" depends="compile-full">
+		<jar jarfile="${dist.home}/${app.name}-lib.jar" basedir="${build.home}">
+
+			<manifest>
+				<attribute name="Main-Class" value="org.semanticweb.yars.nx.cli.Main" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="litejar" depends="compile-lite">
+		<jar jarfile="${dist.home}/${app.name}-${app.version}-lite.jar">
+			<fileset dir="${build.home}">
+				<include name='org/semanticweb/yars2/rdfxml/*' />
+
+				<include name='org/semanticweb/yars/nx/namespace/' />
+
+				<include name='org/semanticweb/yars/nx/BNode.*' />
+				<include name='org/semanticweb/yars/nx/Literal.*' />
+				<include name='org/semanticweb/yars/nx/Node.*' />
+				<include name='org/semanticweb/yars/nx/NodeComparator.*' />
+				<include name='org/semanticweb/yars/nx/Nodes.*' />
+				<include name='org/semanticweb/yars/nx/Resource.*' />
+				<include name='org/semanticweb/yars/nx/Unbound.*' />
+				<include name='org/semanticweb/yars/nx/Variable.*' />
+
+				<include name='org/semanticweb/yars/nx/util/NxUtil.*' />
+				<include name='org/semanticweb/yars/nx/util/CallbackBlockingQueue.*' />
+				<include name='org/semanticweb/yars/nx/util/Array.*' />
+
+				<include name='org/semanticweb/yars/nx/parser/Callback.*' />
+				<include name='org/semanticweb/yars/nx/parser/NxParser.*' />
+				<include name='org/semanticweb/yars/nx/parser/ParseException.*' />
+
+				<include name='org/semanticweb/yars/util/CallbackNxOutputStream.*' />
+				
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Dist Target builds all mediators -->
+	<target name="dist" depends="compile-full">
+		<jar jarfile="${dist.home}/${app.name}-${app.version}.jar" basedir="${build.home}">
+			<zipfileset src="${lib}/commons-cli-1.1.jar" />
+			<!--	    <zipfileset src="${lib}/commons-httpclient-3.1.jar"/>
+    		    <zipfileset src="${lib}/commons-logging-1.1.1.jar"/>
+		    <zipfileset src="${lib}/commons-codec-1.3.jar"/>
+		    -->
+			<manifest>
+				<attribute name="Main-Class" value="org.semanticweb.yars.nx.cli.Main" />
+			</manifest>
+		</jar>
+	</target>
+
+
+	<target name="javadoc" depends="prepare">
+		<javadoc destdir="javadoc" author="true" version="true">
+			<fileset dir="${src.home}" />
+		</javadoc>
+	</target>
+
+	<target name="javadoc-lite" depends="prepare">
+		<delete dir="javadoc" />
+		<javadoc destdir="javadoc" author="true" version="true">
+			<fileset dir="${src.home}">
+				<include name='org/semanticweb/yars2/rdfxml/*' />
+
+				<include name='org/semanticweb/yars/nx/namespace/' />
+
+				<include name='org/semanticweb/yars/nx/BNode.*' />
+				<include name='org/semanticweb/yars/nx/Literal.*' />
+				<include name='org/semanticweb/yars/nx/Node.*' />
+				<include name='org/semanticweb/yars/nx/NodeComparator.*' />
+				<include name='org/semanticweb/yars/nx/Nodes.*' />
+				<include name='org/semanticweb/yars/nx/Resource.*' />
+				<include name='org/semanticweb/yars/nx/Unbound.*' />
+				<include name='org/semanticweb/yars/nx/Variable.*' />
+
+				<include name='org/semanticweb/yars/nx/util/NxUtil.*' />
+
+				<include name='org/semanticweb/yars/nx/parser/Callback.*' />
+				<include name='org/semanticweb/yars/nx/parser/NxParser.*' />
+				<include name='org/semanticweb/yars/nx/parser/ParseException.*' />
+
+				<include name='org/semanticweb/yars/util/CallbackNxOutputStream.*' />
+				<include name='org/semanticweb/yars/util/CallbackBlockingQueue.*' />
+				<include name='org/semanticweb/yars/util/Array.*' />
+			</fileset>
+		</javadoc>
+	</target>
+
+
+	<!-- BELOW: OLD STUFF FOR COMPILING FOR JAVA 1.5 -->
+
+	<target name="compile15" depends="javac15" />
+
+	<target name="javac15" depends="prepare" description="Compile Java sources">
+
+		<!-- Compile Java classes as necessary -->
+		<mkdir dir="${build.home}" />
+		<javac srcdir="${src.home}" destdir="${build.home}" target="1.5">
+			<classpath refid="classpath" />
+
+		</javac>
+		<copy file="${src.home}/org/semanticweb/yars/tld/tld.dat" tofile="${build.home}/org/semanticweb/yars/tld/tld.dat">
+		</copy>
+	</target>
+
+	<target name="dist15" depends="compile-full">
+		<jar jarfile="${dist.home}/${app.name}-${app.version}.jar" basedir="${build.home}">
+			<zipfileset src="${lib}/commons-cli-1.1.jar" />
+			<!--
+    <zipfileset src="${lib}/commons-httpclient-3.1.jar"/>
+    <zipfileset src="${lib}/commons-logging-1.1.1.jar"/>
+    <zipfileset src="${lib}/commons-codec-1.3.jar"/>
+    -->
+			<manifest>
+				<attribute name="Main-Class" value="org.semanticweb.yars.nx.cli.Main" />
+			</manifest>
+		</jar>
+	</target>
+</project>
