@@ -21,7 +21,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Literal implements Node, Serializable {
 
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
-	
+
 	// data in string representation
 	protected String _data = null;
 	// language identifier
@@ -102,7 +102,7 @@ public class Literal implements Node, Serializable {
 
 	public Literal(String data, String lang, Resource dt, boolean isN3) {
 		if (!isN3) {
-			if (data.charAt(0) != '\"'
+			if (data == "" || data.charAt(0) != '\"'
 					|| data.charAt(data.length() - 1) != '\"') {
 				_log.info("String for Literal ("
 						+ data
@@ -129,13 +129,17 @@ public class Literal implements Node, Serializable {
 	 * Get escaped data. For compatibility's sake, this returns the text of the
 	 * literal (w/o surrounding quotes).
 	 * 
-	 * @return String data
+	 * @return a) the text of the literal, b) null pointer if there is something
+	 *         wrong with the literal backing string.
 	 */
 	public String getData() {
 		if (_data == null) {
 			Matcher m = PATTERN.matcher(_wholeString);
-			m.matches();
-			_data = m.group(1);
+			if (m.matches())
+				_data = m.group(1);
+			else
+				_log.warning("Something wrong with the literal-backing string. The parsing regex pattern didn't match. Check the string for correct N3 syntax. The malicious string is: "
+						+ _wholeString);
 		}
 		return _data;
 	}
@@ -161,12 +165,16 @@ public class Literal implements Node, Serializable {
 	/**
 	 * Get language tag.
 	 * 
+	 * @return a) the language tag if one is supplied b) null pointer, if there
+	 *         is no such language tag, c) null pointer, if there is something
+	 *         wrong with the literal-backing string
 	 */
 	public String getLanguageTag() {
 		if (_lang == null) {
 			Matcher m = PATTERN.matcher(_wholeString);
 			if (!m.matches())
-				_log.warning("The parsing regex pattern didn't match, so no language tag is returned. Check the Literal for proper N3 syntax.");
+				_log.warning("The parsing regex pattern didn't match, so no language tag is returned. Check the Literal for proper N3 syntax. The malicious Literal was: "
+						+ _wholeString);
 			else
 				_lang = m.group(2);
 		}
@@ -184,38 +192,38 @@ public class Literal implements Node, Serializable {
 	/**
 	 * Get data type.
 	 * 
+	 * @return a) the resource if one is supplied, b) null pointer, if there is
+	 *         no such resource, c) null pointer, if there is something wrong
+	 *         with the literal-backing string
 	 */
 	public Resource getDatatype() {
 		if (_dt == null) {
 			Matcher m = null;
-			try {
-				m = PATTERN.matcher(_wholeString);
-				m.matches();
+			m = PATTERN.matcher(_wholeString);
+			if (m.matches()) {
 				if (m.group(3) == null)
 					return null;
 				_dt = new Resource(m.group(3), true);
-			} catch (IllegalStateException e) {
+			} else {
 				_log.warning("Something wrong with the Resource. Its String: "
 						+ _wholeString
-						+ (m.matches() ? ""
-								: " didn't match the parsing regex pattern."
-										+ " Probably it's no proper N3."));
+						+ " didn't match the parsing regex pattern. Probably it's no proper N3.");
 			}
 		}
 		return _dt;
 	}
 
-//	/**
-//	 * Get object representing datatype value of literal
-//	 * 
-//	 * @return
-//	 * @throws DatatypeParseException
-//	 */
-//	public Datatype<? extends Object> getDatatypeObject()
-//			throws DatatypeParseException {
-//		return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
-//	}
-//
+	// /**
+	// * Get object representing datatype value of literal
+	// *
+	// * @return
+	// * @throws DatatypeParseException
+	// */
+	// public Datatype<? extends Object> getDatatypeObject()
+	// throws DatatypeParseException {
+	// return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
+	// }
+	//
 	/**
 	 * Get value as a string.
 	 * 
@@ -274,7 +282,8 @@ public class Literal implements Node, Serializable {
 	/**
 	 * Escapes strings to unicode.
 	 * 
-	 * @deprecated Use {@link org.semanticweb.yars.nx.util.NxUtil#escapeForNx(String)} 
+	 * @deprecated Use
+	 *             {@link org.semanticweb.yars.nx.util.NxUtil#escapeForNx(String)}
 	 */
 	public static String escapeForNx(String lit) {
 		return NxUtil.escapeForNx(lit);
@@ -283,7 +292,8 @@ public class Literal implements Node, Serializable {
 	/**
 	 * Escapes strings for markup.
 	 * 
-	 * @deprecated Use {@link org.semanticweb.yars.nx.util.NxUtil#escapeForMarkup(String)}
+	 * @deprecated Use
+	 *             {@link org.semanticweb.yars.nx.util.NxUtil#escapeForMarkup(String)}
 	 */
 	public static String escapeForMarkup(String lit) {
 		return NxUtil.escapeForMarkup(lit);
@@ -294,7 +304,8 @@ public class Literal implements Node, Serializable {
 	 * 
 	 * @param str
 	 *            The string to escape
-	 * @deprecated Use {@link org.semanticweb.yars.nx.util.NxUtil#unescape(String)}
+	 * @deprecated Use
+	 *             {@link org.semanticweb.yars.nx.util.NxUtil#unescape(String)}
 	 */
 	public static String unescape(String str) {
 		return NxUtil.unescape(str);

@@ -1,5 +1,3 @@
-// (c) 2004 Andreas Harth
-
 package org.semanticweb.yars.nx;
 
 import java.io.IOException;
@@ -7,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Logger;
 
 import org.semanticweb.yars.nx.util.NxUtil;
 
@@ -17,6 +16,9 @@ import org.semanticweb.yars.nx.util.NxUtil;
  * @author Tobias Kaefer
  */
 public class Resource implements Node, Serializable {
+	
+	private static Logger _log = Logger.getLogger(Resource.class.getName());
+	
 	// the value of the resource (now includes < >)
 	protected String _data;
 
@@ -30,6 +32,7 @@ public class Resource implements Node, Serializable {
 
 	/**
 	 * Constructor.
+	 * @deprecated I'd rate that HIGHLY DANGEROUS. Stayed only for compatibility's sake.
 	 */
 	public Resource() {
 		_data = null;
@@ -51,6 +54,16 @@ public class Resource implements Node, Serializable {
 	 */
 	public Resource(String uri, boolean isN3) {
 		if (!isN3) {
+			if (uri.length() == 0 || uri == null) {
+				_log.severe("The supplied String for creating a resource was "
+						+ (uri == null ? "the null pointer"
+								: "the empty string, which MUST NOT be the case in N3"));
+			if (uri == null)
+				_data = null;
+			else
+				_data = "";
+			return;
+			}
 			if (uri.charAt(0) != '<')
 				_data = "<" + uri + ">";
 			else
