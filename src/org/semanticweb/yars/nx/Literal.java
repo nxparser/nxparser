@@ -52,6 +52,8 @@ public class Literal implements Node, Serializable {
 	// version number for serialization
 	private static final long serialVersionUID = 8911891129019471564L;
 
+	
+	
 	/**
 	 * Constructor.
 	 * 
@@ -104,7 +106,7 @@ public class Literal implements Node, Serializable {
 		if (!isN3) {
 			if (data == "" || data.charAt(0) != '\"'
 					|| data.charAt(data.length() - 1) != '\"') {
-				_log.info("String for Literal ("
+				_log.fine("String for Literal ("
 						+ data
 						+ ") had no surrounding quotes. Adding some and proceeding...");
 				data = '\"' + data + '\"';
@@ -119,6 +121,8 @@ public class Literal implements Node, Serializable {
 				_dt = dt;
 		} else
 			_wholeString = data;
+		
+		
 	}
 
 	public Literal(String data, boolean isN3) {
@@ -134,7 +138,7 @@ public class Literal implements Node, Serializable {
 	 */
 	public String getData() {
 		if (_data == null) {
-			Matcher m = PATTERN.matcher(_wholeString);
+			Matcher m  = PATTERN.matcher(_wholeString);
 			if (m.matches())
 				_data = m.group(1);
 			else
@@ -171,7 +175,7 @@ public class Literal implements Node, Serializable {
 	 */
 	public String getLanguageTag() {
 		if (_lang == null) {
-			Matcher m = PATTERN.matcher(_wholeString);
+			Matcher m  = PATTERN.matcher(_wholeString);
 			if (!m.matches())
 				_log.warning("The parsing regex pattern didn't match, so no language tag is returned. Check the Literal for proper N3 syntax. The malicious Literal was: "
 						+ _wholeString);
@@ -198,8 +202,7 @@ public class Literal implements Node, Serializable {
 	 */
 	public Resource getDatatype() {
 		if (_dt == null) {
-			Matcher m = null;
-			m = PATTERN.matcher(_wholeString);
+			Matcher m  = PATTERN.matcher(_wholeString);
 			if (m.matches()) {
 				if (m.group(3) == null)
 					return null;
@@ -267,7 +270,10 @@ public class Literal implements Node, Serializable {
 		if (o == this)
 			return true;
 
-		return ((Literal) o)._wholeString.equals(this._wholeString);
+		return 
+				(o != null)
+				&& (o instanceof Literal)
+				&& ((Literal) o)._wholeString.equals(this._wholeString);
 	}
 
 	@Override
