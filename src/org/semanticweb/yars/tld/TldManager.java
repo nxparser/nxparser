@@ -57,12 +57,12 @@ public class TldManager {
 
     // return the PLD for a URL, e.g. for www.oxfam.org.uk, return oxfam.org.uk
     public String getPLD(URI url) {
-    	if (!url.getScheme().equals("http")) {
-    		_log.fine("scheme not http " + url);
+    	if (!(url.getScheme().equalsIgnoreCase("http")|| url.getScheme().equalsIgnoreCase("https"))) {
+    		_log.fine("scheme not http(s) " + url);
     		return null;
     	}
     	try {
-    		String host = url.getHost();
+    		String host = url.getHost().toLowerCase();
     		if (host == null) {
         		_log.fine("no host for " + url);
     			return null;
