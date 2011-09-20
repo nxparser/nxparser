@@ -166,7 +166,10 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 					endIndex = line.indexOf(' ', startIndex);
 				}
 			}
-
+			
+			if (startIndex == (endIndex + 1))
+				throw new RuntimeException("Exception at position " + endIndex
+						+ " while parsing " + line);
 			startIndex = endIndex + 1;
 		}
 		return nx.toArray(new Node[nx.size()]);
