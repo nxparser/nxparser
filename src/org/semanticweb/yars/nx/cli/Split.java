@@ -48,11 +48,6 @@ public class Split {
 		splitO.setRequired(true);
 		options.addOption(splitO);
 		
-		Option adO = new Option("ad", "allow duplicates");
-		adO.setArgs(0);
-		adO.setRequired(false);
-		options.addOption(adO);
-		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
 
