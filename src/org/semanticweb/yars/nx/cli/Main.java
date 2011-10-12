@@ -301,7 +301,10 @@ public class Main {
 	}
 	
 	public static boolean mkdirsForFile(String file){
-		return new File(file).getParentFile().mkdirs();
+		File f = new File(file);
+		File pf = f.getParentFile();
+		if(pf!=null) return pf.mkdirs();
+		return false;
 	}
 }
 
