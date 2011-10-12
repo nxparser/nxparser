@@ -105,7 +105,7 @@ public class NxUtil {
 				}
 			} else {
 				result.append("&#x");
-				result.append(String.format("%X",cp));
+				result.append(toHexString(cp, 8));
 				result.append(";");
 				++i;
 			}
