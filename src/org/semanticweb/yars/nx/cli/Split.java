@@ -66,7 +66,7 @@ public class Split {
 			return;
 		}
 		
-		int n = Integer.parseInt("n");
+		int n = Integer.parseInt(cmd.getOptionValue("n"));
 		if(n<2){
 			System.err.println("***ERROR: n should be an integer >2");
 			HelpFormatter formatter = new HelpFormatter();
