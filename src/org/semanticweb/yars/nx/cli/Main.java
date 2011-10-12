@@ -229,7 +229,7 @@ public class Main {
 	}
 	
 	public static void addInputOption(Options o, String argPrefix, String name){
-		Option inputO = new Option(argPrefix, (name+" input files (all files in all dirs will be considered)").trim());
+		Option inputO = new Option(argPrefix, (name+" input file, - for stdin").trim());
 		inputO.setArgs(1);
 		
 		Option inputfO = new Option(argPrefix+"gz", ("gzipped input "+name).trim());
@@ -240,7 +240,7 @@ public class Main {
 	}
 	
 	public static void addInputsOption(Options o, String argPrefix, String name){
-		Option inputO = new Option(argPrefix, (name+" input file, - for stdin").trim());
+		Option inputO = new Option(argPrefix, (name+" input files, (all files in all dirs will be considered)").trim());
 		inputO.setArgs(Option.UNLIMITED_VALUES);
 		
 		Option inputfO = new Option(argPrefix+"gz", ("*all* gzipped input "+name).trim());
@@ -276,6 +276,32 @@ public class Main {
 		return os;
 	}
 	
+	/**
+	 * Convert a string like "123" into an array of ints { 1, 2, 3}.
+	 * 
+	 * Of course, assumes numbers encoded in string are single digits.
+	 * 
+	 * Used for CLI interface.
+	 * 
+	 * @param arg
+	 * @return
+	 */
+	public static int[] getMask(String arg){
+		int[] reorder = new int[arg.length()];
+		
+		for(int i=0; i<reorder.length; i++){
+			reorder[i] = Integer.parseInt(Character.toString(arg.charAt(i)));
+		}
+		
+		return reorder;
+	}
 	
+	public static boolean mkdirs(String dir){
+		return new File(dir).mkdirs();
+	}
+	
+	public static boolean mkdirsForFile(String file){
+		return new File(file).getParentFile().mkdirs();
+	}
 }
 

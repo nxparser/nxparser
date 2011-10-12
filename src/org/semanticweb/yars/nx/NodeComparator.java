@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.semanticweb.yars.nx.cli.Main;
+
 public class NodeComparator implements Comparator<Node[]>, Serializable {
 	private static Logger _log = Logger.getLogger(NodeComparator.class.getName());
 	
@@ -267,13 +269,7 @@ public class NodeComparator implements Comparator<Node[]>, Serializable {
 		}
 		
 		public static int[] getIntegerMask(String arg){
-			int[] reorder = new int[arg.length()];
-			
-			for(int i=0; i<reorder.length; i++){
-				reorder[i] = Integer.parseInt(Character.toString(arg.charAt(i)));
-			}
-			
-			return reorder;
+			return Main.getMask(arg);
 		}
 		
 		public static boolean[] getBooleanMask(String arg){

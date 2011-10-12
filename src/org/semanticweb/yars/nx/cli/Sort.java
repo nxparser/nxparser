@@ -146,14 +146,4 @@ public class Sort {
 		is.close();
 		os.close();
 	}
-	
-	static int[] getMask(String arg){
-		int[] reorder = new int[arg.length()];
-		
-		for(int i=0; i<reorder.length; i++){
-			reorder[i] = Integer.parseInt(Character.toString(arg.charAt(i)));
-		}
-		
-		return reorder;
-	}
 }
