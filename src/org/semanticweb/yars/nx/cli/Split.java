@@ -89,7 +89,7 @@ public class Split {
 		}
 		
 		for(int i=0; i<n; i++){
-			String fn = o.replaceAll("%", Integer.toString(n));
+			String fn = o.replaceAll("%", Integer.toString(i));
 			Main.mkdirsForFile(fn);
 			oss[i] = new FileOutputStream(fn);
 			if(cmd.hasOption("ogz"))
