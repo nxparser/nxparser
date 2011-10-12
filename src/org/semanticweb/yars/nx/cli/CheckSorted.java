@@ -56,7 +56,7 @@ public class CheckSorted {
 		
 		Comparator<Node[]> nc = NodeComparator.NC;
 		if(cmd.hasOption("so")){
-			nc = new NodeComparator(Sort.getMask(cmd.getOptionValue("so")));
+			nc = new NodeComparator(Main.getMask(cmd.getOptionValue("so")));
 		}
 		
 		int count = 1;
