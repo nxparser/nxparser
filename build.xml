@@ -65,7 +65,7 @@
 
 	<!-- Jar target does not include dependencies -->
 	<target name="jar" depends="compile-full">
-		<jar jarfile="${dist.home}/${app.name}-lib.jar" basedir="${build.home}">
+		<jar jarfile="${dist.home}/${app.name}-${app.version}.jar" basedir="${build.home}">
 
 			<manifest>
 				<attribute name="Main-Class" value="org.semanticweb.yars.nx.cli.Main" />
