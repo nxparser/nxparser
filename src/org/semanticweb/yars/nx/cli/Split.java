@@ -101,7 +101,7 @@ public class Split {
 		
 		int[] els = null; Random r = null;
 		if(cmd.hasOption("e")){
-			els = Main.getMask(cmd.getOptionValue(cmd.getOptionValue("e")));
+			els = Main.getMask(cmd.getOptionValue("e"));
 		} else{
 			r = new Random();
 		}
