@@ -4,7 +4,7 @@
 <project name="nxparser" default="dist" basedir=".">
 	<!-- variables -->
 	<property name="app.name" value="nxparser" />
-	<property name="app.version" value="1.2" />
+	<property name="app.version" value="1.2.1" />
 	<property name="src.home" value="src" />
 	<property name="lib" value="lib" />
 
@@ -42,26 +42,30 @@
 
 	<!-- Javac Target -->
 	<target name="javac" depends="prepare" description="Compile Java sources">
-
 		<!-- Compile Java classes as necessary -->
 		<mkdir dir="${build.home}" />
 		<javac srcdir="${src.home}" destdir="${build.home}">
+		<!--<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6">-->
 			<classpath refid="classpath" />
-
 		</javac>
-
 	</target>
 
 	<!-- Compile Target -->
-	<target name="compile-lite" depends="javac">
+	
+	<target name="license-lite">
 		<copy file="license-lite.txt" tofile="${build.home}/META-INF/license.txt" />
 	</target>
-
-	<target name="compile-full" depends="javac">
-		<copy file="license-full.txt" tofile="${build.home}/META-INF/license.txt" />
+	
+	<target name="license-full">
+		<copy file="license-lite.txt" tofile="${build.home}/META-INF/license.txt" />
+		<copy file="MPL-1.1.txt" tofile="${build.home}/META-INF/MPL-1.1.txt" />
 		<copy file="${src.home}/org/semanticweb/yars/tld/tld.dat" tofile="${build.home}/org/semanticweb/yars/tld/tld.dat" />
 	</target>
 
+	
+	<target name="compile-lite" depends="javac,license-lite" />
+
+	<target name="compile-full" depends="javac,license-full" />
 
 	<!-- Jar target does not include dependencies -->
 	<target name="jar" depends="compile-full">
@@ -150,6 +154,7 @@
 				<include name='org/semanticweb/yars/util/CallbackNxOutputStream.*' />
 				<include name='org/semanticweb/yars/util/CallbackBlockingQueue.*' />
 				<include name='org/semanticweb/yars/util/Array.*' />
+				<!-- <include name='org/semanticweb/yars/nx/cli/Main.*'/> -->
 			</fileset>
 		</javadoc>
 	</target>
