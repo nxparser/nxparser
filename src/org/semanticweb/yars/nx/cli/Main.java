@@ -39,6 +39,7 @@ public class Main {
 				sb.append("\n\tParseRDFXML       Parse RDF/XML file");
 				sb.append("\n\tReorder           Reorder some data");
 				sb.append("\n\tSample            Random sampling");
+				sb.append("\n\tSplit             Split a big file");
 				sb.append("\n\tStats             Analyse the NQ file and print some nice stats");
 				sb.append("\n\tSort              Sort some data");
 				sb.append("\n\tMergeSort         Merge-sort pre-sorted files");

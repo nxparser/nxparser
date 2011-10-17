@@ -135,16 +135,16 @@ public class Split {
 			counts[fileIndex]++;
 		}
 		
-		_log.info("...finished... read "+read+".");
-		for(int i=0; i<n; i++){
-			_log.info("...file "+i+" written "+counts[n]);
-		}
-		double aad = absAverageDeviation(counts);
-		_log.info("... absolute average deviation from mean "+aad);
-		
 		is.close();
 		for(OutputStream os:oss)
 			os.close();
+		
+		_log.info("...finished... read "+read+".");
+		for(int i=0; i<n; i++){
+			_log.info("...file "+i+" written "+counts[i]);
+		}
+		double aad = absAverageDeviation(counts);
+		_log.info("... absolute average deviation from mean "+aad);
 	}
 	
 	public static double absAverageDeviation(int[] cs){
