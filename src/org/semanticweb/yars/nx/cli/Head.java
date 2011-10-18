@@ -57,7 +57,7 @@ public class Head {
 		InputStream is = Main.getMainInputStream(cmd);
 		
 		OutputStream os = Main.getMainOutputStream(cmd);
-		Callback cb = new CallbackNxOutputStream(os);
+		Callback cb = new CallbackNxOutputStream(os, true);
 		
 		int ticks = Main.getTicks(cmd);
 		double head = Double.parseDouble(cmd.getOptionValue("p"));
@@ -103,6 +103,6 @@ public class Head {
 		_log.info("Buffered "+c+" final triples to output.");
 		
 		is.close();
-		os.close();
+		cb.endDocument();
 	}
 }

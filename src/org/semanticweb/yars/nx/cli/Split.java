@@ -94,7 +94,7 @@ public class Split {
 			oss[i] = new FileOutputStream(fn);
 			if(cmd.hasOption("ogz"))
 				oss[i] = new GZIPOutputStream(oss[i]);
-			cbs[i] = new CallbackNxOutputStream(oss[i]);
+			cbs[i] = new CallbackNxOutputStream(oss[i], true);
 		}
 		
 		int ticks = Main.getTicks(cmd);
@@ -136,8 +136,8 @@ public class Split {
 		}
 		
 		is.close();
-		for(OutputStream os:oss)
-			os.close();
+		for(Callback cb:cbs)
+			cb.endDocument();
 		
 		_log.info("...finished... read "+read+".");
 		for(int i=0; i<n; i++){

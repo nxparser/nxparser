@@ -70,7 +70,7 @@ public class Reorder {
 		int ticks = Main.getTicks(cmd);
 		
 		Iterator<Node[]> it = new NxParser(is);
-		Callback cb = new CallbackNxOutputStream(os);
+		Callback cb = new CallbackNxOutputStream(os, true);
 		
 		ReorderIterator ri = new ReorderIterator(it, mask, ticks);
 		
@@ -81,7 +81,7 @@ public class Reorder {
 		_log.info("Finished reorder. Reordered "+ri.count()+" statements.");
 		
 		is.close();
-		os.close();
+		cb.endDocument();
 	}
 
 	static int[] getMask(String arg){

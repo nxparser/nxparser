@@ -27,6 +27,14 @@ public class CallbackNxOutputStream implements Callback {
 
 //	public LRUMapCache<Node, ByteArray> _cache = new LRUMapCache<Node, ByteArray>();
 
+	/**
+	 * @Deprecated
+	 * ...add true to the constructor to close the internal buffer
+	 * as well as the passed OutputStream.
+	 * 
+	 * Use #endDocument to close the Callback. 
+	 */
+	@Deprecated
 	public CallbackNxOutputStream(OutputStream out) {
 		this(out, DEFAULTCHARSET, false);
 	}
@@ -62,7 +70,7 @@ public class CallbackNxOutputStream implements Callback {
 	public void startDocument() {
 		_time = System.currentTimeMillis();
 	}
-
+	
 	public void endDocument() {
 		try {
 			if (_close)

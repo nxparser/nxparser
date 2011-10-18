@@ -363,11 +363,11 @@ public class RDFXMLParser implements Iterator<Node[]> {
 //		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
 		
 		FileInputStream fis = new FileInputStream(in);
-		CallbackNxOutputStream cb = new CallbackNxOutputStream(System.out);
+		CallbackNxOutputStream cb = new CallbackNxOutputStream(System.out, true);
 		
 		new RDFXMLParser(fis, false, false, baseURI, cb);
 		
 		fis.close();
-		System.out.flush();
+		cb.endDocument();
 	}
 }

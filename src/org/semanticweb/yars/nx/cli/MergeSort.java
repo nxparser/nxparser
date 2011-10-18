@@ -92,7 +92,7 @@ public class MergeSort {
 		_log.info("Opened "+iters.length+" files for merging");
 		
 		OutputStream os = Main.getMainOutputStream(cmd);
-		Callback cb = new CallbackNxOutputStream(os);
+		Callback cb = new CallbackNxOutputStream(os, true);
 		
 		NodeComparatorArgs nca = new NodeComparatorArgs();
 		if(cmd.hasOption("so")){
@@ -143,7 +143,7 @@ public class MergeSort {
 		for(InputStream is:iss){
 			is.close();
 		}
-		os.close();
+		cb.endDocument();
 	}
 	
 	static int[] getMask(String arg){

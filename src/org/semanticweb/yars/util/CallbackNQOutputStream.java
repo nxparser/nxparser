@@ -8,6 +8,6 @@ Replaced by CallbackNxOutputStream
 **/
 public class CallbackNQOutputStream extends CallbackNxOutputStream {
 	public CallbackNQOutputStream(OutputStream out) {
-		super(out);
+		super(out, true);
 	}
 }

@@ -93,7 +93,7 @@ public class Sort {
 		int ticks = Main.getTicks(cmd);
 		
 		Iterator<Node[]> it = new NxParser(is);
-		Callback cb = new CallbackNxOutputStream(os);
+		Callback cb = new CallbackNxOutputStream(os, true);
 		
 		NodeComparatorArgs nca = new NodeComparatorArgs();
 		if(cmd.hasOption("so")){
@@ -144,6 +144,6 @@ public class Sort {
 		_log.info("Finished sort. Sorted "+si.count()+" with "+si.duplicates()+" duplicates.");
 		
 		is.close();
-		os.close();
+		cb.endDocument();
 	}
 }
