@@ -92,13 +92,12 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		do{
 			if (_stringIt.hasNext()){
 				_line = _stringIt.next();
-				if(_line != null) _line = _line.trim();
 			} else {
 				next = null;
 				return;
 			}
 			++_lineNo;
-		} while(_line==null || _line.isEmpty());
+		} while(_line==null || isEntirelyWhitespaceOrEmpty(_line));
 		//iterate until we get a non-blank line
 		
 		try {
@@ -110,6 +109,14 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			e.printStackTrace();
 			loadNext();
 		}
+	}
+	
+	private static boolean isEntirelyWhitespaceOrEmpty(String s){
+		for(char c:s.toCharArray()){
+			if (!Character.isWhitespace(c))
+				return false;
+		}
+		return true;
 	}
 
 	/**
