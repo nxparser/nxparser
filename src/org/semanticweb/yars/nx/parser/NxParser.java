@@ -49,6 +49,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	private int _lineNo = 0;
 	private String _line = null;
 	private Iterator<String> _stringIt = null;
+	private Node[] next = null;
 
 	public NxParser(Reader r) {
 		this(new BufferedReader(r));
@@ -63,38 +64,56 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	}
 
 	public NxParser(BufferedReader br) {
-		_stringIt = stringItFromBufferedReader(br);
+		this(stringItFromBufferedReader(br));
 	}
 
 	public NxParser(Iterable<String> iterable) {
-		_stringIt = iterable.iterator();
+		this(iterable.iterator());
 	}
 
-	@Override
-	public Node[] next() {
-		if (_stringIt.hasNext())
-			_line = _stringIt.next();
-		else
+	public NxParser(Iterator<String> iterator) {
+		_stringIt = iterator;
+		loadNext();
+	}
+
+	public boolean hasNext() {
+		return next != null;
+	}
+
+	public Node[] next(){
+		if(next==null)
 			throw new NoSuchElementException();
-		++_lineNo;
+		Node[] now = next;
+		loadNext();
+		return now;
+	}
+	
+	private void loadNext() {
+		do{
+			if (_stringIt.hasNext()){
+				_line = _stringIt.next();
+				if(_line != null) _line = _line.trim();
+			} else {
+				next = null;
+				return;
+			}
+			++_lineNo;
+		} while(_line==null || _line.isEmpty());
+		//iterate until we get a non-blank line
+		
 		try {
-			return parseNodesInternal(_line);
+			next = parseNodesInternal(_line);
+			//iterate until we get a valid parsed Node[]
 		} catch (Exception e) {
 			_log.warning("Moving on to the next line, as I couldn't parse line "
 					+ _lineNo + ": " + _line);
 			e.printStackTrace();
-			return next();
+			loadNext();
 		}
-
-	}
-
-	@Override
-	public boolean hasNext() {
-		return _stringIt.hasNext();
 	}
 
 	/**
-	 * Calls remove from underlying iterator.
+	 * Calls remove from underlying string iterator.
 	 */
 	@Override
 	public void remove() {
@@ -115,7 +134,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		}
 	}
 
-	private static Node[] parseNodesInternal(String line) {
+	private static Node[] parseNodesInternal(String line) throws ParseException {
 		int startIndex = 0;
 		int endIndex = 0;
 		List<Node> nx = new LinkedList<Node>();
@@ -168,7 +187,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			}
 			
 			if (startIndex == (endIndex + 1))
-				throw new RuntimeException("Exception at position " + endIndex
+				throw new ParseException("Exception at position " + endIndex
 						+ " while parsing " + line);
 			startIndex = endIndex + 1;
 		}
