@@ -44,7 +44,7 @@
 	<target name="javac" depends="prepare" description="Compile Java sources">
 		<!-- Compile Java classes as necessary -->
 		<mkdir dir="${build.home}" />
-		<javac srcdir="${src.home}" destdir="${build.home}">
+		<javac srcdir="${src.home}" destdir="${build.home}" debug="true" debuglevel="lines,source">
 		<!--<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6">-->
 			<classpath refid="classpath" />
 		</javac>
