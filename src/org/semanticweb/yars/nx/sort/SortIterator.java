@@ -140,17 +140,16 @@ public class SortIterator implements Iterator<Node[]>{
 			File temp = new File(args._tmpDir + "/" + PREFIX + i + SUFFIX);
 			FileOutputStream fos = new FileOutputStream(temp);
 			GZIPOutputStream gzout = new GZIPOutputStream(fos);
-			CallbackNxOutputStream cbBatch = new CallbackNxOutputStream(gzout);
+			CallbackNxOutputStream cbBatch = new CallbackNxOutputStream(gzout, true);
 			i++;
 
-			
 			_log.info("Dumping batch size: "+sset.size());
 			while (it.hasNext()) {
 				Node[] quad = it.next();
 				//System.out.println(quad[0].toN3()+" "+quad[1].toN3()+" "+quad[2].toN3()+" "+quad[3].toN3()+" .");
 				cbBatch.processStatement(quad);
 			}
-			gzout.close();
+			cbBatch.endDocument();
 			_log.info("Parsed and sorted "+count+" lines in "+i+" files with "+dupes+" duplicates.");
 		}
 
