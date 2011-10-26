@@ -16,9 +16,9 @@ import org.semanticweb.yars.nx.util.NxUtil;
  * @author Tobias Kaefer
  */
 public class Resource implements Node, Serializable {
-	
+
 	private static Logger _log = Logger.getLogger(Resource.class.getName());
-	
+
 	// the value of the resource (now includes < >)
 	protected String _data;
 
@@ -32,7 +32,9 @@ public class Resource implements Node, Serializable {
 
 	/**
 	 * Constructor.
-	 * @deprecated I'd rate that HIGHLY DANGEROUS. Stayed only for compatibility's sake.
+	 * 
+	 * @deprecated I'd rate that HIGHLY DANGEROUS. Stayed only for
+	 *             compatibility's sake.
 	 */
 	public Resource() {
 		_data = null;
@@ -40,14 +42,25 @@ public class Resource implements Node, Serializable {
 
 	/**
 	 * Constructor. Assumes no angle brackets around the uri like in Nx.
+	 * Assuming conformance to the spec.
+	 * 
+	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
 	 */
 	public Resource(String uri) {
 		this(uri, false);
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor. Does some escaping so is possibly not too fast.
+	 */
+	public Resource(URI uri) {
+		this("<" + NxUtil.escapeForNx(uri.toASCIIString()) + ">", true);
+	}
+
+	/**
+	 * Constructor. Assuming conformance to the spec.
 	 * 
+	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
 	 * @param isN3
 	 *            Set this to true if angle brackets are already around URI as
 	 *            required by N3.
@@ -58,11 +71,11 @@ public class Resource implements Node, Serializable {
 				_log.severe("The supplied String for creating a resource was "
 						+ (uri == null ? "the null pointer"
 								: "the empty string, which MUST NOT be the case in N3"));
-			if (uri == null)
-				_data = null;
-			else
-				_data = "";
-			return;
+				if (uri == null)
+					_data = null;
+				else
+					_data = "";
+				return;
 			}
 			if (uri.charAt(0) != '<')
 				_data = "<" + uri + ">";
@@ -73,7 +86,7 @@ public class Resource implements Node, Serializable {
 	}
 
 	public String getHost() throws URISyntaxException {
-		URI u = new URI(toString());
+		URI u = new URI(toN3().substring(1, toN3().length() - 1));
 		return u.getHost();
 	}
 
@@ -84,13 +97,22 @@ public class Resource implements Node, Serializable {
 		return toN3().hashCode();
 	}
 
-	/**
-	 * Get string representation.
-	 * 
-	 */
 	public String toString() {
-		// not called so often, now a bit slower
 		return NxUtil.unescape(toN3().substring(1, toN3().length() - 1));
+	}
+
+	/**
+	 * Returns the URI that this resource represents.
+	 * 
+	 * @return the URI, or null on URISyntaxException.
+	 */
+	public URI toURI() {
+		try {
+			return new URI(toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
