@@ -1,5 +1,13 @@
 package org.semanticweb.yars.nx.util;
 
+import java.net.URI;
+
+/**
+ * Some utility methods that used to be spread over a couple of other classes.
+ * 
+ * @author Tobias Kaefer
+ * @author others that wrote the methods in the first place
+ */
 public class NxUtil {
 
 	private NxUtil() {
@@ -8,9 +16,11 @@ public class NxUtil {
 
 	/**
 	 * Escapes strings to unicode. Note that this method does not all the work
-	 * required by the spec for processing URIs 
-	 * {@link http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding}.
+	 * required by the spec for processing URIs. {@link URI#toASCIIString()}
+	 * could be your friend here.
 	 * 
+	 * @see http://www.w3.org/TR/rdf-testcases/#ntrip_strings
+	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
 	 */
 	public static String escapeForNx(String lit) {
 		StringBuffer result = new StringBuffer();

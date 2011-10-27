@@ -42,7 +42,8 @@ public class Resource implements Node, Serializable {
 
 	/**
 	 * Constructor. Assumes no angle brackets around the uri like in Nx.
-	 * Assuming conformance to the spec.
+	 * Assuming conformance to the spec, which can be achieved e.g. using
+	 * {@link NxUtil#escapeForNx(String)} after {@link URI#toASCIIString()}.
 	 * 
 	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
 	 */
@@ -51,14 +52,18 @@ public class Resource implements Node, Serializable {
 	}
 
 	/**
-	 * Constructor. Does some escaping so is possibly not too fast.
+	 * Constructor. Does some escaping so is possibly not too fast. Escaping is
+	 * done using {@link NxUtil#escapeForNx(String)} after
+	 * {@link URI#toASCIIString()}.
 	 */
 	public Resource(URI uri) {
 		this("<" + NxUtil.escapeForNx(uri.toASCIIString()) + ">", true);
 	}
 
 	/**
-	 * Constructor. Assuming conformance to the spec.
+	 * Constructor. Assuming conformance to the spec, which can be achieved e.g.
+	 * using {@link NxUtil#escapeForNx(String)} after
+	 * {@link URI#toASCIIString()}.
 	 * 
 	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
 	 * @param isN3
