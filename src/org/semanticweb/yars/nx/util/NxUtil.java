@@ -19,8 +19,10 @@ public class NxUtil {
 	 * required by the spec for processing URIs. {@link URI#toASCIIString()}
 	 * could be your friend here.
 	 * 
-	 * @see http://www.w3.org/TR/rdf-testcases/#ntrip_strings
-	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
+	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#ntrip_strings">What the
+	 *      spec says about the encoding of strings</a>
+	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">What
+	 *      the spec says on the encoding of URIs</a>
 	 */
 	public static String escapeForNx(String lit) {
 		StringBuffer result = new StringBuffer();

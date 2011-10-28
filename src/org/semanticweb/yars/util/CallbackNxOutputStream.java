@@ -28,7 +28,7 @@ public class CallbackNxOutputStream implements Callback {
 //	public LRUMapCache<Node, ByteArray> _cache = new LRUMapCache<Node, ByteArray>();
 
 	/**
-	 * @Deprecated
+	 * @deprecated
 	 * ...add true to the constructor to close the internal buffer
 	 * as well as the passed OutputStream.
 	 * 

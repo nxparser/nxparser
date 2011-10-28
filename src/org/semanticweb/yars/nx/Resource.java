@@ -45,7 +45,8 @@ public class Resource implements Node, Serializable {
 	 * Assuming conformance to the spec, which can be achieved e.g. using
 	 * {@link NxUtil#escapeForNx(String)} after {@link URI#toASCIIString()}.
 	 * 
-	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
+	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">The
+	 *      spec</a>
 	 */
 	public Resource(String uri) {
 		this(uri, false);
@@ -65,7 +66,8 @@ public class Resource implements Node, Serializable {
 	 * using {@link NxUtil#escapeForNx(String)} after
 	 * {@link URI#toASCIIString()}.
 	 * 
-	 * @see http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding
+	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">The
+	 *      spec</a>
 	 * @param isN3
 	 *            Set this to true if angle brackets are already around URI as
 	 *            required by N3.
