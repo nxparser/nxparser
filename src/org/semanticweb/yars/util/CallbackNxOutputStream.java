@@ -10,7 +10,7 @@ import org.semanticweb.yars.nx.parser.Callback;
  * @deprecated
  * @author aidhog
  * 
- * CallbackNxBufferedOutputStream is a lot faster.
+ * CallbackNxBufferedWriter is a lot faster.
  */
 @Deprecated
 public class CallbackNxOutputStream implements Callback {
