@@ -1,6 +1,7 @@
 package org.semanticweb.yars.nx.parser;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
@@ -89,6 +91,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	}
 	
 	private void loadNext() {
+		next = null;
 		do{
 			if (_stringIt.hasNext()){
 				_line = _stringIt.next();
@@ -243,6 +246,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 						next = br.readLine();
 					} catch (IOException e) {
 						e.printStackTrace();
+						next = null;
 					}
 					nextIsFetched = false;
 					return next == null ? false : true;
@@ -487,6 +491,5 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	@Deprecated
 	public static String unescape(String str, boolean clean) {
 		return NxUtil.unescape(str, clean);
-	}
-	
+	}	
 }
