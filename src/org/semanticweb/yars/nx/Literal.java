@@ -104,7 +104,7 @@ public class Literal implements Node, Serializable {
 
 	public Literal(String data, String lang, Resource dt, boolean isN3) {
 		if (!isN3) {
-			if (data == "" || data.charAt(0) != '\"'
+			if (data.equals("") || data.charAt(0) != '\"'
 					|| data.charAt(data.length() - 1) != '\"') {
 				_log.fine("String for Literal ("
 						+ data
