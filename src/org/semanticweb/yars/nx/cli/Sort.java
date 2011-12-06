@@ -150,7 +150,7 @@ public class Sort {
 		
 		
 		if(cmd.hasOption("b"))
-			sa.setLinesPerBatch(Integer.parseInt(cmd.getOptionValue("s")));
+			sa.setLinesPerBatch(Integer.parseInt(cmd.getOptionValue("b")));
 		else if(cmd.hasOption("ab"))
 			sa.setAdaptiveBatches();
 		
