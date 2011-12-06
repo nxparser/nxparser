@@ -1,10 +1,13 @@
 package org.semanticweb.yars.nx.sort;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -18,10 +21,11 @@ import org.semanticweb.yars.nx.NodeComparator;
 import org.semanticweb.yars.nx.cli.Main;
 import org.semanticweb.yars.nx.mem.LowMemorySniffer;
 import org.semanticweb.yars.nx.mem.MemoryManager;
+import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.parser.ParseException;
 import org.semanticweb.yars.nx.sort.MergeSortIterator.MergeSortArgs;
-import org.semanticweb.yars.util.CallbackNxOutputStream;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 import org.semanticweb.yars.util.FlyweightNodeIterator;
 import org.semanticweb.yars.util.SniffIterator;
 
@@ -138,9 +142,11 @@ public class SortIterator implements Iterator<Node[]>{
 			}
 
 			File temp = new File(args._tmpDir + "/" + PREFIX + i + SUFFIX);
-			FileOutputStream fos = new FileOutputStream(temp);
-			GZIPOutputStream gzout = new GZIPOutputStream(fos);
-			CallbackNxOutputStream cbBatch = new CallbackNxOutputStream(gzout, true);
+			OutputStream os = new FileOutputStream(temp);
+			if(args._gzipBatch)
+				os = new GZIPOutputStream(os);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+			Callback cbBatch = new CallbackNxBufferedWriter(bw); 
 			i++;
 
 			_log.info("Dumping batch size: "+sset.size());
@@ -149,7 +155,7 @@ public class SortIterator implements Iterator<Node[]>{
 				//System.out.println(quad[0].toN3()+" "+quad[1].toN3()+" "+quad[2].toN3()+" "+quad[3].toN3()+" .");
 				cbBatch.processStatement(quad);
 			}
-			cbBatch.endDocument();
+			bw.close();
 			_log.info("Parsed and sorted "+count+" lines in "+i+" files with "+dupes+" duplicates.");
 		}
 
@@ -160,7 +166,10 @@ public class SortIterator implements Iterator<Node[]>{
 			InputStream[] streams = new InputStream[i];
 			for(int a=0; a<i; a++){
 				String segName = PREFIX + a + SUFFIX;
-				streams[a] = new GZIPInputStream(new FileInputStream(args._tmpDir + "/" + segName), 8192);
+				streams[a] = new FileInputStream(args._tmpDir + "/" + segName);
+				if(args._gzipBatch){
+					streams[a] = new GZIPInputStream(streams[a], 8192);
+				}
 				segments[a] = new NxParser(streams[a]);
 			}
 			
@@ -225,9 +234,9 @@ public class SortIterator implements Iterator<Node[]>{
 	
 	public static class SortArgs {
 		public static final int DEFAULT_FW = 0;
+		public static final boolean DEFAULT_GZIP_BATCH = true;
 		
 		public static final int ADAPTIVE_BATCHES = Integer.MIN_VALUE;
-		
 		
 		private final Iterator<Node[]> _in;
 		private final short _nxlength;
@@ -235,6 +244,8 @@ public class SortIterator implements Iterator<Node[]>{
 		private int _linesPerBatch;
 		private Comparator<Node[]> _nc;
 		private String _tmpDir;
+		
+		private boolean _gzipBatch = DEFAULT_GZIP_BATCH;
 		
 		private int _ticks = 0;
 		
@@ -289,6 +300,14 @@ public class SortIterator implements Iterator<Node[]>{
 		 */
 		public void setLinesPerBatch(int linesPerBatch){
 			_linesPerBatch = linesPerBatch;
+		}
+		
+		/**
+		 * Set GZipping of batch files (slower but less disk used)
+		 * @param tmpDir
+		 */
+		public void setGzipBatches(boolean gzbat){
+			_gzipBatch = gzbat;
 		}
 		
 		public void setTmpDir(String tmpDir){

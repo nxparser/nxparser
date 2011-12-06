@@ -1,8 +1,5 @@
 package org.semanticweb.yars2.rdfxml;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -20,7 +17,6 @@ import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.ParseException;
 import org.semanticweb.yars.util.CallbackBlockingQueue;
-import org.semanticweb.yars.util.CallbackNxOutputStream;
 import org.xml.sax.SAXException;
 
 /**
@@ -357,17 +353,17 @@ public class RDFXMLParser implements Iterator<Node[]> {
 //		fos.close();
 //	}
 	
-	public static void main(String args[]) throws FileNotFoundException, ParseException, IOException{
-		String in = "test-data/rdfxmlthis.rdf";
-		String baseURI = "http://prefix.cc/popular/all.file.vann";
-//		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
-		
-		FileInputStream fis = new FileInputStream(in);
-		CallbackNxOutputStream cb = new CallbackNxOutputStream(System.out, true);
-		
-		new RDFXMLParser(fis, false, false, baseURI, cb);
-		
-		fis.close();
-		cb.endDocument();
-	}
+//	public static void main(String args[]) throws FileNotFoundException, ParseException, IOException{
+//		String in = "test-data/rdfxmlthis.rdf";
+//		String baseURI = "http://prefix.cc/popular/all.file.vann";
+////		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
+//		
+//		FileInputStream fis = new FileInputStream(in);
+//		CallbackNxOutputStream cb = new CallbackNxOutputStream(System.out, true);
+//		
+//		new RDFXMLParser(fis, false, false, baseURI, cb);
+//		
+//		fis.close();
+//		cb.endDocument();
+//	}
 }

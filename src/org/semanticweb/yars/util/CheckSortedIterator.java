@@ -43,7 +43,8 @@ public class CheckSortedIterator implements Iterator<Node[]>{
 	public Node[] next() {
 		Node[] next = _in.next();
 		if(_old!=null){
-			if(_nc.compare(_old,next)>0){
+			int comp = _nc.compare(_old,next);
+			if(comp>0 && comp!=NodeComparator.NOT_EQUALS_COMP){
 				NotSortedException nse = new NotSortedException(_old, next);
 				_log.severe(nse.getMessage());
 			}

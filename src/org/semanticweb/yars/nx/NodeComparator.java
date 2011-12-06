@@ -9,6 +9,12 @@ import java.util.logging.Logger;
 import org.semanticweb.yars.nx.cli.Main;
 
 public class NodeComparator implements Comparator<Node[]>, Serializable {
+	/**
+	 * A bit of a hack, but if no-zero is set to allow duplicates, if the two
+	 * elements are equal, the compare method will return this value.
+	 */
+	public static final int NOT_EQUALS_COMP = Integer.MIN_VALUE + 3219; 
+	
 	private static Logger _log = Logger.getLogger(NodeComparator.class.getName());
 	
 	/**
@@ -140,7 +146,7 @@ public class NodeComparator implements Comparator<Node[]>, Serializable {
 			if(_order!=null){
 				if(_order.length==i){
 					if(_nZero)
-						return -1;
+						return NOT_EQUALS_COMP;
 					return 0;
 				}
 				
@@ -168,7 +174,7 @@ public class NodeComparator implements Comparator<Node[]>, Serializable {
 		}
 
 		if(_nZero)
-			return -1;
+			return NOT_EQUALS_COMP;;
 		return 0;
 	}
 	

@@ -4,7 +4,7 @@ import java.io.OutputStream;
 
 /**
 @deprecated
-Replaced by CallbackNxOutputStream
+Replaced by CallbackNxBufferedWriter
 **/
 public class CallbackNQOutputStream extends CallbackNxOutputStream {
 	public CallbackNQOutputStream(OutputStream out) {

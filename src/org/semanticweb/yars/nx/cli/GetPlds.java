@@ -1,8 +1,10 @@
 package org.semanticweb.yars.nx.cli;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -16,12 +18,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.semanticweb.yars.nx.Node;
-import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.NodeComparator.NodeComparatorArgs;
+import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.tld.TldManager;
-import org.semanticweb.yars.util.CallbackNxOutputStream;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 
 /**
  * Extract PLDs from data.
@@ -79,7 +81,8 @@ public class GetPlds {
 			pos = NodeComparatorArgs.getIntegerMask(cmd.getOptionValue("p"));
 		
 		Iterator<Node[]> it = new NxParser(is);
-		Callback cb = new CallbackNxOutputStream(os, true);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+		Callback cb = new CallbackNxBufferedWriter(bw);
 		
 		TreeSet<Node> plds = new TreeSet<Node>();
 		
@@ -111,7 +114,7 @@ public class GetPlds {
 		_log.info("Finished. Read "+read+". Found "+plds.size()+" PLDs.");
 		
 		is.close();
-		cb.endDocument();
+		bw.close();
 	}
 	
 	static int[] getMask(String arg){

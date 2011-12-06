@@ -1,9 +1,11 @@
 package org.semanticweb.yars.nx.cli;
 
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -20,6 +22,7 @@ import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 import org.semanticweb.yars.util.CallbackNxOutputStream;
 
 /**
@@ -79,7 +82,8 @@ public class Split {
 		
 		
 		OutputStream[] oss = new OutputStream[n];
-		Callback[] cbs = new CallbackNxOutputStream[n];
+		BufferedWriter[] bw = new BufferedWriter[n];
+		Callback[] cbs = new CallbackNxBufferedWriter[n];
 		String o = cmd.getOptionValue("o");
 		if(!o.contains("%")){
 			System.err.println("***ERROR: o should contain at least one '%' character");
@@ -94,7 +98,8 @@ public class Split {
 			oss[i] = new FileOutputStream(fn);
 			if(cmd.hasOption("ogz"))
 				oss[i] = new GZIPOutputStream(oss[i]);
-			cbs[i] = new CallbackNxOutputStream(oss[i], true);
+			bw[i] = new BufferedWriter(new OutputStreamWriter(oss[i]));
+			cbs[i] = new CallbackNxBufferedWriter(bw[i]);
 		}
 		
 		int ticks = Main.getTicks(cmd);
@@ -136,8 +141,8 @@ public class Split {
 		}
 		
 		is.close();
-		for(Callback cb:cbs)
-			cb.endDocument();
+		for(BufferedWriter b:bw)
+			b.close();
 		
 		_log.info("...finished... read "+read+".");
 		for(int i=0; i<n; i++){

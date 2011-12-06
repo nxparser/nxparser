@@ -1,8 +1,10 @@
 package org.semanticweb.yars.nx.cli;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -16,6 +18,7 @@ import org.apache.commons.cli.ParseException;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 import org.semanticweb.yars.util.CallbackNxOutputStream;
 
 public class Head {
@@ -57,7 +60,8 @@ public class Head {
 		InputStream is = Main.getMainInputStream(cmd);
 		
 		OutputStream os = Main.getMainOutputStream(cmd);
-		Callback cb = new CallbackNxOutputStream(os, true);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+		Callback cb = new CallbackNxBufferedWriter(bw);
 		
 		int ticks = Main.getTicks(cmd);
 		double head = Double.parseDouble(cmd.getOptionValue("p"));
@@ -103,6 +107,6 @@ public class Head {
 		_log.info("Buffered "+c+" final triples to output.");
 		
 		is.close();
-		cb.endDocument();
+		bw.close();
 	}
 }

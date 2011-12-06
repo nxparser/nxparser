@@ -1,8 +1,10 @@
 package org.semanticweb.yars.nx.cli;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -20,6 +22,7 @@ import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.sort.MergeSortIterator;
 import org.semanticweb.yars.nx.sort.MergeSortIterator.MergeSortArgs;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 import org.semanticweb.yars.util.CallbackNxOutputStream;
 import org.semanticweb.yars.util.CheckSortedIterator;
 
@@ -92,7 +95,9 @@ public class MergeSort {
 		_log.info("Opened "+iters.length+" files for merging");
 		
 		OutputStream os = Main.getMainOutputStream(cmd);
-		Callback cb = new CallbackNxOutputStream(os, true);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+		Callback cb = new CallbackNxBufferedWriter(bw);
+		
 		
 		NodeComparatorArgs nca = new NodeComparatorArgs();
 		if(cmd.hasOption("so")){
@@ -143,7 +148,7 @@ public class MergeSort {
 		for(InputStream is:iss){
 			is.close();
 		}
-		cb.endDocument();
+		bw.close();
 	}
 	
 	static int[] getMask(String arg){

@@ -1,8 +1,10 @@
 package org.semanticweb.yars.nx.cli;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -17,6 +19,7 @@ import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.reorder.ReorderIterator;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 import org.semanticweb.yars.util.CallbackNxOutputStream;
 
 /**
@@ -70,8 +73,9 @@ public class Reorder {
 		int ticks = Main.getTicks(cmd);
 		
 		Iterator<Node[]> it = new NxParser(is);
-		Callback cb = new CallbackNxOutputStream(os, true);
-		
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+		Callback cb = new CallbackNxBufferedWriter(bw);
+				
 		ReorderIterator ri = new ReorderIterator(it, mask, ticks);
 		
 		while(ri.hasNext()){
@@ -81,7 +85,7 @@ public class Reorder {
 		_log.info("Finished reorder. Reordered "+ri.count()+" statements.");
 		
 		is.close();
-		cb.endDocument();
+		bw.close();
 	}
 
 	static int[] getMask(String arg){
