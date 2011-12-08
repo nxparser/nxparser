@@ -4,7 +4,7 @@
 <project name="nxparser" default="dist" basedir=".">
 	<!-- variables -->
 	<property name="app.name" value="nxparser" />
-	<property name="app.version" value="1.2.1" />
+	<property name="app.version" value="1.2.2" />
 	<property name="src.home" value="src" />
 	<property name="lib" value="lib" />
 
@@ -15,7 +15,7 @@
 	<!-- All Target -->
 
 	<target name="lite" depends="clean,litejar" description="only build NxParser-lite" />
-	<target name="full" depends="clean,compile-full" description="build NxParser-full" />
+	<target name="full" depends="clean,jar" description="build NxParser-full" />
 
 	<target name="all" depends="lite,dist,javadoc-lite" description="Clean build and dist, then compile" />
 
@@ -45,7 +45,25 @@
 		<!-- Compile Java classes as necessary -->
 		<mkdir dir="${build.home}" />
 		<javac srcdir="${src.home}" destdir="${build.home}" debug="true" debuglevel="lines,source">
-		<!--<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6" debuglevel="lines,source">-->
+		<!--<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6" debug="true" debuglevel="lines,source">-->
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<!-- Javac 5 Target -->
+	<target name="javac5" depends="prepare" description="Compile Java sources">
+		<!-- Compile Java classes as necessary -->
+		<mkdir dir="${build.home}" />
+		<javac srcdir="${src.home}" destdir="${build.home}" target="1.5" source="1.5" debug="true" debuglevel="lines,source">-->
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<!-- Javac 6 Target -->
+	<target name="javac6" depends="prepare" description="Compile Java sources">
+		<!-- Compile Java classes as necessary -->
+		<mkdir dir="${build.home}" />
+		<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6" debug="true" debuglevel="lines,source">-->
 			<classpath refid="classpath" />
 		</javac>
 	</target>
