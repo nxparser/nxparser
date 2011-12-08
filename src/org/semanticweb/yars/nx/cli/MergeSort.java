@@ -45,7 +45,7 @@ public class MergeSort {
 		
 		Option sortOrderO = new Option("so", "sort order: e.g. 0123 for SPOC 3012 for CSPO (written order preserved)");
 		sortOrderO.setArgs(1);
-		sortOrderO.setRequired(false);
+		sortOrderO.setRequired(true);
 		options.addOption(sortOrderO);
 		
 		Option numericOrderO = new Option("no", "numeric order: e.g. 2 for objects of order SPOC/0123, 21 for objects and predicates (independent of sort order)");
