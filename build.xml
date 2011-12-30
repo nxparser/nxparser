@@ -77,9 +77,8 @@
 	<target name="license-full">
 		<copy file="license-lite.txt" tofile="${build.home}/META-INF/license.txt" />
 		<copy file="MPL-1.1.txt" tofile="${build.home}/META-INF/MPL-1.1.txt" />
-		<copy file="${src.home}/org/semanticweb/yars/tld/tld.dat" tofile="${build.home}/org/semanticweb/yars/tld/tld.dat" />
+		<copy file="${src.home}/main/java/org/semanticweb/yars/tld/tld.dat" tofile="${build.home}/org/semanticweb/yars/tld/tld.dat" />
 	</target>
-
 	
 	<target name="compile-lite" depends="javac,license-lite" />
 
