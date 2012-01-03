@@ -219,15 +219,15 @@ public class Literal implements Node, Serializable {
 		return _dt;
 	}
 
-	 /**
-	 * Get object representing datatype-value of literal.
-	 *
-	 * @return datatype value or null if (i) unsupported datatype; (ii) plain literal (w/wo/ lang tag)
-	 * @throws DatatypeParseException if supported datatype with bad syntax
-	 */
-	 public Datatype<? extends Object> getDatatypeObject() throws DatatypeParseException {
-		 return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
-	 }
+//	 /**
+//	 * Get object representing datatype-value of literal.
+//	 *
+//	 * @return datatype value or null if (i) unsupported datatype; (ii) plain literal (w/wo/ lang tag)
+//	 * @throws DatatypeParseException if supported datatype with bad syntax
+//	 */
+//	 public Datatype<? extends Object> getDatatypeObject() throws DatatypeParseException {
+//		 return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
+//	 }
 	
 	/**
 	 * Get value as a string.
