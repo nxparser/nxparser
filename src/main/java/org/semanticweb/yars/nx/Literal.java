@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.semanticweb.yars.nx.dt.Datatype;
+import org.semanticweb.yars.nx.dt.DatatypeFactory;
+import org.semanticweb.yars.nx.dt.DatatypeParseException;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
@@ -216,17 +219,16 @@ public class Literal implements Node, Serializable {
 		return _dt;
 	}
 
-	// /**
-	// * Get object representing datatype value of literal
-	// *
-	// * @return
-	// * @throws DatatypeParseException
-	// */
-	// public Datatype<? extends Object> getDatatypeObject()
-	// throws DatatypeParseException {
-	// return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
-	// }
-	//
+	 /**
+	 * Get object representing datatype-value of literal.
+	 *
+	 * @return datatype value or null if (i) unsupported datatype; (ii) plain literal (w/wo/ lang tag)
+	 * @throws DatatypeParseException if supported datatype with bad syntax
+	 */
+	 public Datatype<? extends Object> getDatatypeObject() throws DatatypeParseException {
+		 return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
+	 }
+	
 	/**
 	 * Get value as a string.
 	 * 
