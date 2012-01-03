@@ -1,5 +1,6 @@
 package org.semanticweb.yars.nx.dt;
 
+import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.dt.binary.XSDBase64Binary;
 import org.semanticweb.yars.nx.dt.binary.XSDHexBinary;
@@ -48,8 +49,27 @@ import org.semanticweb.yars.nx.namespace.XSD;
  */
 
 public class DatatypeFactory {
+	
+	/**
+	 * Get object representing datatype-value of literal.
+	 *
+	 * @return datatype value or null if (i) unsupported datatype; (ii) plain literal (w/wo/ lang tag)
+	 * @throws DatatypeParseException if supported datatype with bad syntax
+	 */
+	public static Datatype<? extends Object> getDatatype(Literal l) throws DatatypeParseException{
+		return getDatatype(l.getUnescapedData(), l.getDatatype());
+	}
+	
+	/**
+	 * Get object representing datatype-value of lexical string/datatype URI pair.
+	 *
+	 * @return datatype value or null if (i) unsupported datatype; (ii) lex is null or dt is null
+	 * @throws DatatypeParseException if supported datatype with bad syntax
+	 */
 	public static Datatype<? extends Object> getDatatype(String lex, Resource dt) throws DatatypeParseException{
-		if(dt.toString().startsWith(XSD.NS)){
+		if(dt==null || lex==null)
+			return null;
+		else if(dt.toString().startsWith(XSD.NS)){
 			if(dt.equals(XSD.STRING)){
 				return new XSDString(lex);
 			} else if(dt.equals(XSD.BOOLEAN)){
