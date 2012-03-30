@@ -85,9 +85,9 @@ public class CheckSortedIterator implements Iterator<Node[]>{
 		
 		static String createMessage(Node[] a, Node[] b){
 			StringBuffer buf = new StringBuffer();
-			buf.append("Not sorted!");
-			buf.append(" "+Nodes.toN3(a)+" before");
-			buf.append(" "+Nodes.toN3(b));
+			buf.append("#########Not sorted!#########\n");
+			buf.append(" "+Nodes.toN3(a)+" before\n");
+			buf.append(" "+Nodes.toN3(b)+"\n");
 			return buf.toString();
 		}
 	}
