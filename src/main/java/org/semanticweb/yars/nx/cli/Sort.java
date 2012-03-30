@@ -148,9 +148,11 @@ public class Sort {
 		
 		SniffIterator sit = new SniffIterator(it);
 		
+		NodeComparator nc = new NodeComparator(nca);
+		
 		SortArgs sa = new SortArgs(sit, sit.nxLength());
 		sa.setTicks(ticks);
-		sa.setComparator(new NodeComparator(nca));
+		sa.setComparator(nc);
 		sa.setTmpDir(tmp);
 		
 		
@@ -170,7 +172,7 @@ public class Sort {
 		Iterator<Node[]> iter = si;
 		
 		if(cmd.hasOption("v")){
-			iter = new CheckSortedIterator(si);
+			iter = new CheckSortedIterator(si, nc);
 		}
 		
 		while(iter.hasNext()){
