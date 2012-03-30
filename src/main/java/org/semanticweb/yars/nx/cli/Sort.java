@@ -171,17 +171,29 @@ public class Sort {
 		SortIterator si = new SortIterator(sa);
 		Iterator<Node[]> iter = si;
 		
+		CheckSortedIterator csi = null;
 		if(cmd.hasOption("v")){
-			iter = new CheckSortedIterator(si, nc);
+			_log.info("Also verifying sort order...");
+			csi = new CheckSortedIterator(si, nc);
+			iter = csi;
 		}
 		
 		while(iter.hasNext()){
 			cb.processStatement(iter.next());
 		}
 		
+		if(cmd.hasOption("v")){
+			_log.info("Also verifying sort order...");
+			iter = new CheckSortedIterator(si, nc);
+		}
+		
 		_log.info("Finished sort. Sorted "+si.count()+" with "+si.duplicates()+" duplicates.");
 		
 		is.close();
 		bw.close();
+		
+		if(csi != null){
+			_log.info("Sort order okay? : " + csi.isOkay());
+		}
 	}
 }

@@ -1,7 +1,11 @@
 package org.semanticweb.yars2.rdfxml;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -353,17 +357,50 @@ public class RDFXMLParser implements Iterator<Node[]> {
 //		fos.close();
 //	}
 	
-//	public static void main(String args[]) throws FileNotFoundException, ParseException, IOException{
-//		String in = "test-data/rdfxmlthis.rdf";
-//		String baseURI = "http://prefix.cc/popular/all.file.vann";
-////		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
-//		
+	public static void main(String args[]) throws FileNotFoundException, ParseException, IOException, URISyntaxException{
+//		URL u = new URL("http://dbpedia.org/data/Thriller_(album).xml");
+//		String baseURI = "http://dbpedia.org/data/Thriller_(album).xml";
+//		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
+		
 //		FileInputStream fis = new FileInputStream(in);
 //		CallbackNxOutputStream cb = new CallbackNxOutputStream(System.out, true);
+		
+//		System.err.println("checking data");
+//		BufferedReader fr = new BufferedReader(new InputStreamReader(u.openStream()));
+//		String line;
+//		while((line = fr.readLine())!=null){
+//			System.err.println(line);
+//		}
+		
+		 URI u = new URI("http://blah.org/A_%28Secret%29.xml#blah");
+	     System.out.println(u);
+	     // prints "http://blah.org/A_%28Secret%29.xml#blah"
+
+	     String path1 = u.getPath();      //gives "A_(Secret).xml"
+	     String path2 = u.getRawPath();   //gives "A_%28Secret%29.xml"
+
+	     URI norm1 = new URI(u.getScheme().toLowerCase(),
+					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
+					path1, u.getQuery(), null);
+	     System.out.println(norm1.toASCIIString());
+	     // prints "http://blah.org/A_(Secret).xml"
+
+	     URI norm2 = new URI(u.getScheme().toLowerCase(),
+					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
+					path2, u.getQuery(), null);
+	     System.out.println(norm2);
+	     // prints "http://blah.org/A_%2528Secret%2529.xml"
+		
 //		
-//		new RDFXMLParser(fis, false, false, baseURI, cb);
-//		
-//		fis.close();
-//		cb.endDocument();
-//	}
+//		u = new URL("http://dbpedia.org/resource/Thriller_%28album%29");
+		
+//		System.err.println("opening parser");
+//		CallbackNxBufferedWriter cb = new CallbackNxBufferedWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+//		RDFXMLParser rxp = new RDFXMLParser(u.openStream(), false, false, baseURI, cb, new Resource(baseURI));
+		
+//		System.err.println("reading data");
+//		while(rxp.hasNext()){
+//			System.err.println(Nodes.toN3(rxp.next()));
+//		}
+	}
 }
