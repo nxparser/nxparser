@@ -23,6 +23,7 @@ import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.sort.SortIterator;
 import org.semanticweb.yars.nx.sort.SortIterator.SortArgs;
 import org.semanticweb.yars.util.CallbackNxBufferedWriter;
+import org.semanticweb.yars.util.CheckSortedIterator;
 import org.semanticweb.yars.util.SniffIterator;
 
 public class Sort {
@@ -80,6 +81,11 @@ public class Sort {
 		flyweightO.setArgs(1);
 		flyweightO.setRequired(false);
 		options.addOption(flyweightO);
+		
+		Option verifyO = new Option("v", "verify sort order (debug mode)");
+		verifyO.setArgs(0);
+		verifyO.setRequired(false);
+		options.addOption(verifyO);
 		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
@@ -161,9 +167,14 @@ public class Sort {
 			sa.setGzipBatches(false);
 		
 		SortIterator si = new SortIterator(sa);
+		Iterator<Node[]> iter = si;
 		
-		while(si.hasNext()){
-			cb.processStatement(si.next());
+		if(cmd.hasOption("v")){
+			iter = new CheckSortedIterator(si);
+		}
+		
+		while(iter.hasNext()){
+			cb.processStatement(iter.next());
 		}
 		
 		_log.info("Finished sort. Sorted "+si.count()+" with "+si.duplicates()+" duplicates.");
