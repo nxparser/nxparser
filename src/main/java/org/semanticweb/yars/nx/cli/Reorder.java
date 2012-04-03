@@ -88,7 +88,7 @@ public class Reorder {
 		bw.close();
 	}
 
-	static int[] getMask(String arg){
+	public static int[] getMask(String arg){
 		int[] reorder = new int[arg.length()];
 		
 		for(int i=0; i<reorder.length; i++){
