@@ -14,7 +14,7 @@ public class CheckSortedIterator implements Iterator<Node[]>{
 	Iterator<Node[]> _in;
 	Node[] _old = null;
 	Comparator<Node[]> _nc;
-	NotSortedException _nse = null;
+	NotSortedException _last = null;
 	
 	static transient Logger _log = Logger.getLogger(CheckSortedIterator.class.getName());
 	
@@ -33,11 +33,11 @@ public class CheckSortedIterator implements Iterator<Node[]>{
 	}
 
 	public NotSortedException getException(){
-		return _nse;
+		return _last;
 	}
 	
 	public boolean isOkay(){
-		return _nse == null;
+		return _last == null;
 	}
 	
 	public Node[] next() {
@@ -45,8 +45,8 @@ public class CheckSortedIterator implements Iterator<Node[]>{
 		if(_old!=null){
 			int comp = _nc.compare(_old,next);
 			if(comp>0 && comp!=NodeComparator.NOT_EQUALS_COMP){
-				NotSortedException nse = new NotSortedException(_old, next);
-				_log.severe(nse.getMessage());
+				_last = new NotSortedException(_old, next);
+				_log.severe(_last.getMessage());
 			}
 		}
 		_old = next;
