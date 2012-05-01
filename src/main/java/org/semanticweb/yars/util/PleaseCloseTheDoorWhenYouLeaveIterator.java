@@ -1,44 +1,44 @@
 package org.semanticweb.yars.util;
 
+import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
-
-import org.semanticweb.yars.nx.Node;
 
 /**
  * Iterator which closes the door when it leaves...
  * @author aidhog
+ * @author Tobias Kaefer
+ * @param <T>
  *
  */
-public class PleaseCloseTheDoorWhenYouLeaveIterator implements Iterator<Node[]>{
-	final Iterator<Node[]> _in;
-	final InputStream _is;
-	boolean _closed = false;
-	
-	public PleaseCloseTheDoorWhenYouLeaveIterator(Iterator<Node[]> in, InputStream is){
-		_in = in;
-		_is = is;
+public class PleaseCloseTheDoorWhenYouLeaveIterator<T> implements Iterator<T> {
+	boolean _closed;
+	Iterator<T> _it;
+	Closeable _cl;
+
+	public PleaseCloseTheDoorWhenYouLeaveIterator(Iterator<T> it, Closeable cl) {
+		_closed = false;
+		_it = it;
+		_cl = cl;
 	}
 
 	public boolean hasNext() {
-		boolean hn = _in.hasNext();
-		if(!hn && !_closed){
-			try{
-				_is.close();
-			} catch(IOException e){
+		if (!_it.hasNext() && _closed == false) {
+			try {
+				_cl.close();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			_closed = true;
 		}
-		return _in.hasNext();
+		return _it.hasNext();
 	}
-	
-	public Node[] next() {
-		return _in.next();
+
+	public T next() {
+		return _it.next();
 	}
 
 	public void remove() {
-		_in.remove();
+		_it.remove();
 	}
 }

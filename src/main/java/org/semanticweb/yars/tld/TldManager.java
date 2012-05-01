@@ -57,11 +57,19 @@ public class TldManager {
 
     // return the PLD for a URL, e.g. for www.oxfam.org.uk, return oxfam.org.uk
     public String getPLD(URI url) {
-    	if (!(url.getScheme().equalsIgnoreCase("http")|| url.getScheme().equalsIgnoreCase("https"))) {
-    		_log.fine("scheme not http(s) " + url);
-    		return null;
-    	}
+
     	try {
+    		if (url.getScheme() == null) {
+    			_log.info("no scheme: " + url);
+    			return null;
+    		}
+    			
+    		
+        	if (!(url.getScheme().equalsIgnoreCase("http")|| url.getScheme().equalsIgnoreCase("https"))) {
+        		_log.info("scheme not http(s) " + url);
+        		return null;
+        	}
+    		
     		String host = url.getHost().toLowerCase();
     		if (host == null) {
         		_log.fine("no host for " + url);
