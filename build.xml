@@ -4,7 +4,7 @@
 <project name="nxparser" default="dist" basedir=".">
 	<!-- variables -->
 	<property name="app.name" value="nxparser" />
-	<property name="app.version" value="1.2.2" />
+	<property name="app.version" value="1.2.3" />
 	<property name="src.home" value="src" />
 	<property name="lib" value="lib" />
 
@@ -63,7 +63,7 @@
 	<target name="javac6" depends="prepare" description="Compile Java sources">
 		<!-- Compile Java classes as necessary -->
 		<mkdir dir="${build.home}" />
-		<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6" debug="true" debuglevel="lines,source">-->
+		<javac srcdir="${src.home}" destdir="${build.home}" target="1.6" source="1.6" debug="true" debuglevel="lines,source">
 			<classpath refid="classpath" />
 		</javac>
 	</target>
@@ -119,6 +119,7 @@
 				<include name='org/semanticweb/yars/nx/parser/ParseException.*' />
 
 				<include name='org/semanticweb/yars/util/CallbackNxOutputStream.*' />
+				<include name='org/semanticweb/yars/util/CallbackNxBufferedWriter.*' />
 				
 			</fileset>
 		</jar>
