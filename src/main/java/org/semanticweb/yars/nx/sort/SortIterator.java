@@ -267,6 +267,22 @@ public class SortIterator implements Iterator<Node[]>{
 			initDefaults(nxlength);
 		}
 		
+		public SortArgs(Iterator<Node[]> in, short nxlength, int linesPerBatch) {
+			// to avoid the calculation of linesPerBatch
+			_in = in;
+			_nxlength = nxlength;
+			_linesPerBatch = linesPerBatch;
+	
+			// from initDefaults(int):
+			_nc = NodeComparator.NC;
+
+			_tmpDir = Main.getTempSubDir();
+			
+			_ticks = 0;
+
+			_fw = DEFAULT_FW;
+		}
+		
 		private void initDefaults(int nxlength){
 			_nc = NodeComparator.NC;
 

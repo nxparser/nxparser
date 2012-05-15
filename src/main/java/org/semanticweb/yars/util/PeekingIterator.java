@@ -18,17 +18,20 @@ public class PeekingIterator<T> implements Iterator<T> {
 	Iterator<T> _it;
 	
 	Status _stat;
-	
+
 	private enum Status {
 		VIRGINAL, RUNNING, ITERATOR_FINISHED, FINISHED
 	}
-	
+
+	public PeekingIterator(Iterable<T> iterable) {
+		this(iterable.iterator());
+	}
+
 	public PeekingIterator(Iterator<T> it) {
 		_it = it;
 		_stat = Status.VIRGINAL;
 		_next = null;
 	}
-	
 
 	public boolean hasNext() {
 		switch (_stat) {
