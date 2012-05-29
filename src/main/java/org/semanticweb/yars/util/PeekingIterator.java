@@ -116,6 +116,7 @@ public class PeekingIterator<T> implements Iterator<T> {
 	}
 
 	public static void main(String[] args) {
+		
 		List<Integer> l = new LinkedList<Integer>();
 
 		// for (int i = 0; i < 10; ++i)
