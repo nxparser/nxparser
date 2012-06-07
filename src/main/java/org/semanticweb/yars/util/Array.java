@@ -17,7 +17,7 @@ public class Array<E extends Comparable<E>> implements Comparable<Array<E>> {
 		return _array;
 	}
 	
-	public boolean equals(Array<E> o){
+	public boolean equals(Array<?> o){
 		if(o==null)
 			return false;
 		if(o==this)
@@ -28,6 +28,13 @@ public class Array<E extends Comparable<E>> implements Comparable<Array<E>> {
 					return false;
 		
 		return true;
+	}
+	
+	public boolean equals(Object o){
+		if(o instanceof Array<?>){
+			return equals((Array<?>)o);
+		}
+		return false;
 	}
 
 	public int compareTo(Array<E> o) {
