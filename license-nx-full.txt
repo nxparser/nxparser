@@ -1,5 +1,9 @@
 Copyright (c) 2005-2010, Aidan Hogan, Andreas Harth, Juergen Umbrich
-All rights reserved.
+All rights reserved. 
+
+[Applies for NxParser "full" .jar binaries incorporating Apache 
+dependencies in the lib/ folder. The corresponding third-party licence 
+can be found at "MPL-1.1.txt"] 
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
