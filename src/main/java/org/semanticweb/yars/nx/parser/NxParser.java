@@ -1,7 +1,6 @@
 package org.semanticweb.yars.nx.parser;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,11 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
 
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
+import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.Unbound;
 import org.semanticweb.yars.nx.Variable;
@@ -150,14 +149,15 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		List<Node> nx = new LinkedList<Node>();
 
 		while (true) {
-			while (line.charAt(startIndex) == ' ') {
+			while (Character.isWhitespace(line.charAt(startIndex))) {
 				// skipping spaces
 				++startIndex;
 			}
 
 			if (line.charAt(startIndex) == '<') {
 				// resource.
-				endIndex = line.indexOf(' ', startIndex);
+				endIndex = line.indexOf("> ", startIndex)+1;
+				if(endIndex==0) throw new ParseException("Could not find closing '>' bracket for resource starting at char "+startIndex+" while parsing line "+line);
 				nx.add(new Resource(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == '_') {
 				// bnode.
@@ -492,4 +492,9 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	public static String unescape(String str, boolean clean) {
 		return NxUtil.unescape(str, clean);
 	}	
+	
+	public static void main(String[] args) throws ParseException{
+		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
+		System.err.println(Nodes.toN3(NxParser.parseNodes(line)));
+	}
 }
