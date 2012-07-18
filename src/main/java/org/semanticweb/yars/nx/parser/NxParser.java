@@ -158,6 +158,8 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		int startIndex = 0;
 		int endIndex = 0;
 		List<Node> nx = new LinkedList<Node>();
+		
+		if(line.isEmpty()) return new Node[0];
 
 		//instead of checking for individual IndexOutOfBoundExceptions,
 		//they are allowed to be thrown and caught in parseNodes()
@@ -530,4 +532,8 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	public static String unescape(String str, boolean clean) {
 		return NxUtil.unescape(str, clean);
 	}	
+	
+	public static void main(String[] args) throws ParseException{
+		System.err.println(Nodes.toN3(parseNodes("")));
+	}
 }

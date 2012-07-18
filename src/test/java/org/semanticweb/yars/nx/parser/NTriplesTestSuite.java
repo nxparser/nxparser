@@ -36,8 +36,7 @@ public class NTriplesTestSuite extends TestCase {
 			
 			String line = null;
 			while((line = br.readLine())!=null){
-				if(!line.trim().isEmpty())
-					data.add(new String[]{line});
+				data.add(new String[]{line});
 			}
 			br.close();
 		} catch (IOException e) {
