@@ -51,9 +51,7 @@ public class NTriplesTestSuite extends TestCase {
 		try{
 			NxParser.parseNodes(this.line);
 		} catch(Exception e){
-			if(!this.line.trim().startsWith("#")){
-				fail("Could not parse '"+line+"'");
-			}
+			fail("Could not parse '"+line+"'");
 		}
 	}
 }

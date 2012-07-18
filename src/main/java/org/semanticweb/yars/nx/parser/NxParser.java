@@ -104,13 +104,16 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		
 		try {
 			next = parseNodesInternal(_line);
-			//iterate until we get a valid parsed Node[]
 		} catch (Exception e) {
 			_log.warning("Moving on to the next line, as I couldn't parse line "
 					+ _lineNo + ": " + _line);
 			e.printStackTrace();
+			//invalid: skip and try again
 			loadNext();
 		}
+		
+		if(next.length==0)//valid but empty: skip and try again
+			loadNext();
 	}
 	
 	private static boolean isEntirelyWhitespaceOrEmpty(String s){
@@ -138,10 +141,19 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		try {
 			return parseNodesInternal(line);
 		} catch (Exception e) {
-			throw new ParseException("Exception while parsing line: '" + line +"'");
+			throw new ParseException(e);
 		}
 	}
 
+	/**
+	 * Parses line and returns a Node[] contained within that line.
+	 * May return an empty Node[] if the line is valid N-Triples
+	 * but contains no nodes (e.g., a blank or comment line).
+	 * 
+	 * @param line
+	 * @return
+	 * @throws ParseException
+	 */
 	private static Node[] parseNodesInternal(final String line) throws ParseException {
 		int startIndex = 0;
 		int endIndex = 0;
@@ -155,6 +167,14 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				// skipping spaces
 				++startIndex;
 				++endIndex;
+				
+				if(startIndex==line.length()){
+					if(nx.isEmpty()){
+						return new Node[0];
+					} else{
+						throw new ParseException("Could not find closing '.' bracket for line "+line);
+					}
+				}
 			}
 
 			if (line.charAt(startIndex) == '<') {
@@ -168,6 +188,14 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				nx.add(new BNode(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == '.') {
 				// statement's end.
+				if(nx.isEmpty()){
+					throw new ParseException("Exception at position " + startIndex+ " while parsing: '" + line +"'");
+				}
+				for(int i=startIndex+1; i<line.length(); i++){
+					if(!Character.isWhitespace(line.charAt(i))){
+						throw new ParseException("Exception at position " + i + " while parsing: '" + line +"'");
+					}
+				}
 				break;
 			} else if (line.charAt(startIndex) == '"') {
 				// literal.
@@ -185,6 +213,9 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 					++endIndex;
 				}
 				nx.add(new Literal(line.substring(startIndex, endIndex), true));
+			} else if(line.charAt(startIndex) == '#' && nx.isEmpty()){
+				// comment line.
+				return new Node[0];
 			} else if (line.charAt(startIndex) == '?') {
 				// variable.
 				endIndex = line.indexOf(' ', startIndex);
@@ -499,12 +530,4 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	public static String unescape(String str, boolean clean) {
 		return NxUtil.unescape(str, clean);
 	}	
-	
-	public static void main(String[] args) throws ParseException{
-//		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
-		String line = "<s> <p> _:b .";
-//		String line = "    <s> <p> \"\" .";
-//		String line = "UNBOUND <p> <o> .";
-		System.err.println(Nodes.toN3(NxParser.parseNodes(line)));
-	}
 }
