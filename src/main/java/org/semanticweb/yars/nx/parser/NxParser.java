@@ -200,9 +200,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			} else{
 				throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
 			}
-			
-			if (startIndex < endIndex)
-				throw new ParseException("Exception at position " + endIndex +" while parsing: '" + line +"'");
+
 			startIndex = endIndex + 1;
 		}
 		return nx.toArray(new Node[nx.size()]);
@@ -499,7 +497,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	
 	public static void main(String[] args) throws ParseException{
 //		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
-		String line = "# comment goes here";
+		String line = "<s> <p> _:b .";
 //		String line = "    <s> <p> \"\" .";
 		System.err.println(Nodes.toN3(NxParser.parseNodes(line)));
 	}
