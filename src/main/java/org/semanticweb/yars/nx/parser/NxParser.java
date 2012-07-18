@@ -134,24 +134,26 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		return this;
 	}
 
-	public static Node[] parseNodes(String line) throws ParseException {
+	public static Node[] parseNodes(final String line) throws ParseException {
 		try {
 			return parseNodesInternal(line);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new ParseException("Exception while parsing " + line);
 		}
 	}
 
-	private static Node[] parseNodesInternal(String line) throws ParseException {
+	private static Node[] parseNodesInternal(final String line) throws ParseException {
 		int startIndex = 0;
 		int endIndex = 0;
 		List<Node> nx = new LinkedList<Node>();
 
+		//instead of checking for individual IndexOutOfBoundExceptions,
+		//they are allowed to be thrown and caught in parseNodes()
 		while (true) {
 			while (Character.isWhitespace(line.charAt(startIndex))) {
 				// skipping spaces
 				++startIndex;
+				++endIndex;
 			}
 
 			if (line.charAt(startIndex) == '<') {
@@ -194,11 +196,12 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 					nx.add(new Unbound());
 					endIndex = line.indexOf(' ', startIndex);
 				}
+			} else{
+				throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
 			}
 			
-			if (startIndex == (endIndex + 1))
-				throw new ParseException("Exception at position " + endIndex
-						+ " while parsing " + line);
+			if (startIndex < endIndex)
+				throw new ParseException("Exception at position " + endIndex +" while parsing: '" + line +"'");
 			startIndex = endIndex + 1;
 		}
 		return nx.toArray(new Node[nx.size()]);
@@ -494,7 +497,9 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	}	
 	
 	public static void main(String[] args) throws ParseException{
-		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
+//		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
+//		String line = "# comment goes here";
+		String line = "    <s> <p> \"\" .";
 		System.err.println(Nodes.toN3(NxParser.parseNodes(line)));
 	}
 }
