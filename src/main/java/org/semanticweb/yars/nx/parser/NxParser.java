@@ -138,7 +138,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 		try {
 			return parseNodesInternal(line);
 		} catch (Exception e) {
-			throw new ParseException("Exception while parsing " + line);
+			throw new ParseException("Exception while parsing line: '" + line +"'");
 		}
 	}
 
@@ -149,6 +149,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 
 		//instead of checking for individual IndexOutOfBoundExceptions,
 		//they are allowed to be thrown and caught in parseNodes()
+		
 		while (true) {
 			while (Character.isWhitespace(line.charAt(startIndex))) {
 				// skipping spaces
@@ -498,8 +499,8 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	
 	public static void main(String[] args) throws ParseException{
 //		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
-//		String line = "# comment goes here";
-		String line = "    <s> <p> \"\" .";
+		String line = "# comment goes here";
+//		String line = "    <s> <p> \"\" .";
 		System.err.println(Nodes.toN3(NxParser.parseNodes(line)));
 	}
 }
