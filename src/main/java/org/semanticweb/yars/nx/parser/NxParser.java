@@ -195,7 +195,12 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 						startIndex + Unbound.TO_STRING.length()).equals(
 						Unbound.TO_STRING)) {
 					nx.add(new Unbound());
-					endIndex = line.indexOf(' ', startIndex);
+					endIndex = startIndex + Unbound.TO_STRING.length();
+					if(endIndex >= line.length() || line.charAt(endIndex)!=' '){
+						throw new ParseException("Exception at position " + startIndex+ " while parsing: '" + line +"'");
+					}
+				} else{
+					throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
 				}
 			} else{
 				throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
@@ -499,6 +504,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 //		String line = "<http://sub  ject/> \"predicate\" \"object\" .";
 		String line = "<s> <p> _:b .";
 //		String line = "    <s> <p> \"\" .";
+//		String line = "UNBOUND <p> <o> .";
 		System.err.println(Nodes.toN3(NxParser.parseNodes(line)));
 	}
 }
