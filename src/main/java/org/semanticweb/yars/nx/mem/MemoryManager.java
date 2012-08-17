@@ -4,8 +4,10 @@ public class MemoryManager {
 	/**
 	 * very conservative value for number of nodes that can
 	 * fit in memory
+	 * 
+	 * EDIT: reduced from 1024 to 800 due to swapping issues
 	 */
-	public static final int NODES_PER_MB_IN_MEM = 1024;
+	public static final int NODES_PER_MB_IN_MEM = 800;
 	
 	/**
 	 * estimate total heap space
