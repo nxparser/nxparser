@@ -398,10 +398,7 @@ public class RDFXMLParser implements Iterator<Node[]> {
 //	     System.out.println(norm2);
 //	     // prints "http://blah.org/A_%2528Secret%2529.xml"
 		
-//	     http://en.wikipedia.org/wiki/Edge%C3%B8ya
-	    	 
-//		String baseUri = "http://dbpedia.org/resource/Edgeøya";
-//		String baseUri = "http://dbpedia.org/data/Edgeøya.xml";
+
 		String baseUri = "http://sw.deri.org/~aidanh/foaf/foaf.rdf";
 		URL	u = new URL(baseUri);
 		HttpURLConnection uc = (HttpURLConnection) u.openConnection();
