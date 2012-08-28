@@ -139,7 +139,7 @@ public class Sort {
 		String tmp = null;
 		if(cmd.hasOption("tmp")){
 			tmp = cmd.getOptionValue("tmp");
-			if(!tmp.endsWith("/")&&!tmp.endsWith("\\")){
+			if(!tmp.endsWith("/") && !tmp.endsWith("\\")){
 				tmp = tmp+"/";
 			}
 			File f = new File(tmp);
@@ -153,8 +153,7 @@ public class Sort {
 		SortArgs sa = new SortArgs(sit, sit.nxLength());
 		sa.setTicks(ticks);
 		sa.setComparator(nc);
-		sa.setTmpDir(tmp);
-		
+		if(tmp!=null) sa.setTmpDir(tmp);
 		
 		
 		if(cmd.hasOption("b"))
