@@ -127,9 +127,11 @@ public class RDFXMLParser implements Iterator<Node[]> {
 	/**
 	 * Constructor given Callback. 
 	 * Interaction outside of iterator model but analagous to NxParser :(.
+	 * Produces quadruples using the provided context.
 	 * 
 	 */
 	public RDFXMLParser(InputStream in, boolean strict, boolean skolemise, String baseURI, Callback c, Resource con) throws ParseException, IOException {
+		_con = con;
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(true);
 		factory.setValidating(strict);
