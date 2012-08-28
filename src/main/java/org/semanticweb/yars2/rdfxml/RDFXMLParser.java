@@ -1,9 +1,11 @@
 package org.semanticweb.yars2.rdfxml;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
@@ -17,10 +19,13 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.semanticweb.yars.nx.Node;
+import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.ParseException;
+import org.semanticweb.yars.nx.util.NxUtil;
 import org.semanticweb.yars.util.CallbackBlockingQueue;
+import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 import org.xml.sax.SAXException;
 
 /**
@@ -372,25 +377,44 @@ public class RDFXMLParser implements Iterator<Node[]> {
 //			System.err.println(line);
 //		}
 		
-		 URI u = new URI("http://blah.org/A_%28Secret%29.xml#blah");
-	     System.out.println(u);
-	     // prints "http://blah.org/A_%28Secret%29.xml#blah"
-
-	     String path1 = u.getPath();      //gives "A_(Secret).xml"
-	     String path2 = u.getRawPath();   //gives "A_%28Secret%29.xml"
-
-	     URI norm1 = new URI(u.getScheme().toLowerCase(),
-					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
-					path1, u.getQuery(), null);
-	     System.out.println(norm1.toASCIIString());
-	     // prints "http://blah.org/A_(Secret).xml"
-
-	     URI norm2 = new URI(u.getScheme().toLowerCase(),
-					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
-					path2, u.getQuery(), null);
-	     System.out.println(norm2);
-	     // prints "http://blah.org/A_%2528Secret%2529.xml"
+//		 URI u = new URI("http://blah.org/A_%28Secret%29.xml#blah");
+//	     System.out.println(u);
+//	     // prints "http://blah.org/A_%28Secret%29.xml#blah"
+//
+//	     String path1 = u.getPath();      //gives "A_(Secret).xml"
+//	     String path2 = u.getRawPath();   //gives "A_%28Secret%29.xml"
+//
+//	     URI norm1 = new URI(u.getScheme().toLowerCase(),
+//					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
+//					path1, u.getQuery(), null);
+//	     System.out.println(norm1.toASCIIString());
+//	     // prints "http://blah.org/A_(Secret).xml"
+//
+//	     URI norm2 = new URI(u.getScheme().toLowerCase(),
+//					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
+//					path2, u.getQuery(), null);
+//	     System.out.println(norm2);
+//	     // prints "http://blah.org/A_%2528Secret%2529.xml"
 		
+//	     http://en.wikipedia.org/wiki/Edge%C3%B8ya
+	    	 
+//		String baseUri = "http://dbpedia.org/resource/Edgeøya";
+		String baseUri = "http://dbpedia.org/data/Edgeøya.xml";
+//		String baseUri = "http://sw.deri.org/~aidanh/foaf/foaf.rdf";
+		URL	u = new URL(baseUri);
+		HttpURLConnection uc = (HttpURLConnection) u.openConnection();
+//		uc.setInstanceFollowRedirects(true);
+		
+//		
+
+		System.err.println("opening parser");
+		CallbackNxBufferedWriter cb = new CallbackNxBufferedWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+		RDFXMLParser rxp = new RDFXMLParser(uc.getInputStream(), false, false, baseUri, cb, new Resource(NxUtil.escapeForNx(baseUri)));
+
+		System.err.println("reading data");
+		while(rxp.hasNext()){
+			System.err.println(Nodes.toN3(rxp.next()));
+		}
 //		
 //		u = new URL("http://dbpedia.org/resource/Thriller_%28album%29");
 		

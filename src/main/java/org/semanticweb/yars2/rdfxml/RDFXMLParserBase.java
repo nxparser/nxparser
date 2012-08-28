@@ -19,8 +19,8 @@ import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.namespace.RDF;
 import org.semanticweb.yars.nx.parser.Callback;
-import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.parser.ParseException;
+import org.semanticweb.yars.nx.util.NxUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -48,21 +48,21 @@ public class RDFXMLParserBase extends DefaultHandler {
 	private static enum State implements Comparable<State> {
 		START, OR, CR_OP, T_CP_OR, CP, T_CP, PTC_OR_CP, PTL_XML, PTR_OP_CP;
 
-		public boolean expectCloseProperty(){
-			if(this.equals(T_CP_OR) || 
-					this.equals(CP) || this.equals(T_CP) ||
-					this.equals(PTC_OR_CP) || this.equals(PTL_XML)){
-				return true;
-			}
-			return false;
-		}
-
-		public boolean expectCloseResource(){
-			if(this.equals(CR_OP) || this.equals(PTL_XML)){
-				return true;	
-			}
-			return false;
-		}
+//		public boolean expectCloseProperty(){
+//			if(this.equals(T_CP_OR) || 
+//					this.equals(CP) || this.equals(T_CP) ||
+//					this.equals(PTC_OR_CP) || this.equals(PTL_XML)){
+//				return true;
+//			}
+//			return false;
+//		}
+//
+//		public boolean expectCloseResource(){
+//			if(this.equals(CR_OP) || this.equals(PTL_XML)){
+//				return true;	
+//			}
+//			return false;
+//		}
 
 		public boolean expectText(){
 			if(this.equals(T_CP_OR) || this.equals(T_CP) || this.equals(PTL_XML)){
@@ -274,16 +274,16 @@ public class RDFXMLParserBase extends DefaultHandler {
 				uri = RDF.RDF;
 			}else if(RDF_SUBJ_NODE_NAMES_TS.contains(lname) && _state.expectOpenResource()){
 				warning("Unqualified use of RDF name '"+lname+"' is deprecated.");
-				uri = new Resource(RDF.NS+lname);
+				uri = createResource(RDF.NS+lname);
 			}else if(RDF_PROP_NODE_NAMES_TS.contains(lname) && _state.expectOpenProperty()){
 				warning("Unqualified use of RDF name '"+lname+"' is deprecated.");
-				uri = new Resource(RDF.NS+lname);
+				uri = createResource(RDF.NS+lname);
 			}else{
 				error("Unqualified attribute name '"+lname+"' found.");
-				uri = new Resource(resolveFullURI(lname, false));
+				uri = createResource(resolveFullURI(lname, false));
 			}
 		}else{
-			uri = new Resource(name+lname);
+			uri = createResource(name+lname);
 		}
 
 		nodeIsAllowed(qname, uri);
@@ -451,26 +451,26 @@ public class RDFXMLParserBase extends DefaultHandler {
 		if(name==null || name.equals("")){
 			if(RDF_SUBJ_ATTR_NAMES_TS.contains(lname)){
 				warning("Unqualified use of RDF name '"+lname+"' is deprecated.");
-				p = new Resource(RDF.NS+lname);
+				p = createResource(RDF.NS+lname);
 			}else{
 				error("Unqualified attribute name '"+lname+"' found.");
-				p = new Resource(resolveFullURI(lname, false));
+				p = createResource(resolveFullURI(lname, false));
 			}
 		}else{
-			p = new Resource(name+lname);
+			p = createResource(name+lname);
 		}
 
 		if(p.equals(RDF.ABOUT)){
 			if(_currentS!=null){
 				fatalError("rdf:about used for resource already identified as '"+_currentS+"'.");
 			}
-			_currentS = new Resource(resolveFullURI(o, false));
+			_currentS = createResource(resolveFullURI(o, false));
 			return null;
 		} else if(p.equals(RDF.ID)){
 			if(_currentS!=null){
 				fatalError("rdf:ID used for resource already identified as '"+_currentS+"'.");
 			}
-			_currentS = new Resource(resolveFullURI(o, true));
+			_currentS = createResource(resolveFullURI(o, true));
 			return null;
 		} else if(p.equals(RDF.NODEID)){
 			if(_currentS!=null){
@@ -479,7 +479,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 			_currentS = generateBNode(o);
 			return null;
 		} else if(p.equals(RDF.TYPE)){
-			return new Node[]{RDF.TYPE, new Resource(o)};
+			return new Node[]{RDF.TYPE, createResource(o)};
 		} else if(qname.equals("xml:base")){
 			return null; //handled already by checkAndHandleBaseURI()
 		} else if(qname.equals("xml:lang")){
@@ -556,12 +556,12 @@ public class RDFXMLParserBase extends DefaultHandler {
 	private Literal createLiteral(final String s){
 		Literal l;
 		if(_datatype!=null){
-			l = new Literal(NxParser.escapeForNx(s), _datatype);
+			l = new Literal(NxUtil.escapeForNx(s), _datatype);
 			_datatype = null;
 		} else if(_currentLang!=null){
-			l = new Literal(NxParser.escapeForNx(s), _currentLang);
+			l = new Literal(NxUtil.escapeForNx(s), _currentLang);
 		}  else{
-			l = new Literal(NxParser.escapeForNx(s));
+			l = new Literal(NxUtil.escapeForNx(s));
 		}
 		return l;
 	}
@@ -572,7 +572,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 		if(_currentP.equals(RDF.LI)){
 			_currentLi++;
 			_li.put(_depth, _currentLi);
-			_currentP = new Resource(RDF.NS+"_"+_currentLi);
+			_currentP = createResource(RDF.NS+"_"+_currentLi);
 		}
 
 		_depth++;
@@ -661,13 +661,13 @@ public class RDFXMLParserBase extends DefaultHandler {
 		if(name==null || name.equals("")){
 			if(RDF_PROP_ATTR_NAMES_TS.contains(lname)){
 				warning("Unqualified use of RDF name "+lname+" is deprecated.");
-				p = new Resource(RDF.NS+lname);
+				p = createResource(RDF.NS+lname);
 			}else{
 				error("Unqualified attribute name "+lname+" found.");
-				p = new Resource(resolveFullURI(lname, false));
+				p = createResource(resolveFullURI(lname, false));
 			}
 		}else{
-			p = new Resource(name+lname);
+			p = createResource(name+lname);
 		}
 
 		if(p.equals(RDF.RESOURCE)){
@@ -683,7 +683,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 				fatalError("Cannot have both rdf:parseType='Resource' and rdf:resource attached as attributes to a property.");
 			}
 
-			Resource id = new Resource(resolveFullURI(o, false));
+			Resource id = createResource(resolveFullURI(o, false));
 			handleStatement(_currentS, _currentP, id);
 			if(_currentPRD==null){
 				_currentPRD = new ResourceDescription(id);
@@ -726,7 +726,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 			if(_currentPRD==null){
 				_currentPRD = new ResourceDescription();
 			}
-			_currentPRD.addEdge(RDF.TYPE, new Resource(o));
+			_currentPRD.addEdge(RDF.TYPE, createResource(o));
 			_state = State.CP;
 		} else if(qname.equals(XML_BASE)){
 			;//handled already by checkAndHandleBaseURI()
@@ -750,7 +750,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 			} else if(_state.equals(State.PTR_OP_CP)){
 				fatalError("Cannot have both rdf:datatype and rdf:parseType='Resource' attached as attributes to a property.");
 			}
-			_datatype = new Resource(resolveFullURI(o, false));
+			_datatype = createResource(resolveFullURI(o, false));
 			_state = State.T_CP; //will be incremented outside of call to 5 :(
 		} else if(p.equals(RDF.PARSETYPE)){
 			if(o.equals("Collection")){
@@ -795,7 +795,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 				_state=State.PTR_OP_CP; //will be incremented outside of call to 8 :(
 			}
 		} else if(p.equals(RDF.ID)){
-			_currentReify = new Resource(resolveFullURI(o, true));  
+			_currentReify = createResource(resolveFullURI(o, true));  
 		} else{
 			if(_state.equals(State.T_CP)){
 				fatalError("Cannot have both rdf:datatype and "+qname+" attached as attributes to a property.");
@@ -816,7 +816,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 	}
 
 	public void endElement (String name, String lname, String qname) throws SAXException{
-		Resource rq = new Resource(name+lname);
+		Resource rq = createResource(name+lname);
 
 		URI base = _sbq.decrementScope();
 		if(base!=null){
@@ -1112,7 +1112,11 @@ public class RDFXMLParserBase extends DefaultHandler {
 			return "Line "+_loc.getLineNumber()+" column "+_loc.getColumnNumber()+".";
 		return "";
 	}
-
+	
+	public static Resource createResource(String raw){
+		return new Resource(NxUtil.escapeForNx(raw));
+	}
+	
 	private void handleStatement(final Node... triple){
 		processStatement(triple);
 		if(_currentReify!=null){
