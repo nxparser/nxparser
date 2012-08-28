@@ -190,7 +190,7 @@ public class Main {
 			_log.info("Ticks set to "+t);
 			return t;
 		}
-		return 0;
+		return TICKS;
 	}
 	
 	public static OutputStream getOutputStream(CommandLine cl, String outputPrefix) throws IOException{
