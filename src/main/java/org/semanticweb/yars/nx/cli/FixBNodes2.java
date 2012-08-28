@@ -78,9 +78,9 @@ public class FixBNodes2 {
 						_log.info("Fixing bnode "+nxs+" to "+nx[i].toN3()+" in doc "+nx[3]);
 					} else {
 						nx[i] = new Resource(NxUtil.escapeForNx(nx[i].toString()));
-						if(!nxs.equals(nx[i].toN3())){
-							_log.info("Fixing resource "+nxs+" to "+nx[i].toN3()+" in doc "+nx[3]);
-						}
+//						if(!nxs.equals(nx[i].toN3())){
+////							_log.info("Fixing resource "+nxs+" to "+nx[i].toN3()+" in doc "+nx[3]);
+//						}
 					}
 				}
 			}
