@@ -1,20 +1,17 @@
 package org.semanticweb.yars.nx.cli;
 
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.net.URISyntaxException;
+import java.util.logging.Logger;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.semanticweb.yars.nx.BNode;
@@ -25,8 +22,6 @@ import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.util.NxUtil;
 import org.semanticweb.yars.util.CallbackNxBufferedWriter;
 
-import com.sun.istack.internal.logging.Logger;
-
 /**
  * Code for patching original BTC 12 data after any23 mix-up in bnode handling
  * @author aidhog
@@ -34,7 +29,7 @@ import com.sun.istack.internal.logging.Logger;
  */
 
 public class FixBNodes2 {
-	static Logger _log = Logger.getLogger(FixBNodes2.class);
+	static Logger _log = Logger.getLogger(FixBNodes2.class.getName());
 	
 	public static void main (String[] args) throws URISyntaxException, IOException{
 		Options	options = Main.getStandardOptions();
