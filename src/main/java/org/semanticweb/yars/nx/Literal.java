@@ -7,9 +7,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.semanticweb.yars.nx.dt.Datatype;
-import org.semanticweb.yars.nx.dt.DatatypeFactory;
-import org.semanticweb.yars.nx.dt.DatatypeParseException;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
@@ -124,8 +121,6 @@ public class Literal implements Node, Serializable {
 				_dt = dt;
 		} else
 			_wholeString = data;
-		
-		
 	}
 
 	public Literal(String data, boolean isN3) {
