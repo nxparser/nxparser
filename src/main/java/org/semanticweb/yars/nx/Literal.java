@@ -47,7 +47,7 @@ public class Literal implements Node, Serializable {
 	public static final Resource DATETIME = new Resource(XSD + "dateTime");
 
 	private static final Pattern PATTERN = Pattern
-			.compile("(?:\"(.*)\")(?:@([a-z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?");
+	        .compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?"); 
 
 	// version number for serialization
 	private static final long serialVersionUID = 8911891129019471564L;
