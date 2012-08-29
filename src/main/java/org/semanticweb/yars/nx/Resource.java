@@ -77,7 +77,7 @@ public class Resource implements Node, Serializable {
 			if (uri.length() == 0 || uri == null) {
 				_log.severe("The supplied String for creating a resource was "
 						+ (uri == null ? "the null pointer"
-								: "the empty string, which MUST NOT be the case in N3"));
+								: "the empty string, which MUST NOT be the case in Nx."));
 				if (uri == null)
 					_data = null;
 				else
