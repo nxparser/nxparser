@@ -70,7 +70,8 @@ public class Literal implements Node, Serializable {
 	 * @param data
 	 *            the escaped string representation of the (simple) literal
 	 * @param lang
-	 *            the language tag for the literal
+	 *            the language tag for the literal. Nx spec demands it to be
+	 *            lowercase.
 	 */
 	public Literal(String data, String lang) {
 		this(data, lang, null);
@@ -94,7 +95,8 @@ public class Literal implements Node, Serializable {
 	 * @param data
 	 *            the escaped string representation of the (simple) literal
 	 * @param lang
-	 *            the language tag for the literal
+	 *            the language tag for the literal. Nx spec demands it to be
+	 *            lowercase.
 	 * @param dt
 	 *            the datatype Resource of the Literal
 	 */
@@ -111,11 +113,11 @@ public class Literal implements Node, Serializable {
 						+ ") had no surrounding quotes. Adding some and proceeding...");
 				data = '\"' + data + '\"';
 			}
-			if (lang != null && dt != null)
+			if ((lang != null && !"".equals(lang)) && dt != null)
 				throw new IllegalArgumentException(
 						"In Nx, only one of language and datatype can be given.");
 			_wholeString = data
-					+ (lang == null ? (dt == null) ? "" : ("^^" + dt.toN3())
+					+ ((lang == null || "".equals(lang)) ? (dt == null) ? "" : ("^^" + dt.toN3())
 							: ("@" + lang));
 			if (dt != null)
 				_dt = dt;
