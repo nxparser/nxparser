@@ -399,7 +399,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 		//should probably check string here to see whether it is a valid language string
 		if(lang.isEmpty())
 			_currentLang = null;
-		else _currentLang = lang;
+		else _currentLang = lang.toLowerCase();
 	}
 
 	private void initialiseBaseURI(String base) throws SAXException{
@@ -919,7 +919,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 			if(lang.equals(""))
 				_currentLang = null;
 			else
-				_currentLang = lang;
+				_currentLang = lang.toLowerCase();
 		}
 	}
 
