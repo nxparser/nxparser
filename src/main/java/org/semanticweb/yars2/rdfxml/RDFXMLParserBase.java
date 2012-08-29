@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -399,7 +400,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 		//should probably check string here to see whether it is a valid language string
 		if(lang.isEmpty())
 			_currentLang = null;
-		else _currentLang = lang.toLowerCase();
+		else _currentLang = lang.toLowerCase(Locale.ENGLISH);
 	}
 
 	private void initialiseBaseURI(String base) throws SAXException{
