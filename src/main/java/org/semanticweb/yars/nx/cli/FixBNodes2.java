@@ -74,7 +74,7 @@ public class FixBNodes2 {
 				if (nx[i] instanceof Resource) {
 					String nxs = nx[i].toN3();					
 					if (nxs.startsWith("<node") && !nxs.contains(":") && nxs.length()>6) {
-						nx[i] = BNode.createBNode(nx[3].toString(), nx[i].toN3().substring(5,nxs.length()-1));
+						nx[i] = BNode.createBNode(nx[3].toString(), nx[i].toN3().substring(1,nxs.length()-1));
 						_log.info("Fixing bnode "+nxs+" to "+nx[i].toN3()+" in doc "+nx[3]);
 					} else {
 						nx[i] = new Resource(NxUtil.escapeForNx(nx[i].toString()));
