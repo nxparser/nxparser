@@ -135,7 +135,7 @@ public class BNode implements Serializable, Node {
     public static BNode createBNode(String docURI, String localID){
 		String escapedDU = escapeForBNode(docURI);
 		String escapedLI = escapeForBNode(localID);
-		return new BNode(escapedLI+"xx"+escapedDU);
+		return new BNode(escapedDU+"xx"+escapedLI);
     }
     
     public static BNode createBNode(String unescaped){
