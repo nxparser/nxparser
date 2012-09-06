@@ -178,7 +178,7 @@ public class TldManager {
     			return parts[1] + "." + parts[2] + "." + parts[3];
     		}
     	} catch(Exception e) {
-    		_log.info("error: " + e.getMessage() + " " + url);
+//    		_log.info("error: " + e.getMessage() + " " + url);
     		e.printStackTrace();
     	}
 
