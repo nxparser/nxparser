@@ -22,7 +22,7 @@ public class TicksIterator implements Iterator<Node[]>{
 	final int _ticks;
 	final String _message;
 	
-	int _count = 0;
+	long _count = 0;
 	
 	public TicksIterator(Iterator<Node[]> in, int ticks){
 		this(in, ticks, DEFAULT_LOG, DEFAULT_LEVEL, DEFAULT_MESSAGE);
@@ -75,7 +75,7 @@ public class TicksIterator implements Iterator<Node[]>{
 		return _in.hasNext();
 	}
 	
-	public int count(){
+	public long count(){
 		return _count;
 	}
 

@@ -12,7 +12,7 @@ public class ReorderIterator implements Iterator<Node[]>{
 	private final int[] _order;
 	private final int _ticks;
 	
-	private int _count;
+	private long _count;
 	
 	public ReorderIterator(Iterator<Node[]> in, int[] order){
 		this(in, order, 0);
@@ -40,7 +40,7 @@ public class ReorderIterator implements Iterator<Node[]>{
 		_in.remove();
 	}
 	
-	public int count(){
+	public long count(){
 		return _count;
 	}
 	

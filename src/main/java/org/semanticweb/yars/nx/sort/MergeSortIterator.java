@@ -14,8 +14,8 @@ public class MergeSortIterator implements Iterator<Node[]> {
 	private MergeSortArgs _args;
 	private PriorityQueue<NodeArrayStreamPair> _q;
 	private Node[] _current = null;
-	private int _count = 0;
-	private int _dupes;
+	private long _count = 0;
+	private long _dupes;
 	
 	private NodeArrayStreamPair[] _last;
 	
@@ -101,7 +101,7 @@ public class MergeSortIterator implements Iterator<Node[]> {
 		_last[stream] = last;
 	}
 	
-	public int duplicates(){
+	public long duplicates(){
 		return _dupes;
 	}
 	
@@ -165,7 +165,7 @@ public class MergeSortIterator implements Iterator<Node[]> {
 		}
 	}
 	
-	public int count(){
+	public long count(){
 		return _count;
 	}
 	
@@ -174,7 +174,7 @@ public class MergeSortIterator implements Iterator<Node[]> {
 		
 		private Comparator<Node[]> _nc = NodeComparator.NC;
 		private int _linesPerBatch = 1;
-		private int _dupes;
+		private long _dupes;
 		
 		private int _ticks = 0;
 		
@@ -206,7 +206,7 @@ public class MergeSortIterator implements Iterator<Node[]> {
 				_linesPerBatch = linesPerBatch;
 		}
 		
-		public void setDuplicates(int duplicates){
+		public void setDuplicates(long duplicates){
 			_dupes = duplicates;
 		}
 		

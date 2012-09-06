@@ -43,8 +43,8 @@ public class SortIterator implements Iterator<Node[]>{
 	private MergeSortIterator _merge = null;
 	private Iterator<Node[]> _single = null;
 	
-	private int _dupes;
-	private int _count = 0;
+	private long _dupes;
+	private long _count = 0;
 	
 	public SortIterator(Iterator<Node[]> in) throws IOException, ParseException{
 		this(new SortArgs(in));
@@ -66,9 +66,9 @@ public class SortIterator implements Iterator<Node[]>{
 	 * @throws ParseException
 	 */
 	private void sort(SortArgs args) throws IOException, ParseException {
-		int count=0;
+		long count=0;
 		int i = 0;
-		int dupes = 0;
+		long dupes = 0;
 		
 		LowMemorySniffer lms = null;
 		if(args._linesPerBatch==SortArgs.ADAPTIVE_BATCHES){
@@ -193,7 +193,7 @@ public class SortIterator implements Iterator<Node[]>{
 		}
 	}
 	
-	public int duplicates(){
+	public long duplicates(){
 		if(_merge==null && _single==null)
 			return 0;
 		else if(_merge!=null)
@@ -202,7 +202,7 @@ public class SortIterator implements Iterator<Node[]>{
 			return _dupes;
 	}
 	
-	public int count(){
+	public long count(){
 		return _count;
 	}
 
