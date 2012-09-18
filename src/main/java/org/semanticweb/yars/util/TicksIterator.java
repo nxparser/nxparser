@@ -80,11 +80,15 @@ public class TicksIterator implements Iterator<Node[]>{
 	}
 
 	public Node[] next() {
+		Node[] next = _in.next();
 		_count++;
-		if(_ticks>0 && _count%_ticks==0){
+		
+		
+		if((_ticks>0 && _count%_ticks==0) || !hasNext()){
 			_log.log(_l, _message+" "+_count);
 		}
-		return _in.next();
+		
+		return next;
 	}
 
 	public void remove() {
