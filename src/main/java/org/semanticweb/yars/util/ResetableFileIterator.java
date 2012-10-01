@@ -11,7 +11,8 @@ import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.parser.NxParser;
 
 public class ResetableFileIterator implements ResetableIterator<Node[]>{
-	Iterator<Node[]> iter = null;
+	protected Iterator<Node[]> iter = null;
+	
 	InputStream is = null;
 	String in = null;
 	boolean gz = false;
