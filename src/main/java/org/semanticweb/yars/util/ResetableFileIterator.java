@@ -29,7 +29,7 @@ public class ResetableFileIterator implements ResetableIterator<Node[]>{
 		reset();
 	}
 
-	private void resetFile() throws IOException {
+	protected void resetFile() throws IOException {
 		InputStream is = new FileInputStream(in);
 		if(gz)
 			is = new GZIPInputStream(is);
