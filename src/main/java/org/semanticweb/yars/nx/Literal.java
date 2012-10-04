@@ -131,10 +131,11 @@ public class Literal implements Node, Serializable {
 
 	/**
 	 * Get escaped data. For compatibility's sake, this returns the text of the
-	 * literal (w/o surrounding quotes).
+	 * literal (w/o surrounding quotes). (This method will now avoid writing 
+	 * a null.)
 	 * 
-	 * @return a) the text of the literal, b) null pointer if there is something
-	 *         wrong with the literal backing string.
+	 * @return a) the text of the literal, b) the full N3 form of the literal if
+	 * there is a problem.
 	 */
 	public String getData() {
 		if (_data == null) {
