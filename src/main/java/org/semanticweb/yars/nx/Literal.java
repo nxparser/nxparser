@@ -141,9 +141,16 @@ public class Literal implements Node, Serializable {
 			Matcher m  = PATTERN.matcher(_wholeString);
 			if (m.matches())
 				_data = m.group(1);
-			else
+			else{
 				_log.warning("Something wrong with the literal-backing string. The parsing regex pattern didn't match. Check the string for correct N3 syntax. The malicious string is: "
 						+ _wholeString);
+				int lastIndex = _wholeString.lastIndexOf('"');
+				if(lastIndex>0){
+					return _wholeString.substring(1, lastIndex);
+				} else{
+					return _wholeString;
+				}
+			}
 		}
 		return _data;
 	}
