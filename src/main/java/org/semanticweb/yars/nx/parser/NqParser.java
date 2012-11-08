@@ -6,9 +6,7 @@
 package org.semanticweb.yars.nx.parser;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -229,17 +227,6 @@ public class NqParser implements Iterator<Node[]> {
 		//System.out.println(n.size());
 
 		return n.toArray(new Node[n.size()]);
-	}
-
-	private static Resource parseResource(String value, int fromIndex, int toIndex) throws ParseException {
-		if(toIndex<=-1){
-			throw new ParseException("Error parsing resource subject from triple:\n"+value+"\nExpected ending '> ' not found.\n");
-		}
-		String data = value.substring(fromIndex, toIndex);
-
-		//System.out.println(data);
-
-		return new Resource(data);
 	}
 
 	private static Variable parseVariable(String value, int fromIndex, int toIndex) throws ParseException {

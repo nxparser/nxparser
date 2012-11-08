@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author Andreas Harth
  */
-public interface Node extends Comparable, Serializable { 
+public interface Node extends Comparable<Object>, Serializable { 
     /**
      * N3 representation.
      */

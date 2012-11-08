@@ -49,7 +49,7 @@ public class NTriplesTestSuite extends TestCase {
 		try{
 			NxParser.parseNodes(this.line);
 		} catch(Exception e){
-			fail("Could not parse '"+line+"'");
+			fail("Could not parse '"+line+"'\n" + e.getMessage());
 		}
 	}
 }

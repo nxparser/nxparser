@@ -23,13 +23,15 @@ public class Literal implements Node, Serializable {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
 	// data in string representation
-	protected String _data = null;
+	protected String _data;
 	// language identifier
-	protected String _lang = null;
+	private String _lang;
 	// datatype uri
-	protected Resource _dt = null;
+	private Resource _dt;
 	// the whole string including @ or ^^ etc.
-	protected String _wholeString = null;
+	private final String _wholeString;
+	// has the _wholeString been parsed to set _data, _lang and _dt
+	private boolean parsed;
 
 	@Deprecated
 	public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
@@ -128,6 +130,21 @@ public class Literal implements Node, Serializable {
 	public Literal(String data, boolean isN3) {
 		this(data, null, null, isN3);
 	}
+	
+	private void parse() {
+		if (!parsed) {
+			parsed = true;
+			Matcher m  = PATTERN.matcher(_wholeString);
+			if (m.matches()) {
+				_data = m.group(1);
+				_lang = m.group(2);
+				if (m.group(3) != null)
+					_dt = new Resource(m.group(3), true);
+			} else
+				_log.warning("Something wrong with the literal-backing string. The parsing regex pattern didn't match. Check the string for correct N3 syntax. The malicious string is: "
+						+ _wholeString);
+		}
+	}
 
 	/**
 	 * Get escaped data. For compatibility's sake, this returns the text of the
@@ -138,20 +155,8 @@ public class Literal implements Node, Serializable {
 	 * there is a problem.
 	 */
 	public String getData() {
-		if (_data == null) {
-			Matcher m  = PATTERN.matcher(_wholeString);
-			if (m.matches())
-				_data = m.group(1);
-			else{
-				_log.warning("Something wrong with the literal-backing string. The parsing regex pattern didn't match. Check the string for correct N3 syntax. The malicious string is: "
-						+ _wholeString);
-				int lastIndex = _wholeString.lastIndexOf('"');
-				if(lastIndex>0){
-					return _wholeString.substring(1, lastIndex);
-				} else{
-					return _wholeString;
-				}
-			}
+		if (!parsed) {
+			parse();
 		}
 		return _data;
 	}
@@ -182,13 +187,8 @@ public class Literal implements Node, Serializable {
 	 *         wrong with the literal-backing string
 	 */
 	public String getLanguageTag() {
-		if (_lang == null) {
-			Matcher m  = PATTERN.matcher(_wholeString);
-			if (!m.matches())
-				_log.warning("The parsing regex pattern didn't match, so no language tag is returned. Check the Literal for proper N3 syntax. The malicious Literal was: "
-						+ _wholeString);
-			else
-				_lang = m.group(2);
+		if (!parsed) {
+			parse();
 		}
 		return _lang;
 	}
@@ -209,17 +209,8 @@ public class Literal implements Node, Serializable {
 	 *         with the literal-backing string
 	 */
 	public Resource getDatatype() {
-		if (_dt == null) {
-			Matcher m  = PATTERN.matcher(_wholeString);
-			if (m.matches()) {
-				if (m.group(3) == null)
-					return null;
-				_dt = new Resource(m.group(3), true);
-			} else {
-				_log.warning("Something wrong with the Resource. Its String: "
-						+ _wholeString
-						+ " didn't match the parsing regex pattern. Probably it's no proper N3.");
-			}
+		if (!parsed) {
+			parse();
 		}
 		return _dt;
 	}
@@ -239,7 +230,11 @@ public class Literal implements Node, Serializable {
 	 * 
 	 */
 	public String toString() {
-		return NxUtil.unescape(getData());
+		String data = getData();
+		if (data != null)
+			return NxUtil.unescape(getData());
+		else
+			return NxUtil.unescape(_wholeString);
 	}
 
 	/**

@@ -19,7 +19,7 @@ public class BooleanLiteral extends Literal {
 	}
 	
 	public boolean toBoolean(){
-		if(_data.equals("true")){
+		if(getData().equals("true")){
 			return true;
 		} else return false;
 	}

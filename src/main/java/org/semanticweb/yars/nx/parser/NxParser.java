@@ -182,6 +182,9 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			if (line.charAt(startIndex) == '<') {
 				// resource.
 				endIndex = line.indexOf("> ", startIndex)+1;
+				if (endIndex == 0) {
+					endIndex = line.indexOf(">.", startIndex);
+				}
 				if(endIndex==0) throw new ParseException("Could not find closing '>' bracket for resource starting at char "+startIndex+" while parsing line "+line);
 				nx.add(new Resource(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == '_') {
@@ -205,7 +208,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				// literal-delimiting ones:
 				endIndex = startIndex;
 				do {
-					endIndex = line.indexOf('\"', endIndex + 1);
+					endIndex = line.indexOf('"', endIndex + 1);
 				} while (line.charAt(endIndex - 1) == '\\'
 						&& (((endIndex - 1 - onlyCharUntil(line, '\\',
 								endIndex - 1)) % 2) == 0));
