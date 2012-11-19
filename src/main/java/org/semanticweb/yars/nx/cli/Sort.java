@@ -20,6 +20,7 @@ import org.semanticweb.yars.nx.NodeComparator;
 import org.semanticweb.yars.nx.NodeComparator.NodeComparatorArgs;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
+import org.semanticweb.yars.nx.reorder.ReorderIterator;
 import org.semanticweb.yars.nx.sort.SortIterator;
 import org.semanticweb.yars.nx.sort.SortIterator.SortArgs;
 import org.semanticweb.yars.util.CallbackNxBufferedWriter;
@@ -36,6 +37,11 @@ public class Sort {
 	 */
 	public static void main(String[] args) throws org.semanticweb.yars.nx.parser.ParseException, IOException {
 		Options	options = Main.getStandardOptions();
+		
+		Option reorderO = new Option("re", "reorder (prior to sort): e.g. 0123 for SPOC 3012 for CSPO");
+		reorderO.setArgs(1);
+		reorderO.setRequired(false);
+		options.addOption(reorderO);
 		
 		Option sortOrderO = new Option("so", "sort order: e.g. 0123 for SPOC 3012 for CSPO (written order preserved)");
 		sortOrderO.setArgs(1);
@@ -114,6 +120,11 @@ public class Sort {
 		int ticks = Main.getTicks(cmd);
 		
 		Iterator<Node[]> it = new NxParser(is);
+		
+		if(cmd.hasOption("re")){
+			int[] re_mask = Reorder.getMask(cmd.getOptionValue("re"));
+			it = new ReorderIterator(it, re_mask);
+		}
 		
 		
 		Callback cb = new CallbackNxBufferedWriter(bw);
