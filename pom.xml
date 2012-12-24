@@ -5,7 +5,7 @@
 
 	<groupId>org.semanticweb.yars</groupId>
 	<artifactId>nxparser</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<packaging>jar</packaging>
 	<name>NXParser</name>
 
@@ -57,6 +57,13 @@
 			<groupId>org.htmlparser</groupId>
 			<artifactId>htmlparser</artifactId>
 			<version>2.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
