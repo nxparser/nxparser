@@ -36,10 +36,10 @@ public class Variable implements Node,Serializable{
 	 */
 	public int compareTo(Object o) {
 		if(o instanceof Variable){
-			return _data.compareTo(o.toString());
+			return _data.compareTo(((Variable) o)._data);
 		}
 		else
-			return -1;
+			return Integer.MAX_VALUE;
 	}
 	
     /**
