@@ -238,14 +238,26 @@ public class NodeComparator implements Comparator<Node[]>, Serializable {
 			;
 		}
 		
+		/**
+		 * Comparator will compare arrays index-by-index, ignoring if one is longer than the other
+		 * @param varLength
+		 */
 		public void setVarLength(boolean varLength){
 			_varLength = varLength;
 		}
 		
+		/**
+		 * Comparator will never return zero to force allowing duplicate. *NOT RECOMMENDED*
+		 * @param nZero
+		 */
 		public void setNoZero(boolean nZero){
 			_nZero = nZero;
 		}
 		
+		/**
+		 * Comparator will never return equals. *NOT RECOMMENDED*
+		 * @param nEquals
+		 */
 		public void setNoEquals(boolean nEquals){
 			_nEquals = nEquals;
 		}
@@ -266,10 +278,18 @@ public class NodeComparator implements Comparator<Node[]>, Serializable {
 			_reverse = reverse;
 		}
 		
+		/**
+		 * What order should the comparison be made? For example, {0,2,1} for SOP order.
+		 * @param order
+		 */
 		public void setOrder(int[] order){
 			_order = order;
 		}
 		
+		/**
+		 * Only consider at most first n nodes for equals and compare
+		 * @param n
+		 */
 		public void setCompareMax(int n){
 			_n = n;
 		}
