@@ -78,13 +78,24 @@ public class Patch {
 			if(next[0].toN3().startsWith("<node")){
 				trip = true;
 				s++;
-				copy[0] = new BNode(next[0].toString());
+				copy[0] = BNode.createBNode(next[0].toString(), next[3].toString());
+				// According to the naming of the variables, the next line would
+				// have been correct, but it is used otherwise in other code.
+				// copy[0] = BNode.createBNode(next[3].toString(),
+				// next[0].toString());
+				// copy[2] = new BNode(next[2].toString()); // No bnode renaming
 			}
-			
-			if(next[2].toN3().startsWith("<node")){
+
+			if (next[2].toN3().startsWith("<node")) {
 				trip = true;
 				o++;
-				copy[2] = new BNode(next[2].toString());
+				copy[2] = BNode.createBNode(next[0].toString(),
+						next[3].toString());
+				// According to the naming of the variables, the next line would
+				// have been correct, but it is used otherwise in other code.
+				// copy[0] = BNode.createBNode(next[3].toString(),
+				// next[0].toString());
+				// copy[2] = new BNode(next[2].toString()); // No bnode renaming
 			}
 			cb.processStatement(copy);
 			

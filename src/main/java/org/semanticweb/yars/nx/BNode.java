@@ -145,7 +145,7 @@ public class BNode implements Serializable, Node {
     
     public static String escapeForBNode(String unescaped){
     	try {
-			return URLEncoder.encode(unescaped, "utf-8").replace("x", "x78").replace("-", "x2D").replace(".", "x2E").replace("_", "x5F").replace('%', 'x');
+			return URLEncoder.encode(unescaped, "utf-8").replace("x", "x78").replace("-", "x2D").replace(".", "x2E").replace("_", "x5F").replace("*","x2A").replace('%', 'x');
 		} catch (UnsupportedEncodingException e) {
 			//never je suppose
 			return null;
