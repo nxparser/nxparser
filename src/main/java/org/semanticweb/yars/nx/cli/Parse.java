@@ -15,8 +15,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.semanticweb.yars.nx.BNode;
+import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
+import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.parser.NxParser;
+import org.semanticweb.yars.nx.util.NxUtil;
 
 public class Parse {
 	public static void main(String[] args) throws IOException{
@@ -32,6 +36,9 @@ public class Parse {
 		Option outputGzO = new Option("ogz", "output is gzipped");
 		outputGzO.setArgs(0);
 
+		Option encodeO = new Option("e", "N-Triples encoding of strings");
+		encodeO.setArgs(0);
+		
 		Option strictO = new Option("s", "strict mode, will end program with parse exception");
 
 		Option helpO = new Option("h", "print help");
@@ -43,6 +50,7 @@ public class Parse {
 		options.addOption(outputGzO);
 		options.addOption(strictO);
 		options.addOption(helpO);
+		options.addOption(encodeO);
 
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
@@ -88,8 +96,6 @@ public class Parse {
 			}
 		}
 		
-		
-		
 		if (cmd.hasOption("strict")) {
 			strict = true;
 		}
@@ -103,6 +109,18 @@ public class Parse {
 			count++;
 
 			for(Node n:nx) {
+				if(cmd.hasOption("e")){
+					String str = n.toString();
+					if(n instanceof Resource){
+						n = new Resource(NxUtil.escapeForNx(str));
+					} else if(n instanceof Literal){
+						n = new Literal(NxUtil.escapeForNx(str),((Literal) n).getLanguageTag(),((Literal) n).getDatatype());
+					} else if(n instanceof BNode){
+						n = new BNode(NxUtil.escapeForNx(str));
+					} else{
+						throw new RuntimeException("Unknown node "+n.toN3());
+					}
+				}
 				out.print(n.toN3()+" ");
 			}
 			out.println(".");
