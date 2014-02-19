@@ -70,11 +70,17 @@ public class TldManager {
         		return null;
         	}
     		
-    		String host = url.getHost().toLowerCase();
-    		if (host == null) {
-        		_log.fine("no host for " + url);
-    			return null;
-    		}
+			String host = url.getHost();
+			if (host == null) {
+				_log.info("no host for " + url);
+				return null;
+			}
+
+			host = host.toLowerCase();
+
+    		if (host.endsWith("."))
+    			host = host.substring(0, host.length() - 1);
+    		
     		String[] parts = host.split("\\.");
     		if (parts.length == 1) {
     			_log.info("no TLD " + url);
@@ -189,6 +195,11 @@ public class TldManager {
     	BufferedReader in = new BufferedReader(new InputStreamReader(is));
     	String line;
     	Pattern newTldP = Pattern.compile("// ([a-z][a-z]+) : .*");
+		// Punycode tlds would need a different treatment, but luckily, in the
+		// public suffix list, they are not multi-level. A regular expression to
+		// also cover them would be:
+		// ([a-z][a-z]+|xn--.*) : .*
+		// But then, you'd have to deal with the punycode.
     	Matcher newTldM;
     	Tld current = null;
     	String tld = "";
@@ -197,7 +208,12 @@ public class TldManager {
     		if (line.trim().isEmpty()) {
     			continue;
     		}
-
+    		
+    		// private domains need a different treatment, I'll exclude them here
+    		if (line.trim().startsWith("// ===END ICANN DOMAINS===")) {
+    			break;
+    		}
+    		
     		// if we come to a new section for a new tld
     		// e.g. "//ie : http://en.wikipedia.org/wiki/.ie"
     		if ((newTldM = newTldP.matcher(line)).matches()) {
