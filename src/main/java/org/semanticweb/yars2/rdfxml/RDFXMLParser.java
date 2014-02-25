@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
  * @author aidhog
  *
  */
-public class RDFXMLParser implements Iterator<Node[]> {
+public class RDFXMLParser implements Iterator<Node[]>, Iterable<Node[]> {
 	private BlockingQueue<Node[]> _q = null;
 	private boolean _done = false;
 	private Exception _e = null;
@@ -425,5 +425,10 @@ public class RDFXMLParser implements Iterator<Node[]> {
 //		while(rxp.hasNext()){
 //			System.err.println(Nodes.toN3(rxp.next()));
 //		}
+	}
+
+	@Override
+	public Iterator<Node[]> iterator() {
+		return this;
 	}
 }

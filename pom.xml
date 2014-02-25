@@ -5,9 +5,15 @@
 
 	<groupId>org.semanticweb.yars</groupId>
 	<artifactId>nxparser</artifactId>
-	<version>1.2.4</version>
+	<version>1.2.5</version>
 	<packaging>jar</packaging>
 	<name>NXParser</name>
+	<url>https://code.google.com/p/nxparser/</url>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>https://code.google.com/p/nxparser/issues/list</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,14 +63,20 @@
 			<artifactId>htmlparser</artifactId>
 			<version>2.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-core</artifactId>
+			<scope>test</scope>
+			<version>2.11.1</version>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
@@ -85,6 +97,7 @@
 	<scm>
 		<connection>svn:https://nxparser.googlecode.com/svn/trunk</connection>
 		<developerConnection>svn:https://nxparser.googlecode.com/svn/trunk</developerConnection>
+		<url>https://code.google.com/p/nxparser/source/browse/</url>
 	</scm>
 
 	<build>
@@ -106,6 +119,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
