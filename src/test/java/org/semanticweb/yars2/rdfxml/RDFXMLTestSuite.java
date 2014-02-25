@@ -105,12 +105,15 @@ public class RDFXMLTestSuite extends TestCase {
 
 			URL testDataURL = _uris[0].toURL();
 			URL goldStandardURL = _uris[1].toURL();
+			
+			System.err.println(" == Positive test: "+_uris[0]+ " with n-triples at "+_uris[1]);
 
 			InputStream is = testDataURL.openStream();
 			RDFXMLParser rxp = null;
 			try {
 				rxp = new RDFXMLParser(is, _uris[0].toString());
 			} catch (ParseException e) {
+				System.err.println(" -- Failed to parse!"+e.getMessage());
 				fail();
 			}
 
@@ -130,17 +133,36 @@ public class RDFXMLTestSuite extends TestCase {
 				goldStandard.add(new Nodes(nx));
 			}
 
+			boolean sameAsGold = false;
 			if (!containsBnode)
-				assertTrue(goldStandard.equals(testData));
+				sameAsGold = goldStandard.equals(testData);
 			else
-				assertTrue(createModelFromNodesCollection(goldStandard)
+				sameAsGold = createModelFromNodesCollection(goldStandard)
 						.isIsomorphicWith(
-								createModelFromNodesCollection(testData)));
+								createModelFromNodesCollection(testData));
+			
+			if(!sameAsGold){
+				System.err.println(" -- Not the same as gold standard!");
+				System.err.println(" -- Results data:");
+				for(Nodes nx:testData){
+					System.err.println(" t- "+nx.toN3());
+				}
+				System.err.println(" -- Gold-standard data:");
+				for(Nodes nx:goldStandard){
+					System.err.println(" g- "+nx.toN3());
+				}
+			} else{
+				System.err.println(" ++ Success");
+			}
+			
+			assertTrue(sameAsGold);
 
 		} else if (_uris.length == 2 && _uris[1] == null) {
 
 			// negative test
 			// i.e. parser should officially fail
+			
+			System.err.println(" == Negative test: "+_uris[0]);
 
 			URL testDataURL = _uris[0].toURL();
 			boolean failed = false;
@@ -159,6 +181,13 @@ public class RDFXMLTestSuite extends TestCase {
 				failed = true;
 			}
 			failed = failed || !rxp.isSuccess();
+			
+			if(!failed){
+				System.err.println(" -- Parsing should not have run through!");
+			} else{
+				System.err.println(" ++ Exception thrown correctly");
+			}
+			
 			assertTrue(failed);
 		} else
 			// shouldn't happen
