@@ -47,7 +47,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 	private static Logger _log = Logger.getLogger(RDFXMLParserBase.class.getName());
 
 	private static enum State implements Comparable<State> {
-		START, OR, CR_OP, T_CP_OR, CP, T_CP, PTC_OR_CP, PTL_XML, PTR_OP_CP;
+		START, OR, CR_OP, T_CP_OR, CP, T_CP, PTC_OR_CP, PTL_XML, PTR_OP_CP, PTA;
 
 //		public boolean expectCloseProperty(){
 //			if(this.equals(T_CP_OR) || 
@@ -127,7 +127,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 	private HashMap<Integer, Integer> _li;
 	private HashMap<Integer, Node> _coll;
 
-	private HashSet<String> _ids;
+	private HashMap<String,HashSet<URI>> _ids;
 
 	private URI _currentBase;
 	private int _currentLi = 0;
@@ -248,7 +248,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 		_slang = new ScopedThing<String>(NULL);
 		_li = new HashMap<Integer, Integer>();
 		_coll = new HashMap<Integer, Node>();
-		_ids = new HashSet<String>();
+		_ids = new HashMap<String,HashSet<URI>>();
 		_skolemise = skolemise;
 		_c = c;
 		_con = con;
@@ -503,14 +503,6 @@ public class RDFXMLParserBase extends DefaultHandler {
 			id = id.replaceAll(" ", "+");
 		}
 
-		if(rdfID){
-			if(!_ids.add(id)){
-				warning("Duplicate value '"+id+"' for rdf:ID attribute.");
-			}
-			if (!Pattern.matches(XMLRegex.NC_NAME, id)){
-				warning("ID value '"+id+"' is not a valid XML NCName.");
-			}
-		}
 		try {
 			if(rdfID){
 				uri = new URI("#"+id);
@@ -518,7 +510,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 		} catch (URISyntaxException e) {
 			fatalError(new SAXException(e));
 		}
-
+		
 		if(uri.isAbsolute()){
 			if(rdfID){
 				error("Absolute URI provided for rdf:ID. Not resolving against base URI.");
@@ -531,14 +523,44 @@ public class RDFXMLParserBase extends DefaultHandler {
 				else
 					return _currentBase.toString();
 			}
-			if((_currentBase.getPath()==null ||_currentBase.getPath().length()==0) && !_currentBase.toString().endsWith("/"))
+			if((_currentBase.getPath()==null ||_currentBase.getPath().length()==0) && !_currentBase.toString().endsWith("/")){
 					try {
 						return new URL(_currentBase.toURL(),id).toString();
 					} catch (MalformedURLException e) {
 						error("MalformedURLException resolving base:"+_currentBase+" id: "+id);
 					}
-			return _currentBase.resolve(uri).toString();
+			}
+			
+			URI full = _currentBase.resolve(uri); 
+			
+			if(rdfID){
+				if(trackDuplicateIds(id,full)){
+					warning("Duplicate value '"+id+"' for rdf:ID attribute.");
+				}
+				if (!Pattern.matches(XMLRegex.NC_NAME, id)){
+					warning("ID value '"+id+"' is not a valid XML NCName.");
+				}
+			}
+			return full.toString();
 		}
+	}
+
+	/**
+	 * Check to see if an rdf:ID is duplicate ... indexes current ID.
+	 * 
+	 * Duplication is allowed if the resulting URIs are different (i.e., the base has been changed).
+	 * 
+	 * @param id
+	 * @param uri
+	 * @return true if duplicate, false otherwise
+	 */
+	private boolean trackDuplicateIds(String id, URI uri) {
+		HashSet<URI> urisForId = _ids.get(id);
+		if(urisForId==null){
+			urisForId = new HashSet<URI>();
+			_ids.put(id, urisForId);
+		}
+		return !urisForId.add(uri);
 	}
 
 	private  String removeFragment(URI u)throws SAXException{
@@ -588,6 +610,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 			if(id==null){
 				id =  generateBNode();
 			}
+			handleStatement(_currentS, _currentP, id);
 			for(Node[] edge:_currentPRD.getEdges()){
 				handleStatement(id, edge[0], edge[1]);
 			}
@@ -632,7 +655,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 	private String getPrefix(final String qname, final String lname){
 		if(qname.length()==lname.length())
 			return "";
-		return qname.substring(0, (lname.length()-(qname.length()+1)));
+		return qname.substring(0, (qname.length()-(lname.length()+1)));
 	}
 
 	/**
@@ -663,11 +686,17 @@ public class RDFXMLParserBase extends DefaultHandler {
 			if(RDF_PROP_ATTR_NAMES_TS.contains(lname)){
 				warning("Unqualified use of RDF name "+lname+" is deprecated.");
 				p = createResource(RDF.NS+lname);
-			}else{
+			} else if(lname.startsWith("xml")){
+				//silently ignore according to this weird W3C testcase
+				 //http://www.w3.org/2000/10/rdf-tests/rdfcore/unrecognised-xml-attributes/test002.rdf
+				
+//				warning("Unrecognised unqualified attribute starting with XML: "+lname+".");	
+				return;
+			} else {
 				error("Unqualified attribute name "+lname+" found.");
 				p = createResource(resolveFullURI(lname, false));
 			}
-		}else{
+		} else{
 			p = createResource(name+lname);
 		}
 
@@ -685,7 +714,6 @@ public class RDFXMLParserBase extends DefaultHandler {
 			}
 
 			Resource id = createResource(resolveFullURI(o, false));
-			handleStatement(_currentS, _currentP, id);
 			if(_currentPRD==null){
 				_currentPRD = new ResourceDescription(id);
 			} else{
@@ -706,7 +734,6 @@ public class RDFXMLParserBase extends DefaultHandler {
 			}
 
 			BNode id = generateBNode(o);
-			handleStatement(_currentS, _currentP, id);
 			if(_currentPRD==null){
 				_currentPRD = new ResourceDescription(id);
 			} else{
@@ -738,9 +765,8 @@ public class RDFXMLParserBase extends DefaultHandler {
 		} else if(qname.equals(XML_ID)){
 			;/**@todo do nothing???**/	
 		} else if(qname.startsWith(XML_PREFIX)){
-			warning("Unrecognised xml qname "+qname+".");	
-		} else if(qname.startsWith(XML_PREFIX)){
-			warning("Unrecognised xml qname "+qname+".");	
+			// just ignore it according to W3C test-cases
+			// warning("Unrecognised xml qname "+qname+".");	
 		} else if(p.equals(RDF.DATATYPE)){
 			if(_state.equals(State.CP)){
 				fatalError("Cannot have both rdf:datatype and rdf:resource attached as attributes to a property.");
@@ -825,7 +851,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 		}
 
 		boolean ptr = _sptr.remove(_depth);
-		boolean endptl = _sptldepth==0 && _sptlp!=null && _sptlp.equals(rq);
+		boolean endptl = _sptldepth==0 && _sptlp!=null && (_sptlp.equals(rq) || (isCMP(_sptlp) && isCMP(rq)));
 
 		if(rq.equals(RDF.RDF)){
 			//error handled by SAX, not valid XML;
@@ -893,7 +919,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 
 				_state=State.CR_OP;
 				if(_currentL!=null)
-					s = _currentL.toString().trim();
+					s = _currentL.toString();
 
 				_datatype = RDF.XMLLITERAL;
 				Literal l = createLiteral(s);
@@ -922,6 +948,10 @@ public class RDFXMLParserBase extends DefaultHandler {
 			else
 				_currentLang = lang.toLowerCase();
 		}
+	}
+
+	private static boolean isCMP(Resource p1) {
+		return p1.equals(RDF.LI) || p1.toString().startsWith(RDF.NS+"_");
 	}
 
 	private void handleParseTypeLiteralEndElement(final String name, final String lname, final String qname){
@@ -1125,6 +1155,7 @@ public class RDFXMLParserBase extends DefaultHandler {
 			processStatement(_currentReify, RDF.SUBJECT, triple[0]);
 			processStatement(_currentReify, RDF.PREDICATE, triple[1]);
 			processStatement(_currentReify, RDF.OBJECT, triple[2]);
+			_currentReify = null;
 		}
 	}
 

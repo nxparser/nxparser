@@ -1,13 +1,12 @@
 package org.semanticweb.yars2.rdfxml;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -348,83 +347,32 @@ public class RDFXMLParser implements Iterator<Node[]>, Iterable<Node[]> {
 	public Exception getException(){
 		return _e;
 	}
-	
-//	public static void main(String args[]) throws FileNotFoundException, ParseException, IOException{
-//		String in = "../saor0.0.1/test/data/lubm/University0_0.owl";
-//		String baseURI = "http://swat.cse.lehigh.edu/projects/lubm/University0_0.owl";
-//		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
-//		
-//		FileInputStream fis = new FileInputStream(in);
-//		FileOutputStream fos = new FileOutputStream(out);
-//		CallbackNxOutputStream cb = new CallbackNxOutputStream(fos);
-//		
-//		new RDFXMLParser(fis, false, false, baseURI, cb);
-//		
-//		fis.close();
-//		fos.close();
-//	}
-	
+		
+	// for quick debugging
 	public static void main(String args[]) throws FileNotFoundException, ParseException, IOException, URISyntaxException{
-//		URL u = new URL("http://dbpedia.org/data/Thriller_(album).xml");
-//		String baseURI = "http://dbpedia.org/data/Thriller_(album).xml";
-//		String out = "../saor0.0.1/test/data/lubm/University0_0.nt";
 		
-//		FileInputStream fis = new FileInputStream(in);
-//		CallbackNxOutputStream cb = new CallbackNxOutputStream(System.out, true);
+//		String in = "src/test/resources/rdfxml/propAttr1.rdf";
+//		String in = "src/test/resources/rdfxml/list1.rdf";
+//		String in = "src/test/resources/rdfxml/weirdXmlAttr.rdf";
+//		String in = "src/test/resources/rdfxml/wsXmlLit.rdf";
+//		String in = "src/test/resources/rdfxml/sameIdDiffR.rdf";
+		String in = "src/test/resources/rdfxml/nonAsciiId.rdf";
 		
-//		System.err.println("checking data");
-//		BufferedReader fr = new BufferedReader(new InputStreamReader(u.openStream()));
-//		String line;
-//		while((line = fr.readLine())!=null){
-//			System.err.println(line);
-//		}
+		String baseURI = "http://baseuri.com/";
 		
-//		 URI u = new URI("http://blah.org/A_%28Secret%29.xml#blah");
-//	     System.out.println(u);
-//	     // prints "http://blah.org/A_%28Secret%29.xml#blah"
-//
-//	     String path1 = u.getPath();      //gives "A_(Secret).xml"
-//	     String path2 = u.getRawPath();   //gives "A_%28Secret%29.xml"
-//
-//	     URI norm1 = new URI(u.getScheme().toLowerCase(),
-//					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
-//					path1, u.getQuery(), null);
-//	     System.out.println(norm1.toASCIIString());
-//	     // prints "http://blah.org/A_(Secret).xml"
-//
-//	     URI norm2 = new URI(u.getScheme().toLowerCase(),
-//					u.getUserInfo(), u.getHost().toLowerCase(), u.getPort(),
-//					path2, u.getQuery(), null);
-//	     System.out.println(norm2);
-//	     // prints "http://blah.org/A_%2528Secret%2529.xml"
+		FileInputStream fis = new FileInputStream(in);
 		
-
-		String baseUri = "http://sw.deri.org/~aidanh/foaf/foaf.rdf";
-		URL	u = new URL(baseUri);
-		HttpURLConnection uc = (HttpURLConnection) u.openConnection();
-//		uc.setInstanceFollowRedirects(true);
-		
-//		
-
 		System.err.println("opening parser");
+		
 		CallbackNxBufferedWriter cb = new CallbackNxBufferedWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-		RDFXMLParser rxp = new RDFXMLParser(uc.getInputStream(), false, false, baseUri, cb, new Resource(NxUtil.escapeForNx(baseUri)));
-
+		RDFXMLParser rxp = new RDFXMLParser(fis, false, false, baseURI, cb, new Resource(NxUtil.escapeForNx(baseURI)));
+		
 		System.err.println("reading data");
 		while(rxp.hasNext()){
 			System.err.println(Nodes.toN3(rxp.next()));
 		}
-//		
-//		u = new URL("http://dbpedia.org/resource/Thriller_%28album%29");
 		
-//		System.err.println("opening parser");
-//		CallbackNxBufferedWriter cb = new CallbackNxBufferedWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-//		RDFXMLParser rxp = new RDFXMLParser(u.openStream(), false, false, baseURI, cb, new Resource(baseURI));
-		
-//		System.err.println("reading data");
-//		while(rxp.hasNext()){
-//			System.err.println(Nodes.toN3(rxp.next()));
-//		}
+
 	}
 
 	@Override

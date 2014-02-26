@@ -1,0 +1,12 @@
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:foo="http://foo/">
+
+  <foo:Bar>
+    <rdf:li rdf:ID="e1">1</rdf:li>
+    <rdf:li rdf:parseType="Literal">2</rdf:li>
+    <rdf:li rdf:parseType="Resource">
+      <rdf:type rdf:resource="http://foo/Bar"/>
+    </rdf:li>
+    <rdf:li rdf:ID="e4" foo:bar="foobar"/>
+  </foo:Bar>
+</rdf:RDF>
