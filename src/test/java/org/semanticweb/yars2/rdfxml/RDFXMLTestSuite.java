@@ -231,6 +231,7 @@ public class RDFXMLTestSuite extends TestCase {
 		solution = null;
 		testResource = null;
 		resultResource = null;
+		results = null;
 
 		// extract negative tests
 

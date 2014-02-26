@@ -77,6 +77,12 @@
 			<scope>test</scope>
 			<version>2.11.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-arq</artifactId>
+			<scope>test</scope>
+			<version>2.11.1</version>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
