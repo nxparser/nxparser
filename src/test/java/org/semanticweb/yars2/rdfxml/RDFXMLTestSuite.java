@@ -1,10 +1,8 @@
 package org.semanticweb.yars2.rdfxml;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
@@ -14,12 +12,11 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -32,11 +29,17 @@ import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.parser.NxParser;
 import org.semanticweb.yars.nx.parser.ParseException;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
- * Runs the W3C test cases agains the RDFXML-Parser. Loads them straight from
+ * Runs the W3C test cases against the RDFXML-Parser. Loads them straight from
  * the Web. Only the approved, non-obsolete, non-entailment ones.
  * 
  * @author Tobias Kaefer
@@ -85,15 +88,11 @@ public class RDFXMLTestSuite extends TestCase {
 	public static void init() throws IOException, URISyntaxException {
 		baseURI = new URI("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
 
-		URL url = new URL(
-				"http://www.w3.org/2000/10/rdf-tests/rdfcore/all_files");
-
-		InputStream is = url.openStream();
-
 		_positiveTestCasesURIs = new HashMap<URI, URI>();
 		_negativeTestCasesURIs = new HashSet<URI>();
 
-		prepareCollections(is);
+		// reading in the normative document for the RDF/XML 1.0 test cases.
+		prepareCollections("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf");
 	}
 
 	@Test
@@ -105,15 +104,16 @@ public class RDFXMLTestSuite extends TestCase {
 
 			URL testDataURL = _uris[0].toURL();
 			URL goldStandardURL = _uris[1].toURL();
-			
-			System.err.println(" == Positive test: "+_uris[0]+ " with n-triples at "+_uris[1]);
+
+			System.err.println(" == Positive test: " + _uris[0]
+					+ " with n-triples at " + _uris[1]);
 
 			InputStream is = testDataURL.openStream();
 			RDFXMLParser rxp = null;
 			try {
 				rxp = new RDFXMLParser(is, _uris[0].toString());
 			} catch (ParseException e) {
-				System.err.println(" -- Failed to parse!"+e.getMessage());
+				System.err.println(" -- Failed to parse!" + e.getMessage());
 				fail();
 			}
 
@@ -140,29 +140,29 @@ public class RDFXMLTestSuite extends TestCase {
 				sameAsGold = createModelFromNodesCollection(goldStandard)
 						.isIsomorphicWith(
 								createModelFromNodesCollection(testData));
-			
-			if(!sameAsGold){
+
+			if (!sameAsGold) {
 				System.err.println(" -- Not the same as gold standard!");
 				System.err.println(" -- Results data:");
-				for(Nodes nx:testData){
-					System.err.println(" t- "+nx.toN3());
+				for (Nodes nx : testData) {
+					System.err.println(" t- " + nx.toN3());
 				}
 				System.err.println(" -- Gold-standard data:");
-				for(Nodes nx:goldStandard){
-					System.err.println(" g- "+nx.toN3());
+				for (Nodes nx : goldStandard) {
+					System.err.println(" g- " + nx.toN3());
 				}
-			} else{
+			} else {
 				System.err.println(" ++ Success");
 			}
-			
+
 			assertTrue(sameAsGold);
 
 		} else if (_uris.length == 2 && _uris[1] == null) {
 
 			// negative test
 			// i.e. parser should officially fail
-			
-			System.err.println(" == Negative test: "+_uris[0]);
+
+			System.err.println(" == Negative test: " + _uris[0]);
 
 			URL testDataURL = _uris[0].toURL();
 			boolean failed = false;
@@ -181,80 +181,73 @@ public class RDFXMLTestSuite extends TestCase {
 				failed = true;
 			}
 			failed = failed || !rxp.isSuccess();
-			
-			if(!failed){
+
+			if (!failed) {
 				System.err.println(" -- Parsing should not have run through!");
-			} else{
+			} else {
 				System.err.println(" ++ Exception thrown correctly");
 			}
-			
+
 			assertTrue(failed);
 		} else
 			// shouldn't happen
 			throw new IllegalArgumentException("wrong number of arguments");
 	}
 
-	private static void prepareCollections(InputStream is) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	private static void prepareCollections(String s) throws IOException,
+			URISyntaxException {
 
-		String line = null;
-		String[] splits = null;
-		String path = null;
+		// extract positive tests
 
-		Set<String> positiveRdfFiles = new HashSet<String>();
-		Set<String> positiveNtFiles = new HashSet<String>();
+		String prefixes = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
+				+ "prefix test: <http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#> \n";
 
-		while ((line = br.readLine()) != null) {
-			line = line.trim();
-			if (line.startsWith("#") || line.equals(""))
-				continue;
+		String queryString = prefixes + "SELECT ?test ?result "
+				+ "WHERE { ?case rdf:type test:PositiveParserTest . "
+				+ "?case test:inputDocument ?test . "
+				+ "?case test:status \"APPROVED\" . "
+				+ "?case test:outputDocument ?result . } ";
+		Query query = QueryFactory.create(queryString);
 
-			splits = line.split("\t");
+		Model model = ModelFactory.createDefaultModel();
+		model.read(s);
 
-			if (splits[0].startsWith("entailment")
-					|| splits[2].equals("NOT_APPROVED")
-					|| (splits.length > 3 && splits[3].equals("NOT_APPROVED"))
-					|| splits[2].startsWith("OBSOLETE")
-					|| splits[2].startsWith("PENDING")
-					|| splits[0].endsWith("html"))
-				continue;
+		QueryExecution exec = QueryExecutionFactory.create(query, model);
 
-			path = splits[0];
+		Iterator<QuerySolution> results = exec.execSelect();
 
-			splits = path.split("/");
-
-			if (splits[1].startsWith("error"))
-				_negativeTestCasesURIs.add(baseURI.resolve(path));
-			else if (splits[1].endsWith(".rdf"))
-				positiveRdfFiles.add(path);
-			else if (splits[1].endsWith(".nt"))
-				positiveNtFiles.add(path);
-			else
-				System.err.println("didn't categorise " + path);
-
-			splits = null;
+		QuerySolution solution = null;
+		Resource testResource, resultResource = null;
+		while (results.hasNext()) {
+			solution = results.next();
+			testResource = solution.getResource("test");
+			resultResource = solution.getResource("result");
+			_positiveTestCasesURIs.put(new URI(testResource.getURI()), new URI(
+					resultResource.getURI()));
 		}
 
-		for (String s : positiveRdfFiles) {
-			String correspondingingNtFile = s.substring(0,
-					s.length() - ".rdf".length())
-					+ ".nt";
-			if (positiveNtFiles.contains(correspondingingNtFile)) {
-				_positiveTestCasesURIs.put(baseURI.resolve(s),
-						baseURI.resolve(correspondingingNtFile));
-				positiveNtFiles.remove(correspondingingNtFile);
-			} else {
-				System.err
-						.println("didn't find a nt file for positive rdf file "
-								+ s);
-			}
-		}
+		exec.close();
+		solution = null;
+		testResource = null;
+		resultResource = null;
 
-		for (String s : positiveNtFiles) {
-			System.err.println("positive nt file " + s
-					+ " has not been assigned its counterpart.");
-		}
+		// extract negative tests
 
+		queryString = prefixes + "SELECT ?test "
+				+ "WHERE { ?case a test:NegativeParserTest . "
+				+ "?case test:status \"APPROVED\" . "
+				+ "?case test:inputDocument ?test . } ";
+		query = QueryFactory.create(queryString);
+		exec = QueryExecutionFactory.create(query, model);
+		results = exec.execSelect();
+
+		while (results.hasNext()) {
+			solution = results.next();
+			testResource = solution.getResource("test");
+			_negativeTestCasesURIs.add(new URI(testResource.getURI()));
+		}
+		exec.close();
 	}
 
 	public static class DevNull extends OutputStream {
