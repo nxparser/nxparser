@@ -111,15 +111,11 @@ public class Resource implements Node, Serializable {
 	/**
 	 * Returns the URI that this resource represents.
 	 * 
-	 * @return the URI, or null on URISyntaxException.
+	 * @return the URI
+	 * @throws URISyntaxException 
 	 */
-	public URI toURI() {
-		try {
-			return new URI(toString());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public URI toURI() throws URISyntaxException {
+		return new URI(toString());
 	}
 
 	/**
