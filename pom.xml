@@ -5,7 +5,7 @@
 
 	<groupId>org.semanticweb.yars</groupId>
 	<artifactId>nxparser</artifactId>
-	<version>1.2.5</version>
+	<version>1.2.6</version>
 	<packaging>jar</packaging>
 	<name>NXParser</name>
 	<url>https://code.google.com/p/nxparser/</url>

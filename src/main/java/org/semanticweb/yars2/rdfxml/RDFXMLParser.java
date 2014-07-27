@@ -101,8 +101,9 @@ public class RDFXMLParser implements Iterator<Node[]>, Iterable<Node[]> {
 			CallbackBlockingQueue bcb = new CallbackBlockingQueue(_q);
 			_pt = new ParserThread(_parser, in, new RDFXMLParserBase(baseURI, bcb, skolemise),_q);
 			_pt.start();
-		} catch (Throwable err) {
-			err.printStackTrace ();
+		} catch (Exception err) {
+			throw new ParseException(err);
+//			err.printStackTrace ();
 		}
 	}
 	
@@ -118,8 +119,9 @@ public class RDFXMLParser implements Iterator<Node[]>, Iterable<Node[]> {
 		try {
 			SAXParser saxParser = factory.newSAXParser();
 			saxParser.parse(in, new RDFXMLParserBase(baseURI, c, skolemise));
-		} catch (Throwable err) {
-			err.printStackTrace ();
+		} catch (Exception err) {
+			throw new ParseException(err);
+//			err.printStackTrace ();
 		}
 	}
 	
@@ -137,8 +139,9 @@ public class RDFXMLParser implements Iterator<Node[]>, Iterable<Node[]> {
 		try {
 			SAXParser saxParser = factory.newSAXParser();
 			saxParser.parse(in, new RDFXMLParserBase(baseURI, c, skolemise, con));
-		} catch (Throwable err) {
-			err.printStackTrace ();
+		} catch (Exception err) {
+			throw new ParseException(err);
+//			err.printStackTrace ();
 		}
 	}
 	
@@ -207,7 +210,7 @@ public class RDFXMLParser implements Iterator<Node[]>, Iterable<Node[]> {
 ////		try {
 //		http.executeMethod(gm);
 //
-//		String furi = gm.getURI().toString();
+	//		String furi = gm.getURI().toString();
 //		if(baseURI==null)
 //			baseURI = furi;
 //		_con = new Resource(gm.getURI().toString());

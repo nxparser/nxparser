@@ -19,7 +19,7 @@ public class Unbound implements Node,Serializable{
 	 * if parameter is of type Unbound, return true, else return 1
 	 * @param o - Object 
 	 */
-	public int compareTo(Object o) {
+	public int compareTo(Node o) {
 		if(o instanceof Unbound){
 			return 0;
 		}

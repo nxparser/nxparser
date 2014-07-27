@@ -1,6 +1,7 @@
 package org.semanticweb.yars.util;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import org.semanticweb.yars.nx.Node;
@@ -24,7 +25,14 @@ public class Node2uriConvertingIterator implements Iterator<URI> {
 	}
 
 	public URI next() {
-		return ((Resource) _nodesIt.next()[_placeInArray]).toURI();
+		URI u = null;
+		try {
+			u = ((Resource) _nodesIt.next()[_placeInArray]).toURI();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return u;
 	}
 
 	public void remove() {

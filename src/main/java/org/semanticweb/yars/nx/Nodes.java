@@ -8,10 +8,7 @@ import java.util.Collection;
 import org.semanticweb.yars.util.Array;
 
 public class Nodes implements Comparable<Nodes>, Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1195176262281356050L;
+	private static final long serialVersionUID = 1L;
 	
 	public static final Node[] EOM = new Node[0];
 	

@@ -1,7 +1,5 @@
 package org.semanticweb.yars.nx;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -26,7 +24,7 @@ public class BNode implements Serializable, Node {
     protected String _data;
     
 	// version number for serialization
-	private static final long serialVersionUID = 6233987125715026425L;
+	private static final long serialVersionUID = 1L;
 
     /**
      * Constructor if we have a bnode with a nodeID.
@@ -83,7 +81,7 @@ public class BNode implements Serializable, Node {
     /**
      * Compare.
      */
-    public int compareTo(Object o) {
+    public int compareTo(Node o) {
     	if(o==this)
     		return 0;
     	else if (o instanceof BNode) {
@@ -102,14 +100,14 @@ public class BNode implements Serializable, Node {
     	throw new ClassCastException("parameter is not of type BNode but " + o.getClass().getName());
     }
     
-    /**
-     * Override readObject for backwards compatability and storing hashcode
-     */
-    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-    	ois.defaultReadObject();
-    	if(!_data.startsWith(PREFIX))
-    		_data = PREFIX+_data;
-    }
+//    /**
+//     * Override readObject for backwards compatability and storing hashcode
+//     */
+//    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+//    	ois.defaultReadObject();
+//    	if(!_data.startsWith(PREFIX))
+//    		_data = PREFIX+_data;
+//    }
     
     public String[] parseContextualBNode() throws ParseException{
     	String d = _data.substring(PREFIX.length());

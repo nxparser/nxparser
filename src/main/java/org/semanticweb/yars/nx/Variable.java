@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Variable implements Node,Serializable{
 	
-	private static final long serialVersionUID = 4927370223302416068L;
+	private static final long serialVersionUID = 1L;
 	private final String _data;
 	private boolean _isExistential = false;
 	public static final String JOIN_CONST_PREFIX = "y2joinvar:";
@@ -34,7 +34,7 @@ public class Variable implements Node,Serializable{
 	 * else a variable is always equals to a Resource, Blanknode, or Literal
 	 * @param o - Object 
 	 */
-	public int compareTo(Object o) {
+	public int compareTo(Node o) {
 		if(o instanceof Variable){
 			return _data.compareTo(((Variable) o)._data);
 		}

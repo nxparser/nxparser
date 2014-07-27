@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author Andreas Harth
  */
-public interface Node extends Comparable, Serializable { 
+public interface Node extends Comparable<Node>, Serializable { 
     /**
      * N3 representation.
      */
@@ -34,5 +34,5 @@ public interface Node extends Comparable, Serializable {
     /**
      * compare method 
      */
-    public int compareTo(Object n);
+    public int compareTo(Node n);
 }

@@ -111,15 +111,11 @@ public class Resource implements Node, Serializable {
 	/**
 	 * Returns the URI that this resource represents.
 	 * 
-	 * @return the URI, or null on URISyntaxException.
+	 * @return the URI
+	 * @throws URISyntaxException 
 	 */
-	public URI toURI() {
-		try {
-			return new URI(toString());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public URI toURI() throws URISyntaxException {
+		return new URI(toString());
 	}
 
 	/**
@@ -135,7 +131,7 @@ public class Resource implements Node, Serializable {
 	 * Compare.
 	 * 
 	 */
-	public int compareTo(Object o) {
+	public int compareTo(Node o) {
 		if (o == this)
 			return 0;
 
@@ -170,15 +166,15 @@ public class Resource implements Node, Serializable {
 			return false;
 	}
 
-	/**
-	 * Override readObject for backwards compatability and storing hashcode
-	 */
-	private void readObject(ObjectInputStream ois)
-			throws ClassNotFoundException, IOException {
-		ois.defaultReadObject();
-		if (!_data.startsWith("<") || !_data.endsWith(">"))
-			_data = "<" + _data + ">";
-	}
+//	/**
+//	 * Override readObject for backwards compatability and storing hashcode
+//	 */
+//	private void readObject(ObjectInputStream ois)
+//			throws ClassNotFoundException, IOException {
+//		ois.defaultReadObject();
+//		if (!_data.startsWith("<") || !_data.endsWith(">"))
+//			_data = "<" + _data + ">";
+//	}
 
 	/**
 	 * Compares strings backwards... why? Cos it should be faster for URLs...

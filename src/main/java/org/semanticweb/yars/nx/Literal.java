@@ -50,7 +50,7 @@ public class Literal implements Node, Serializable {
 	        .compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?"); 
 
 	// version number for serialization
-	private static final long serialVersionUID = 8911891129019471564L;
+	private static final long serialVersionUID = 1L;
 
 	
 	
@@ -251,7 +251,7 @@ public class Literal implements Node, Serializable {
 	}
 
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Node o) {
 		if (o == this)
 			return 0;
 
@@ -288,9 +288,9 @@ public class Literal implements Node, Serializable {
 		return _wholeString.hashCode();
 	}
 
-	protected int getHashCode() {
-		return hashCode();
-	}
+//	protected int getHashCode() {
+//		return hashCode();
+//	}
 
 	/**
 	 * Escapes strings to unicode.
@@ -324,11 +324,11 @@ public class Literal implements Node, Serializable {
 		return NxUtil.unescape(str);
 	}
 
-	/**
-	 * Override readObject for backwards compatability and storing hashcode.
-	 */
-	private void readObject(ObjectInputStream ois)
-			throws ClassNotFoundException, IOException {
-		ois.defaultReadObject();
-	}
+//	/**
+//	 * Override readObject for backwards compatability and storing hashcode.
+//	 */
+//	private void readObject(ObjectInputStream ois)
+//			throws ClassNotFoundException, IOException {
+//		ois.defaultReadObject();
+//	}
 }
