@@ -20,13 +20,13 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Literal implements Node {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
-	// data in string representation
+	// data in string representation - (now includes " ")
 	String _data;
 	// language identifier
 	String _lang;
 	// datatype uri
 	Resource _dt;
-	// the whole string including @ or ^^ etc.
+	// the whole string including "", @ or ^^
 	private transient String _wholeString;
 
 	private static final Pattern PATTERN = Pattern
@@ -91,29 +91,32 @@ public class Literal implements Node {
 				data = '\"' + data + '\"';
 			}
 
-			if ((lang != null && !"".equals(lang)) && dt != null) {
+			if ((lang != null) && dt != null) {
 				throw new IllegalArgumentException("Specify only one of language and datatype.");
 			}
+			
+			_data = data.intern();
+			_dt = dt;
+			if (_lang != null) {
+				_lang = lang.intern();
+			}
 
-			_wholeString = (data + ((lang == null || "".equals(lang)) ? (dt == null) ? ""
+			_wholeString = (data + ((lang == null) ? (dt == null) ? ""
 					: ("^^" + dt.toN3())
 					: ("@" + lang)));
 			
 			_wholeString = _wholeString.intern();
-
-			if (dt != null) {
-				_dt = dt;
-			}
 		} else {
 			_wholeString = data.intern();
 
 			try {
 				parse();
 			} catch (ParseException e) {
+				System.err.println("The parsing regex pattern didn't match for " +  _wholeString);
 				_log.log(Level.INFO, "The parsing regex pattern didn't match for {}", _wholeString);
-				throw new IllegalArgumentException("The parsing regex pattern didn't match for {}" +  _wholeString);
+				throw new IllegalArgumentException("The parsing regex pattern didn't match for " +  _wholeString);
 			}
-			_data = getData().intern();
+			_data = _data.intern();
 			_dt = getDatatype();
 			if (getLanguageTag() != null) {
 				_lang = getLanguageTag().intern();
@@ -128,7 +131,7 @@ public class Literal implements Node {
 	void parse() throws ParseException {
 		Matcher m = PATTERN.matcher(_wholeString);
 		if (m.matches()) {
-			_data = m.group(1);
+			_data = "\"" + m.group(1) + "\"";
 			if (m.group(2) != null) {
 				_lang = m.group(2);
 			} else {
@@ -153,7 +156,7 @@ public class Literal implements Node {
 	 *         there is a problem.
 	 */
 	public String getData() {
-		return _data;
+		return _data.substring(1, _data.length() - 1);
 	}
 
 	/**
@@ -162,7 +165,7 @@ public class Literal implements Node {
 	 * @return String data
 	 */
 	public String getMarkupEscapedData() {
-		return NxUtil.escapeForMarkup(getData());
+		return NxUtil.escapeForMarkup(_data);
 	}
 
 	/**
@@ -171,7 +174,7 @@ public class Literal implements Node {
 	 * @return String data
 	 */
 	public String getUnescapedData() {
-		return NxUtil.unescape(getData());
+		return NxUtil.unescape(_data);
 	}
 
 	/**
