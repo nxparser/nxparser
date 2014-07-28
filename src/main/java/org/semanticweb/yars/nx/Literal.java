@@ -115,7 +115,9 @@ public class Literal implements Node {
 			}
 			_data = getData().intern();
 			_dt = getDatatype();
-			_lang = getLanguageTag().intern();
+			if (getLanguageTag() != null) {
+				_lang = getLanguageTag().intern();
+			}
 		}
 	}
 
