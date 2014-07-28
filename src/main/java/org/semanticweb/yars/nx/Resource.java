@@ -78,8 +78,7 @@ public class Resource implements Node, Serializable {
 	}
 
 	public String getHost() throws URISyntaxException {
-		URI u = new URI(toN3().substring(1, toN3().length() - 1));
-		return u.getHost();
+		return toURI().getHost();
 	}
 
 	@Override
@@ -103,7 +102,6 @@ public class Resource implements Node, Serializable {
 	 */
 	@Override
 	public String toN3() {
-		// called a LOT, so now 10x faster
 		return _data;
 	}
 
