@@ -15,11 +15,9 @@ import java.util.logging.Logger;
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
-import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.Unbound;
 import org.semanticweb.yars.nx.Variable;
-import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
  * NxParser is a non-validating N1, N2, N3, N4, Nx parser.
@@ -52,29 +50,30 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	private Iterator<String> _stringIt = null;
 	private Node[] next = null;
 
-	public NxParser(Reader r) {
-		this(new BufferedReader(r));
+	public Iterator<Node[]> parse(Reader r) {
+		return parse(new BufferedReader(r));
 	}
 
-	public NxParser(InputStream is, Charset cs) {
-		this(new BufferedReader(new InputStreamReader(is, cs)));
+	public Iterator<Node[]> parse(InputStream is, Charset cs) {
+		return parse(new BufferedReader(new InputStreamReader(is, cs)));
 	}
 
-	public NxParser(InputStream is) {
-		this(new BufferedReader(new InputStreamReader(is)));
+	public Iterator<Node[]> parse(InputStream is) {
+		return parse(new BufferedReader(new InputStreamReader(is)));
 	}
 
-	public NxParser(BufferedReader br) {
-		this(stringItFromBufferedReader(br));
+	public Iterator<Node[]> parse(BufferedReader br) {
+		return parse(stringItFromBufferedReader(br));
 	}
 
-	public NxParser(Iterable<String> iterable) {
-		this(iterable.iterator());
+	public Iterator<Node[]> parse(Iterable<String> iterable) {
+		return parse(iterable.iterator());
 	}
 
-	public NxParser(Iterator<String> iterator) {
+	public Iterator<Node[]> parse(Iterator<String> iterator) {
 		_stringIt = iterator;
 		loadNext();
+		return this;
 	}
 
 	public boolean hasNext() {
@@ -327,213 +326,5 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	 */
 	public int lineNumber() {
 		return _lineNo;
-	}
-
-	/**
-	 * @deprecated This is an iterator and therefore cannot throw exceptions at
-	 *             all. Therefore parameter strict is pointless here.
-	 */
-	@Deprecated
-	public NxParser(Reader r, boolean strict) {
-		this(r);
-	}
-
-	/**
-	 * @deprecated See {@link #NxParser(Reader, boolean)} and {@link #DEFAULT_PARSE_DTS}.
-	 */
-	@Deprecated
-	public NxParser(Reader r, boolean strict, boolean parseDts) {
-		this(r);
-	}
-
-	/**
-	 * @deprecated See {@link #NxParser(Reader, boolean)} and {@link #DEFAULT_PARSE_DTS}.
-	 */
-	@Deprecated
-	public NxParser(InputStream is, boolean strict, boolean parseDts) {
-		this(is);
-	}
-
-	/**
-	 * @deprecated See {@link #NxParser(Reader, boolean)}.
-	 */
-	@Deprecated
-	public NxParser(InputStream is, boolean strict) {
-		this(is);
-	}
-
-	/**
-	 * @deprecated If you call a literal's
-	 *             {@link org.semanticweb.yars.nx.Literal#getDatatype()} method,
-	 *             you are presented with the data type, if there is one. So the
-	 *             processing of that is to be moved.
-	 */
-	@Deprecated
-	public static boolean DEFAULT_PARSE_DTS = false;
-
-	// private static BNodeHandler _bnh = null;
-	//
-	// @Deprecated
-	// public static void setBNodeHandler(BNodeHandler bnh) {
-	// _bnh = bnh;
-	// }
-	//
-	// @Deprecated
-	// public static BNodeHandler getBNodeHandler() {
-	// return _bnh == null? _bnh = new DummyBNodeHandler(): _bnh;
-	// }
-	//
-	// @Deprecated
-	// private static class DummyBNodeHandler implements BNodeHandler {
-	// public BNode getBNode(String id) {
-	// return new BNode(id);
-	// }
-	// }
-
-	/**
-	 * @see #DEFAULT_PARSE_DTS
-	 */
-	@Deprecated
-	public static Node[] parseNodes(String line, boolean parseDts)
-			throws ParseException {
-		return parseNodes(line);
-	}
-
-	/**
-	 * @see #parseLiteral(String, boolean)
-	 */
-	@Deprecated
-	public static Literal parseLiteral(String str) throws ParseException {
-		return parseLiteral(str, DEFAULT_PARSE_DTS);
-	}
-
-	/**
-	 * @deprecated Doesn't do much parsing apart from checking the first char to
-	 *             be a quotation mark.
-	 * @see #DEFAULT_PARSE_DTS
-	 */
-	@Deprecated
-	public static Literal parseLiteral(String str, boolean parseDTs)
-			throws ParseException {
-		if (str.charAt(0) != '"') {
-			throw new ParseException("literal must be enclosed with \"\"");
-		}
-		return new Literal(str, true);
-	}
-
-	/**
-	 * @deprecated Doesn't do much parsing apart from checking the first char to
-	 *             be a question mark.
-	 */
-	@Deprecated
-	public static Variable parseVariable(String str) throws ParseException {
-		if (str.charAt(0) != '?') {
-			throw new ParseException("variable must start with ?");
-		}
-		return new Variable(str, true);
-	}
-
-	/**
-	 * @deprecated Doesn't do much parsing apart from checking the first and the
-	 *             last char to be angle brackets.
-	 */
-	@Deprecated
-	public static Resource parseResource(String str) throws ParseException {
-		if (str.charAt(0) != '<' && str.charAt(str.length() - 1) != '>') {
-			throw new ParseException("resource must be enclosed with <>");
-		}
-		return new Resource(str, true);
-	}
-
-	/**
-	 * @deprecated Doesn't do much parsing apart from checking the first chars
-	 *             to be :_.
-	 */
-	@Deprecated
-	public static BNode parseBNode(String str) throws ParseException {
-		if (str.charAt(0) != '_' || str.charAt(1) != ':') {
-			throw new ParseException("bnode must start with :_");
-		}
-		return new BNode(str, true);
-	}
-
-	/**
-	 * @see #parseNode(String, boolean)
-	 */
-	@Deprecated
-	public static Node parseNode(String str) throws ParseException {
-		return parseNode(str, DEFAULT_PARSE_DTS);
-	}
-
-	/**
-	 * @deprecated Tells the type of the node according to the first char in
-	 *             parameter str.
-	 * @see #DEFAULT_PARSE_DTS
-	 */
-	@Deprecated
-	public static Node parseNode(String str, boolean parseDts)
-			throws ParseException {
-		if (str.charAt(0) == '_') {
-			// blank node
-			return parseBNode(str);
-		} else if (str.charAt(0) == '<') {
-			return parseResource(str);
-		} else if (str.charAt(0) == '"') {
-			return parseLiteral(str, parseDts);
-		} else if (str.charAt(0) == '?') {
-			return parseVariable(str);
-		} else {
-			throw new ParseException("cannot parse " + str);
-		}
-	}
-
-	/**
-	 * Escapes strings to unicode
-	 * 
-	 * @deprecated Moved to {@link org.semanticweb.yars.nx.util.NxUtil}.
-	 */
-	@Deprecated
-	public static String escapeForNx(String lit) {
-		return NxUtil.escapeForNx(lit);
-	}
-
-	/**
-	 * Escapes strings for markup
-	 * 
-	 * @deprecated Moved to {@link org.semanticweb.yars.nx.util.NxUtil}.
-	 */
-	@Deprecated
-	public static String escapeForMarkup(String lit) {
-		return NxUtil.escapeForMarkup(lit);
-	}
-
-	/**
-	 * Unescape special characters in literal by removing excess backslashes
-	 * 
-	 * @param str
-	 *            The string to escape
-	 * @deprecated Moved to {@link org.semanticweb.yars.nx.util.NxUtil}.
-	 */
-	@Deprecated
-	public static String unescape(String str) {
-		return NxUtil.unescape(str, false);
-	}
-
-	/**
-	 * Unescape special characters in literal by removing excess backslashes
-	 * 
-	 * @param str
-	 *            The string to escape
-	 * @param clean
-	 *            If true, cleans up excess slashes
-	 * @deprecated Moved to {@link org.semanticweb.yars.nx.util.NxUtil}.
-	 */
-	@Deprecated
-	public static String unescape(String str, boolean clean) {
-		return NxUtil.unescape(str, clean);
-	}	
-	
-	public static void main(String[] args) throws ParseException{
-		System.err.println(Nodes.toN3(parseNodes("")));
 	}
 }

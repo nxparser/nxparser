@@ -2,93 +2,61 @@ package org.semanticweb.yars.nx;
 
 import java.io.Serializable;
 
-public class Variable implements Node,Serializable{
-	
+public class Variable implements Node, Serializable {
 	private static final long serialVersionUID = 1L;
+
 	private final String _data;
 	private boolean _isExistential = false;
-	public static final String JOIN_CONST_PREFIX = "y2joinvar:";
-	
+
 	public Variable(String data, boolean isN3) {
-		if (isN3)
-			_data = data;
-		else {
-			if (data.charAt(0) == '?')
-				_data = data;
-			else
-				_data = '?' + data;
+		if (isN3) {
+			_data = data.intern();
+		} else {
+			if (data.charAt(0) == '?') {
+				_data = data.intern();
+			} else {
+				_data = '?' + data.intern();
+			}
 		}
 	}
-	
+
 	public Variable(String data) {
 		this(data, false);
 	}
 
+	@Override
 	public String toString() {
 		return _data.substring(Math.min(_data.length(), 1),
-				Math.max(_data.length() , 0));
+				Math.max(_data.length(), 0));
 	}
 
 	/**
-	 * if parameter is of type Variable, compare the _data representations
-	 * else a variable is always equals to a Resource, Blanknode, or Literal
-	 * @param o - Object 
+	 * Equality check.
+	 * 
 	 */
-	public int compareTo(Node o) {
-		if(o instanceof Variable){
-			return _data.compareTo(((Variable) o)._data);
-		}
-		else
-			return Integer.MAX_VALUE;
+	@Override
+	public boolean equals(Object o) {
+		return (o instanceof Variable) && ((Variable) o)._data.equals(_data);
 	}
-	
-    /**
-     * Equality check.
-     * 
-     */
-    public boolean equals(Object o) {
-    	return 
-    		   (o != null)
-    		&& (o instanceof Variable)
-    		&& ((Variable)o)._data.equals(_data)
-    		;
-    }
 
+	/**
+	 * Needed for storing in hashtables.
+	 */
+	@Override
+	public int hashCode() {
+		return _data.hashCode();
+	}
+
+	@Override
 	public String toN3() {
 		return _data;
 	}
-	
-	public void setExistential(boolean ex){
+
+	public void setExistential(boolean ex) {
 		_isExistential = ex;
 	}
-	
-	public boolean isExistential(){
+
+	public boolean isExistential() {
 		return _isExistential;
 	}
-	
-    /**
-     * Needed for storing in hashtables.
-     */
-    public int hashCode() {
-    	return _data.hashCode();
-    }
-    
-    public Literal toJoinLiteral(){
-    	return new Literal(JOIN_CONST_PREFIX+toN3());
-    }
-    
-    public static Variable fromJoinLiteral(Literal l){
-    	if(isJoinLiteral(l)){
-    		return new Variable(l.toString().substring(JOIN_CONST_PREFIX.length()+1));
-    	}
-    	return null;
-    }
-    
-    public static boolean isJoinLiteral(Literal l){
-    	return l.toString().startsWith(JOIN_CONST_PREFIX);
-    }
-    
-    public static boolean isJoinLiteral(Node n){
-    	return n instanceof Literal && ((Literal)n).toString().startsWith(JOIN_CONST_PREFIX);
-    }
 }

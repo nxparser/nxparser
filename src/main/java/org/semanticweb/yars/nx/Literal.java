@@ -1,12 +1,11 @@
 package org.semanticweb.yars.nx;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.semanticweb.yars.nx.parser.ParseException;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
@@ -18,47 +17,28 @@ import org.semanticweb.yars.nx.util.NxUtil;
  * @author Andreas Harth
  * @author Tobias Kaefer
  */
-public class Literal implements Node, Serializable {
-
+public class Literal implements Node {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
 	// data in string representation
-	protected String _data = null;
+	String _data;
 	// language identifier
-	protected String _lang = null;
+	String _lang;
 	// datatype uri
-	protected Resource _dt = null;
+	Resource _dt;
 	// the whole string including @ or ^^ etc.
-	protected String _wholeString = null;
-
-	@Deprecated
-	public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
-	@Deprecated
-	public static final Resource STRING = new Resource(XSD + "string");
-	@Deprecated
-	public static final Resource BOOLEAN = new Resource(XSD + "boolean");
-	@Deprecated
-	public static final Resource FLOAT = new Resource(XSD + "float");
-	@Deprecated
-	public static final Resource DECIMAL = new Resource(XSD + "decimal");
-	@Deprecated
-	public static final Resource DOUBLE = new Resource(XSD + "double");
-	@Deprecated
-	public static final Resource DATETIME = new Resource(XSD + "dateTime");
+	private transient String _wholeString;
 
 	private static final Pattern PATTERN = Pattern
-	        .compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?"); 
+			.compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?");
 
 	// version number for serialization
 	private static final long serialVersionUID = 1L;
 
-	
-	
 	/**
 	 * Constructor.
 	 * 
-	 * @param data
-	 *            the escaped string representation of the (simple) literal
+	 * @param data - the escaped string representation of the (simple) literal
 	 */
 	public Literal(String data) {
 		this(data, null, null);
@@ -106,53 +86,71 @@ public class Literal implements Node, Serializable {
 
 	public Literal(String data, String lang, Resource dt, boolean isN3) {
 		if (!isN3) {
-			if (data.equals("") || data.charAt(0) != '\"'
-					|| data.charAt(data.length() - 1) != '\"') {
-				_log.fine("String for Literal ("
-						+ data
-						+ ") had no surrounding quotes. Adding some and proceeding...");
+			if (data.equals("") || data.charAt(0) != '\"' || data.charAt(data.length() - 1) != '\"') {
+				_log.log(Level.FINE, "Adding quotes for Literal {}",  data);
 				data = '\"' + data + '\"';
 			}
-			if ((lang != null && !"".equals(lang)) && dt != null)
-				throw new IllegalArgumentException(
-						"In Nx, only one of language and datatype can be given.");
-			_wholeString = data
-					+ ((lang == null || "".equals(lang)) ? (dt == null) ? "" : ("^^" + dt.toN3())
-							: ("@" + lang));
-			if (dt != null)
+
+			if ((lang != null && !"".equals(lang)) && dt != null) {
+				throw new IllegalArgumentException("Specify only one of language and datatype.");
+			}
+
+			_wholeString = (data + ((lang == null || "".equals(lang)) ? (dt == null) ? ""
+					: ("^^" + dt.toN3())
+					: ("@" + lang)));
+			
+			_wholeString = _wholeString.intern();
+
+			if (dt != null) {
 				_dt = dt;
-		} else
-			_wholeString = data;
+			}
+		} else {
+			_wholeString = data.intern();
+
+			try {
+				parse();
+			} catch (ParseException e) {
+				_log.log(Level.INFO, "The parsing regex pattern didn't match for {}", _wholeString);
+				return;
+			}
+			_data = getData().intern();
+			_dt = getDatatype();
+			_lang = getLanguageTag().intern();
+		}
 	}
 
 	public Literal(String data, boolean isN3) {
 		this(data, null, null, isN3);
 	}
+	
+	void parse() throws ParseException {
+		Matcher m = PATTERN.matcher(_wholeString);
+		if (m.matches()) {
+			_data = m.group(1);
+			if (m.group(2) != null) {
+				_lang = m.group(2);
+			} else {
+				_lang = null;
+			}
+			if (m.group(3) != null) {
+				_dt = new Resource(m.group(3), true);
+			} else {
+				_dt = null;
+			}
+		} else {
+			throw new ParseException("The parsing regex pattern didn't match for " + _wholeString);
+		}
+	}
 
 	/**
 	 * Get escaped data. For compatibility's sake, this returns the text of the
-	 * literal (w/o surrounding quotes). (This method will now avoid writing 
-	 * a null.)
+	 * literal (w/o surrounding quotes). (This method will now avoid writing a
+	 * null.)
 	 * 
 	 * @return a) the text of the literal, b) the full N3 form of the literal if
-	 * there is a problem.
+	 *         there is a problem.
 	 */
 	public String getData() {
-		if (_data == null) {
-			Matcher m  = PATTERN.matcher(_wholeString);
-			if (m.matches())
-				_data = m.group(1);
-			else{
-				_log.warning("Something wrong with the literal-backing string. The parsing regex pattern didn't match. Check the string for correct N3 syntax. The malicious string is: "
-						+ _wholeString);
-				int lastIndex = _wholeString.lastIndexOf('"');
-				if(lastIndex>0){
-					return _wholeString.substring(1, lastIndex);
-				} else{
-					return _wholeString;
-				}
-			}
-		}
 		return _data;
 	}
 
@@ -182,14 +180,6 @@ public class Literal implements Node, Serializable {
 	 *         wrong with the literal-backing string
 	 */
 	public String getLanguageTag() {
-		if (_lang == null) {
-			Matcher m  = PATTERN.matcher(_wholeString);
-			if (!m.matches())
-				_log.warning("The parsing regex pattern didn't match, so no language tag is returned. Check the Literal for proper N3 syntax. The malicious Literal was: "
-						+ _wholeString);
-			else
-				_lang = m.group(2);
-		}
 		return _lang;
 	}
 
@@ -209,35 +199,14 @@ public class Literal implements Node, Serializable {
 	 *         with the literal-backing string
 	 */
 	public Resource getDatatype() {
-		if (_dt == null) {
-			Matcher m  = PATTERN.matcher(_wholeString);
-			if (m.matches()) {
-				if (m.group(3) == null)
-					return null;
-				_dt = new Resource(m.group(3), true);
-			} else {
-				_log.warning("Something wrong with the Resource. Its String: "
-						+ _wholeString
-						+ " didn't match the parsing regex pattern. Probably it's no proper N3.");
-			}
-		}
 		return _dt;
 	}
 
-//	 /**
-//	 * Get object representing datatype-value of literal.
-//	 *
-//	 * @return datatype value or null if (i) unsupported datatype; (ii) plain literal (w/wo/ lang tag)
-//	 * @throws DatatypeParseException if supported datatype with bad syntax
-//	 */
-//	 public Datatype<? extends Object> getDatatypeObject() throws DatatypeParseException {
-//		 return DatatypeFactory.getDatatype(getUnescapedData(), getDatatype());
-//	 }
-	
 	/**
 	 * Get value as a string.
 	 * 
 	 */
+	@Override
 	public String toString() {
 		return NxUtil.unescape(getData());
 	}
@@ -246,89 +215,23 @@ public class Literal implements Node, Serializable {
 	 * Print N3 representation.
 	 * 
 	 */
+	@Override
 	public String toN3() {
 		return _wholeString;
 	}
 
 	@Override
-	public int compareTo(Node o) {
-		if (o == this)
-			return 0;
-
-		if (o instanceof Literal) {
-			Literal l = (Literal) o;
-			return this._wholeString.compareTo(l._wholeString);
-		} else if (o instanceof Resource) {
-			return Integer.MIN_VALUE / 4;
-		} else if (o instanceof BNode) {
-			return Integer.MIN_VALUE / 3;
-		} else if (o instanceof Unbound) {
-			return Integer.MIN_VALUE / 2;
-		} else if (o instanceof Variable) {
-			return Integer.MIN_VALUE;
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
 		}
 
-		throw new ClassCastException("parameter is not of type Literal but "
-				+ o.getClass().getName());
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o == this)
-			return true;
-
-		return 
-				(o != null)
-				&& (o instanceof Literal)
-				&& ((Literal) o)._wholeString.equals(this._wholeString);
+		return (o instanceof Literal)
+				&& ((Literal) o)._wholeString.equals(_wholeString);
 	}
 
 	@Override
 	public int hashCode() {
 		return _wholeString.hashCode();
 	}
-
-//	protected int getHashCode() {
-//		return hashCode();
-//	}
-
-	/**
-	 * Escapes strings to unicode.
-	 * 
-	 * @deprecated Use
-	 *             {@link org.semanticweb.yars.nx.util.NxUtil#escapeForNx(String)}
-	 */
-	public static String escapeForNx(String lit) {
-		return NxUtil.escapeForNx(lit);
-	}
-
-	/**
-	 * Escapes strings for markup.
-	 * 
-	 * @deprecated Use
-	 *             {@link org.semanticweb.yars.nx.util.NxUtil#escapeForMarkup(String)}
-	 */
-	public static String escapeForMarkup(String lit) {
-		return NxUtil.escapeForMarkup(lit);
-	}
-
-	/**
-	 * Unescape special characters in literal by removing excess backslashes.
-	 * 
-	 * @param str
-	 *            The string to escape
-	 * @deprecated Use
-	 *             {@link org.semanticweb.yars.nx.util.NxUtil#unescape(String)}
-	 */
-	public static String unescape(String str) {
-		return NxUtil.unescape(str);
-	}
-
-//	/**
-//	 * Override readObject for backwards compatability and storing hashcode.
-//	 */
-//	private void readObject(ObjectInputStream ois)
-//			throws ClassNotFoundException, IOException {
-//		ois.defaultReadObject();
-//	}
 }

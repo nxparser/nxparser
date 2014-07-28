@@ -3,8 +3,8 @@ package org.semanticweb.yars.nx;
 import java.io.Serializable;
 
 public class Unbound implements Node,Serializable{
-	
 	public static final long serialVersionUID = 1l;
+	
 	public static final String TO_STRING = "UNBOUND";
 	
 	public Unbound() {
@@ -14,27 +14,17 @@ public class Unbound implements Node,Serializable{
 	public String toString() {
 		return TO_STRING;
 	}
-
-	/**
-	 * if parameter is of type Unbound, return true, else return 1
-	 * @param o - Object 
-	 */
-	public int compareTo(Node o) {
-		if(o instanceof Unbound){
-			return 0;
-		}
-		else
-			return 1;
-	}
 	
     /**
      * Equality check
      * 
      */
+	@Override
     public boolean equals(Object o) {
     	return (o instanceof Unbound);
     }
 
+	@Override
 	public String toN3() {
 		return toString();
 	}
@@ -42,6 +32,7 @@ public class Unbound implements Node,Serializable{
     /**
      * Needed for storing in hashtables.
      */
+	@Override
     public int hashCode() {
     	return toString().hashCode();
     }

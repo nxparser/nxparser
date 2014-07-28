@@ -5,12 +5,13 @@ package org.semanticweb.yars.nx;
 import java.io.Serializable;
 
 
+
 /**
  * An RDF node (resource, bnode or literal). Should be immutable.
  *
  * @author Andreas Harth
  */
-public interface Node extends Comparable<Node>, Serializable { 
+public interface Node extends /*Comparable<Node>,*/ Serializable { 
     /**
      * N3 representation.
      */
@@ -30,9 +31,4 @@ public interface Node extends Comparable<Node>, Serializable {
      * Needed for storing in hashtables.
      */
     public int hashCode();
-    
-    /**
-     * compare method 
-     */
-    public int compareTo(Node n);
-}
+ }
