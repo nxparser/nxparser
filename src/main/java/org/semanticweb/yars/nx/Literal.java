@@ -111,7 +111,7 @@ public class Literal implements Node {
 				parse();
 			} catch (ParseException e) {
 				_log.log(Level.INFO, "The parsing regex pattern didn't match for {}", _wholeString);
-				return;
+				throw new IllegalArgumentException("The parsing regex pattern didn't match for {}" +  _wholeString);
 			}
 			_data = getData().intern();
 			_dt = getDatatype();
@@ -210,7 +210,7 @@ public class Literal implements Node {
 	 */
 	@Override
 	public String toString() {
-		return NxUtil.unescape(getData());
+		return NxUtil.unescape(_data);
 	}
 
 	/**
