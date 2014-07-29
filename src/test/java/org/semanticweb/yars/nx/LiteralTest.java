@@ -29,8 +29,8 @@ public class LiteralTest {
 
 		
 		Literal l = new Literal("\"\"", true);
-		System.out.println(l.toN3());
-		System.out.println(l.getData());
+		System.out.println(l.toString());
+		System.out.println(l.getLiteralString());
 		System.out.println(l.getDatatype());
 		System.out.println(l.getLanguageTag());
 	}

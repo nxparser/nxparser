@@ -951,7 +951,7 @@ public class RdfXmlParserBase extends DefaultHandler {
 	}
 
 	private static boolean isCMP(Resource p1) {
-		return p1.equals(RDF.LI) || p1.toString().startsWith(RDF.NS+"_");
+		return p1.equals(RDF.LI) || p1.getUriString().startsWith(RDF.NS+"_");
 	}
 
 	private void handleParseTypeLiteralEndElement(final String name, final String lname, final String qname){
@@ -1198,7 +1198,7 @@ public class RdfXmlParserBase extends DefaultHandler {
 		public String toString(){
 			StringBuffer buf = new StringBuffer();
 			for(Node[] edge:_edges){
-				buf.append(_id.toN3()+" "+Nodes.toN3(edge)+"\n");
+				buf.append(_id.toString()+" "+Nodes.toN3(edge)+"\n");
 			}
 
 			return buf.toString();

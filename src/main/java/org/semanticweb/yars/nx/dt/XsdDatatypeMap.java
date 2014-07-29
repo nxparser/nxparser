@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.namespace.XSD;
+import org.semanticweb.yars.nx.parser.ParseException;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
@@ -170,8 +171,7 @@ public class XsdDatatypeMap {
 	 * 
 	 * @return
 	 */
-	public static Literal getCanonicalLiteral(Literal l)
-			throws DatatypeParseException {
+	public static Literal getCanonicalLiteral(Literal l) throws DatatypeParseException, ParseException {
 		if (l.getDatatype() != null
 				&& Datatype.isSupportedStandardDatatype(l.getDatatype())) {
 			Resource primitiveDT = XsdDatatypeMap.getPrimitive(l.getDatatype());
@@ -179,7 +179,7 @@ public class XsdDatatypeMap {
 			if (primitiveDT == null)
 				return l;
 
-			Datatype<?> d = DatatypeFactory.getDatatype(l.getUnescapedData(),
+			Datatype<?> d = DatatypeFactory.getDatatype(l.toString(),
 					primitiveDT);
 
 			if (d == null) {
@@ -188,11 +188,12 @@ public class XsdDatatypeMap {
 
 			String canon = d.getCanonicalRepresentation();
 
-			if (!canon.equals(l.getUnescapedData())
+			if (!canon.equals(l.toString())
 					|| !primitiveDT.equals(l.getDatatype())) {
 				return new Literal(NxUtil.escapeForNx(canon), primitiveDT);
 			}
 		}
+		
 		return l;
 	}
 

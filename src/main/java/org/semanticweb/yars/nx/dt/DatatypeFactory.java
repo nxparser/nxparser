@@ -41,6 +41,7 @@ import org.semanticweb.yars.nx.dt.uri.XsdAnyURI;
 import org.semanticweb.yars.nx.dt.xml.RdfXmlLiteral;
 import org.semanticweb.yars.nx.namespace.RDF;
 import org.semanticweb.yars.nx.namespace.XSD;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 /**
  * XSD Datatype factory
@@ -56,10 +57,10 @@ public class DatatypeFactory {
 	 * @return datatype value or null if (i) unsupported datatype; (ii) plain literal (w/wo/ lang tag)
 	 * @throws DatatypeParseException if supported datatype with bad syntax
 	 */
-	public static Datatype<? extends Object> getDatatype(Literal l) throws DatatypeParseException{
-		return getDatatype(l.getUnescapedData(), l.getDatatype());
+	public static Datatype<? extends Object> getDatatype(Literal l) throws DatatypeParseException, ParseException {
+		return getDatatype(l.toString(), l.getDatatype());
 	}
-	
+
 	/**
 	 * Get object representing datatype-value of lexical string/datatype URI pair.
 	 *

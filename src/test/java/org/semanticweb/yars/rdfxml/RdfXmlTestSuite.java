@@ -175,7 +175,7 @@ public class RdfXmlTestSuite extends TestCase {
 				PrintStream ps = new PrintStream(new DevNull());
 				for (Node[] nx : rxp) {
 					for (Node n : nx) {
-						ps.print(n.toN3());
+						ps.print(n.toString());
 					}
 				}
 				ps.close();

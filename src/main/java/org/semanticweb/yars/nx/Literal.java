@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.semanticweb.yars.nx.parser.ParseException;
-import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
  * An RDF literal of any data type
@@ -20,45 +19,48 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Literal implements Node {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
-	// data in string representation - (now includes " ")
-	String _data;
-	// language identifier
-	String _lang;
-	// datatype uri
-	Resource _dt;
-	// the whole string including "", @ or ^^
-	private transient String _wholeString;
+	// the entire string in N3 syntax, including "", @ or ^^
+	private final String _data;
 
-	private static final Pattern PATTERN = Pattern
-			.compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?");
+	private static final Pattern PATTERN = Pattern.compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?");
 
 	// version number for serialization
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructor.
+	 * Constructor (not in N3 syntax).
 	 * 
-	 * @param data - the escaped string representation of the (simple) literal
+	 * @param data - the string representation of the (simple) literal
 	 */
 	public Literal(String data) {
-		this(data, null, null);
+		this(data, null, null, false);
+	}
+	
+	/**
+	 * Constructor, possibly in in N3 syntax.
+	 * 
+	 * @param data
+	 * @param isN3 - true if data is in N3 (with "" and ^^<> or @
+	 */
+	public Literal(String data, boolean isN3) {
+		this(data, null, null, isN3);
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor (not in N3 syntax)
 	 * 
 	 * @param data
-	 *            the escaped string representation of the (simple) literal
+	 *            the string representation of the (simple) literal
 	 * @param lang
 	 *            the language tag for the literal. Nx spec demands it to be
 	 *            lowercase.
 	 */
 	public Literal(String data, String lang) {
-		this(data, lang, null);
+		this(data, lang, null, false);
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor (not in N3)
 	 * 
 	 * @param data
 	 *            the escaped string representation of the (simple) literal
@@ -66,7 +68,7 @@ public class Literal implements Node {
 	 *            the datatype Resource of the Literal
 	 */
 	public Literal(String data, Resource dt) {
-		this(data, null, dt);
+		this(data, null, dt, false);
 	}
 
 	/**
@@ -84,8 +86,17 @@ public class Literal implements Node {
 		this(data, lang, dt, false);
 	}
 
-	public Literal(String data, String lang, Resource dt, boolean isN3) {
-		if (!isN3) {
+	/**
+	 * Construct a literal from consituent elements (which are not in N3).
+	 * 
+	 * @param data
+	 * @param lang
+	 * @param dt
+	 */
+	private Literal(String data, String lang, Resource dt, boolean isN3) {
+		if (isN3) {
+			_data = data;
+		} else {
 			if (data.equals("") || data.charAt(0) != '\"' || data.charAt(data.length() - 1) != '\"') {
 				_log.log(Level.FINE, "Adding quotes for Literal {}",  data);
 				data = '\"' + data + '\"';
@@ -95,105 +106,49 @@ public class Literal implements Node {
 				throw new IllegalArgumentException("Specify only one of language and datatype.");
 			}
 			
-			_data = data.intern();
-			_dt = dt;
-			if (_lang != null) {
-				_lang = lang.intern();
-			}
-
-			_wholeString = (data + ((lang == null) ? (dt == null) ? ""
-					: ("^^" + dt.toN3())
-					: ("@" + lang)));
-			
-			_wholeString = _wholeString.intern();
-		} else {
-			_wholeString = data.intern();
-
-			try {
-				parse();
-			} catch (ParseException e) {
-				System.err.println("The parsing regex pattern didn't match for " +  _wholeString);
-				_log.log(Level.INFO, "The parsing regex pattern didn't match for {}", _wholeString);
-				throw new IllegalArgumentException("The parsing regex pattern didn't match for " +  _wholeString);
-			}
-			_data = _data.intern();
-			_dt = getDatatype();
-			if (getLanguageTag() != null) {
-				_lang = getLanguageTag().intern();
-			}
-		}
-	}
-
-	public Literal(String data, boolean isN3) {
-		this(data, null, null, isN3);
-	}
-	
-	void parse() throws ParseException {
-		Matcher m = PATTERN.matcher(_wholeString);
-		if (m.matches()) {
-			_data = "\"" + m.group(1) + "\"";
-			if (m.group(2) != null) {
-				_lang = m.group(2);
-			} else {
-				_lang = null;
-			}
-			if (m.group(3) != null) {
-				_dt = new Resource(m.group(3), true);
-			} else {
-				_dt = null;
-			}
-		} else {
-			throw new ParseException("The parsing regex pattern didn't match for " + _wholeString);
+			_data = (data + ((lang == null) ? (dt == null) ? ""
+					: ("^^" + dt)
+					: ("@" + lang.toLowerCase())));
 		}
 	}
 
 	/**
-	 * Get escaped data. For compatibility's sake, this returns the text of the
+	 * Get data. For compatibility's sake, this returns the text of the
 	 * literal (w/o surrounding quotes). (This method will now avoid writing a
 	 * null.)
 	 * 
 	 * @return a) the text of the literal, b) the full N3 form of the literal if
 	 *         there is a problem.
+	 * @throws ParseException 
 	 */
-	public String getData() {
-		return _data.substring(1, _data.length() - 1);
+	public String getLiteralString() throws ParseException {
+		Matcher m = PATTERN.matcher(_data);
+		if (!m.matches()) {
+			throw new ParseException("The parsing regex pattern didn't match for " + _data);
+		}
+		
+		return "\"" + m.group(1) + "\"";
 	}
 
-	/**
-	 * Get markup escaped data.
-	 * 
-	 * @return String data
-	 */
-	public String getMarkupEscapedData() {
-		return NxUtil.escapeForMarkup(_data);
-	}
-
-	/**
-	 * Get unescaped data.
-	 * 
-	 * @return String data
-	 */
-	public String getUnescapedData() {
-		return NxUtil.unescape(_data);
-	}
-
-	/**
+	/*
 	 * Get language tag.
 	 * 
 	 * @return a) the language tag if one is supplied b) null pointer, if there
 	 *         is no such language tag, c) null pointer, if there is something
 	 *         wrong with the literal-backing string
+	 * @throws ParseException 
 	 */
-	public String getLanguageTag() {
-		return _lang;
-	}
+	public String getLanguageTag() throws ParseException {
+		Matcher m = PATTERN.matcher(_data);
+		if (!m.matches()) {
+			throw new ParseException("The parsing regex pattern didn't match for " + _data);
+		}
 
-	/**
-	 * Check whether it's a constant (literals are always).
-	 * 
-	 */
-	public boolean isConstant() {
-		return true;
+		if (m.group(2) != null) {
+			return m.group(2);
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -202,9 +157,19 @@ public class Literal implements Node {
 	 * @return a) the resource if one is supplied, b) null pointer, if there is
 	 *         no such resource, c) null pointer, if there is something wrong
 	 *         with the literal-backing string
+	 * @throws ParseException 
 	 */
-	public Resource getDatatype() {
-		return _dt;
+	public Resource getDatatype() throws ParseException {
+		Matcher m = PATTERN.matcher(_data);
+		if (!m.matches()) {
+			throw new ParseException("The parsing regex pattern didn't match for " + _data);
+		}
+
+		if (m.group(3) != null) {
+			return new Resource(m.group(3), true);
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -213,16 +178,7 @@ public class Literal implements Node {
 	 */
 	@Override
 	public String toString() {
-		return NxUtil.unescape(_data);
-	}
-
-	/**
-	 * Print N3 representation.
-	 * 
-	 */
-	@Override
-	public String toN3() {
-		return _wholeString;
+		return _data;
 	}
 
 	@Override
@@ -232,11 +188,11 @@ public class Literal implements Node {
 		}
 
 		return (o instanceof Literal)
-				&& ((Literal) o)._wholeString.equals(_wholeString);
+				&& ((Literal) o)._data.equals(_data);
 	}
 
 	@Override
 	public int hashCode() {
-		return _wholeString.hashCode();
+		return _data.hashCode();
 	}
 }

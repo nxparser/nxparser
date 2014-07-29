@@ -2,30 +2,40 @@ package org.semanticweb.yars.nx;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collection;
 
+/**
+ * Basically a node array.
+ * 
+ * In addition, optionally the Nodes class can keep track of object
+ * references, and only use canonical object references for Node objects.
+ * 
+ * @author aharth
+ *
+ */
 public class Nodes implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static final Node[] EOM = new Node[0];
 
-	Node[] _na;
-
-	public Nodes(Node... n) {
-		_na = n;
+	private final Node[] _data;
+	
+	public Nodes(Node... na) {
+		_data = na;
 	}
 
-	public Nodes(Collection<Node> cn) {
-		_na = new Node[cn.size()];
-		cn.toArray(_na);
-	}
+//	public Nodes(Collection<Node> cn) {
+//		Arrays.as
+//		cn.
+//		_data = new Node[cn.size()];
+//		cn.toArray(_data);
+//	}
 
 	public Node[] getNodes() {
-		return _na;
+		return _data;
 	}
 
 	boolean equals(Nodes n) {
-		return Arrays.equals(_na, n.getNodes());
+		return Arrays.equals(_data, n.getNodes());
 	}
 
 	@Override
@@ -39,11 +49,11 @@ public class Nodes implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(_na);
+		return Arrays.hashCode(_data);
 	}
 
 	public String toN3() {
-		return toN3(_na);
+		return toN3(_data);
 	}
 
 	@Override
@@ -54,7 +64,7 @@ public class Nodes implements Serializable {
 	public static String toN3(Node[] ns) {
 		StringBuffer buf = new StringBuffer();
 		for (Node n : ns) {
-			buf.append(n.toN3());
+			buf.append(n.toString());
 			buf.append(" ");
 		}
 		buf.append(".");

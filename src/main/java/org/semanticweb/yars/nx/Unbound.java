@@ -11,6 +11,7 @@ public class Unbound implements Node,Serializable{
 		;
 	}
 	
+	@Override
 	public String toString() {
 		return TO_STRING;
 	}
@@ -24,11 +25,6 @@ public class Unbound implements Node,Serializable{
     	return (o instanceof Unbound);
     }
 
-	@Override
-	public String toN3() {
-		return toString();
-	}
-	
     /**
      * Needed for storing in hashtables.
      */

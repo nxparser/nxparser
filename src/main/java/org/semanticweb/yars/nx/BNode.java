@@ -21,8 +21,8 @@ public class BNode implements Node {
 
 	public static boolean PRETTY_PRINT = false;
 
-	// the value of the bnode including prefix
-	final String _data;
+	// the value of the bnode in N3 syntax (including _:)
+	private final String _data;
 
 	// version number for serialization
 	private static final long serialVersionUID = 1L;
@@ -35,35 +35,39 @@ public class BNode implements Node {
 		this(nodeid, false);
 	}
 
-	public BNode(String nodeid, boolean hasPrefix) {
-		if (hasPrefix) {
-			_data = nodeid.intern();
+	public BNode(String nodeid, boolean isN3) {
+		if (isN3) {
+			_data = nodeid;
 		} else if (!nodeid.startsWith(PREFIX)) {
-			_data = (PREFIX + nodeid).intern();
+			_data = (PREFIX + nodeid);
 		} else {
-			_data = nodeid.intern();
+			_data = nodeid;
 		}
 	}
 
 	/**
 	 * Get URI.
 	 */
-	@Override
-	public String toString() {
-		if (PRETTY_PRINT) {
-			try {
-				String[] conb = parseContextualBNode();
-				return conb[1] + "@[" + conb[0] + "]";
-			} catch (ParseException pe) {
-				return unescapeForBNode(_data.substring(PREFIX.length()));
-			}
-		} else {
-			return _data.substring(PREFIX.length());
-		}
+//	@Override
+//	public String toString() {
+//		if (PRETTY_PRINT) {
+//			try {
+//				String[] conb = parseContextualBNode();
+//				return conb[1] + "@[" + conb[0] + "]";
+//			} catch (ParseException pe) {
+//				return unescapeForBNode(_data.substring(PREFIX.length()));
+//			}
+//		} else {
+//			return _data.substring(PREFIX.length());
+//		}
+//	}
+	
+	public String getBNodeString() {
+		return _data.substring(PREFIX.length());
 	}
 
 	@Override
-	public String toN3() {
+	public String toString() {
 		return _data;
 	}
 

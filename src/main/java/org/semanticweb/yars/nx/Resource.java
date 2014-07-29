@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
- * An RDF resource (http://...).
+ * An Iri (http://...).
  * 
  * @author Andreas Harth
  * @author Tobias Kaefer
@@ -17,7 +17,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Resource implements Node, Serializable {
 	private static Logger _log = Logger.getLogger(Resource.class.getName());
 
-	// the value of the resource (now includes < >)
+	// the value of the Iri in N3 syntax (including <>)
 	String _data;
 
 	// version number for serialisation
@@ -36,29 +36,18 @@ public class Resource implements Node, Serializable {
 	}
 
 	/**
-	 * Constructor. Does some escaping so is possibly not too fast. Escaping is
-	 * done using {@link NxUtil#escapeForNx(String)} after
-	 * {@link URI#toASCIIString()}.
-	 */
-	public Resource(URI uri) {
-		this("<" + NxUtil.escapeForNx(uri.toASCIIString()) + ">", true);
-	}
-
-	/**
 	 * Constructor. Assuming conformance to the spec, which can be achieved e.g.
 	 * using {@link NxUtil#escapeForNx(String)} after
 	 * {@link URI#toASCIIString()}.
 	 * 
 	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">The
 	 *      spec</a>
-	 * @param isN3
-	 *            Set this to true if angle brackets are already around URI as
-	 *            required by N3.
+	 * @param isN3 - true if angle brackets are already around URI as required by N3.
 	 */
 	public Resource(String uri, boolean isN3) {
 		if (!isN3) {
 			if (uri.length() == 0 || uri == null) {
-				_log.log(Level.WARNING, "Empty string not allowed as Resource");
+				_log.log(Level.WARNING, "Empty string not allowed.");
 
 				if (uri == null) {
 					_data = null;
@@ -68,22 +57,13 @@ public class Resource implements Node, Serializable {
 				return;
 			}
 			if (uri.charAt(0) != '<') {
-				_data = ("<" + uri + ">").intern();
+				_data = ("<" + uri + ">");
 			} else {
-				_data = uri.intern();
+				_data = uri;
 			}
 		} else {
-			_data = uri.intern();
+			_data = uri;
 		}
-	}
-
-	public String getHost() throws URISyntaxException {
-		return toURI().getHost();
-	}
-
-	@Override
-	public String toString() {
-		return NxUtil.unescape(toN3().substring(1, toN3().length() - 1));
 	}
 
 	/**
@@ -93,15 +73,18 @@ public class Resource implements Node, Serializable {
 	 * @throws URISyntaxException 
 	 */
 	public URI toURI() throws URISyntaxException {
-		return new URI(toString());
+		return new URI(getUriString());
 	}
 
+	public String getUriString() {
+		return NxUtil.unescape(toString().substring(1, toString().length() - 1));
+	}
 	/**
 	 * Get URI in N3 notation.
 	 * 
 	 */
-	@Override
-	public String toN3() {
+//	@Override
+	public String toString() {
 		return _data;
 	}
 

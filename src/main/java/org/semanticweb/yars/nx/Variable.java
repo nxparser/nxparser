@@ -6,28 +6,27 @@ public class Variable implements Node, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String _data;
-	private boolean _isExistential = false;
+	private final boolean _existential;
 
-	public Variable(String data, boolean isN3) {
+	public Variable(String data,  boolean existential, boolean isN3) {
 		if (isN3) {
-			_data = data.intern();
+			_data = data;
 		} else {
 			if (data.charAt(0) == '?') {
-				_data = data.intern();
+				_data = data;
 			} else {
-				_data = '?' + data.intern();
+				_data = '?' + data;
 			}
 		}
+		_existential = existential;
+	}
+
+	public Variable(String data, boolean isN3) {
+		this(data, false, isN3);
 	}
 
 	public Variable(String data) {
-		this(data, false);
-	}
-
-	@Override
-	public String toString() {
-		return _data.substring(Math.min(_data.length(), 1),
-				Math.max(_data.length(), 0));
+		this(data, false, false);
 	}
 
 	/**
@@ -48,15 +47,11 @@ public class Variable implements Node, Serializable {
 	}
 
 	@Override
-	public String toN3() {
+	public String toString() {
 		return _data;
 	}
 
-	public void setExistential(boolean ex) {
-		_isExistential = ex;
-	}
-
 	public boolean isExistential() {
-		return _isExistential;
+		return _existential;
 	}
 }
