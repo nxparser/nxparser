@@ -40,7 +40,8 @@ public class Literal implements Node {
 	 * Constructor, possibly in in N3 syntax.
 	 * 
 	 * @param data
-	 * @param isN3 - true if data is in N3 (with "" and ^^<> or @
+	 * @param isN3
+	 *            - true if data is in N3 (i.e., with "" and ^^<> or @)
 	 */
 	public Literal(String data, boolean isN3) {
 		this(data, null, null, isN3);
@@ -87,11 +88,15 @@ public class Literal implements Node {
 	}
 
 	/**
-	 * Construct a literal from consituent elements (which are not in N3).
+	 * Construct a literal from constituent elements (which are not in N3).
 	 * 
 	 * @param data
 	 * @param lang
 	 * @param dt
+	 * @param isN3
+	 *            whether parameter data is in already in N3, i.e. can be stored
+	 *            without further checking (if true, parameters lang and dt get
+	 *            ignored).
 	 */
 	private Literal(String data, String lang, Resource dt, boolean isN3) {
 		if (isN3) {
