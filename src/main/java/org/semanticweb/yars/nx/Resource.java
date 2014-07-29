@@ -109,4 +109,9 @@ public class Resource implements Node, Serializable {
 		return  (o instanceof Resource)
 				&& ((Resource) o)._data.equals(_data);
 	}
+	
+	@Override
+	public int compareTo(Node n) {
+		return toString().compareTo(n.toString());
+	}
 }

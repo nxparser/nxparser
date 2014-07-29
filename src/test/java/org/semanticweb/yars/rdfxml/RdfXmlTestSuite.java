@@ -147,11 +147,11 @@ public class RdfXmlTestSuite extends TestCase {
 				System.err.println(" -- Not the same as gold standard!");
 				System.err.println(" -- Results data:");
 				for (Nodes nx : testData) {
-					System.err.println(" t- " + nx.toN3());
+					System.err.println(" t- " + nx.toString());
 				}
 				System.err.println(" -- Gold-standard data:");
 				for (Nodes nx : goldStandard) {
-					System.err.println(" g- " + nx.toN3());
+					System.err.println(" g- " + nx.toString());
 				}
 			} else {
 				System.err.println(" ++ Success");
@@ -266,7 +266,7 @@ public class RdfXmlTestSuite extends TestCase {
 		Model modelTest = ModelFactory.createDefaultModel();
 
 		for (Nodes ns : cns) {
-			sw.write(ns.toN3());
+			sw.write(ns.toString());
 			sw.write('\n');
 		}
 		sw.close();

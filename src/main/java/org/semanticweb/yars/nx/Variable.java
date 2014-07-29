@@ -28,6 +28,11 @@ public class Variable implements Node, Serializable {
 	public Variable(String data) {
 		this(data, false, false);
 	}
+	
+
+	public boolean isExistential() {
+		return _existential;
+	}
 
 	/**
 	 * Equality check.
@@ -51,7 +56,8 @@ public class Variable implements Node, Serializable {
 		return _data;
 	}
 
-	public boolean isExistential() {
-		return _existential;
+	@Override
+	public int compareTo(Node n) {
+		return toString().compareTo(n.toString());
 	}
 }

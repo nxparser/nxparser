@@ -1198,7 +1198,7 @@ public class RdfXmlParserBase extends DefaultHandler {
 		public String toString(){
 			StringBuffer buf = new StringBuffer();
 			for(Node[] edge:_edges){
-				buf.append(_id.toString()+" "+Nodes.toN3(edge)+"\n");
+				buf.append(_id.toString()+" "+new Nodes(edge) +"\n");
 			}
 
 			return buf.toString();

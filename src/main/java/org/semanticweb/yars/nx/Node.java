@@ -14,7 +14,7 @@ import java.io.Serializable;
  *
  * @author Andreas Harth
  */
-public interface Node extends /*Comparable<Node>,*/ Serializable { 
+public interface Node extends Comparable<Node>, Serializable { 
 //    /**
 //     * N3 representation.
 //     */
@@ -35,3 +35,4 @@ public interface Node extends /*Comparable<Node>,*/ Serializable {
      */
     public int hashCode();
  }
+	

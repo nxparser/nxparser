@@ -195,4 +195,9 @@ public class Literal implements Node {
 	public int hashCode() {
 		return _data.hashCode();
 	}
+	
+	@Override
+	public int compareTo(Node n) {
+		return toString().compareTo(n.toString());
+	}
 }

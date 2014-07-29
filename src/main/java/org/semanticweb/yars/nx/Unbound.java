@@ -32,4 +32,9 @@ public class Unbound implements Node,Serializable{
     public int hashCode() {
     	return toString().hashCode();
     }
+	
+	@Override
+	public int compareTo(Node n) {
+		return toString().compareTo(n.toString());
+	}
 }

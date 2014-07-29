@@ -16,7 +16,7 @@ public class PrintCallBack implements Callback{
 	}
 
 	public void processStatement(Node[] ns) {
-		System.err.println(Nodes.toN3(ns));
+		System.err.println(new Nodes(ns));
 	}
 
 	public void startDocument() {

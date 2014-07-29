@@ -2,6 +2,7 @@ package org.semanticweb.yars.nx;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Basically a node array.
@@ -12,7 +13,7 @@ import java.util.Arrays;
  * @author aharth
  *
  */
-public class Nodes implements Serializable {
+public class Nodes implements Serializable, Comparable<Nodes> {
 	private static final long serialVersionUID = 1L;
 
 	public static final Node[] EOM = new Node[0];
@@ -23,12 +24,10 @@ public class Nodes implements Serializable {
 		_data = na;
 	}
 
-//	public Nodes(Collection<Node> cn) {
-//		Arrays.as
-//		cn.
-//		_data = new Node[cn.size()];
-//		cn.toArray(_data);
-//	}
+	public Nodes(Collection<Node> cn) {
+		_data = new Node[cn.size()];
+		cn.toArray(_data);
+	}
 
 	public Node[] getNodes() {
 		return _data;
@@ -52,17 +51,37 @@ public class Nodes implements Serializable {
 		return Arrays.hashCode(_data);
 	}
 
-	public String toN3() {
-		return toN3(_data);
+	@Override
+	public int compareTo(Nodes o) {
+		if (this == o) {
+			return 0;
+		}
+
+		int min = Math.min(_data.length, o._data.length);
+
+		for (int i = 0; i < min; i++) {
+			int comp = _data[i].compareTo(o._data[i]);
+			if (comp != 0) {
+				return comp;
+			}
+		}
+
+		int diff = _data.length - o._data.length;
+		if (diff != 0) {
+			return diff;
+		}
+		
+		// same
+		return 0;
 	}
 
 	@Override
 	public String toString() {
-		return toN3();
+		return toN3(_data);
 	}
 
-	public static String toN3(Node[] ns) {
-		StringBuffer buf = new StringBuffer();
+	static String toN3(Node[] ns) {
+		StringBuilder buf = new StringBuilder();
 		for (Node n : ns) {
 			buf.append(n.toString());
 			buf.append(" ");
