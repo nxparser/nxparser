@@ -29,12 +29,12 @@ public class Nodes implements Serializable, Comparable<Nodes> {
 		cn.toArray(_data);
 	}
 
-	public Node[] getNodes() {
+	public Node[] getNodeArray() {
 		return _data;
 	}
 
 	boolean equals(Nodes n) {
-		return Arrays.equals(_data, n.getNodes());
+		return Arrays.equals(_data, n.getNodeArray());
 	}
 
 	@Override

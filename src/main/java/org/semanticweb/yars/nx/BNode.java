@@ -17,9 +17,9 @@ import org.semanticweb.yars.nx.parser.ParseException;
 public class BNode implements Node {
 	private static Logger _log = Logger.getLogger(BNode.class.getName());
 
-	static String PREFIX = "_:";
+	final static String PREFIX = "_:";
 
-	public static boolean PRETTY_PRINT = false;
+//	public static boolean PRETTY_PRINT = false;
 
 	// the value of the bnode in N3 syntax (including _:)
 	private final String _data;

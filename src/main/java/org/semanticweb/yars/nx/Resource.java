@@ -46,17 +46,12 @@ public class Resource implements Node, Serializable {
 	 */
 	public Resource(String uri, boolean isN3) {
 		if (!isN3) {
-			if (uri.length() == 0 || uri == null) {
+			if (uri == null || uri.length() == 0) {
+				// maybe throw Exception, or just be silent
 				_log.log(Level.WARNING, "Empty string not allowed.");
 
-				if (uri == null) {
-					_data = null;
-				} else {
-					_data = "";
-				}
-				return;
-			}
-			if (uri.charAt(0) != '<') {
+				_data = uri;
+			} else if (uri.charAt(0) != '<') {
 				_data = ("<" + uri + ">");
 			} else {
 				_data = uri;

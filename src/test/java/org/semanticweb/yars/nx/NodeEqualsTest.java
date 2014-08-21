@@ -14,7 +14,6 @@ public class NodeEqualsTest {
 		Resource r1 = new Resource("http://example.org/");
 		Resource r2 = new Resource("http://example.org/");
 
-		
 		System.out.println(r1.hashCode());
 		System.out.println(r2.hashCode());
 		
