@@ -132,7 +132,7 @@ public class Literal implements Node {
 			throw new ParseException("The parsing regex pattern didn't match for " + _data);
 		}
 		
-		return "\"" + m.group(1) + "\"";
+		return m.group(1);
 	}
 
 	/*
