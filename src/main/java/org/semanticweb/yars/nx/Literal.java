@@ -126,14 +126,20 @@ public class Literal implements Node {
 	 *         there is a problem.
 	 * @throws ParseException 
 	 */
-	public String getLiteralString() throws ParseException {
+	@Deprecated
+	public String getLiteralString() {
 		Matcher m = PATTERN.matcher(_data);
 		if (!m.matches()) {
-			throw new ParseException("The parsing regex pattern didn't match for " + _data);
+			throw new RuntimeException("The parsing regex pattern didn't match for " + _data);
 		}
 		
 		return m.group(1);
 	}
+	
+	@Override
+    public String getLabel() {
+    	return getLiteralString();
+    }
 
 	/*
 	 * Get language tag.

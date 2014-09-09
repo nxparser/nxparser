@@ -62,9 +62,15 @@ public class BNode implements Node {
 //		}
 //	}
 	
+	@Deprecated
 	public String getBNodeString() {
 		return _data.substring(PREFIX.length());
 	}
+	
+	@Override
+    public String getLabel() {
+    	return getBNodeString();
+    }
 
 	@Override
 	public String toString() {

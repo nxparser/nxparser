@@ -71,9 +71,16 @@ public class Resource implements Node, Serializable {
 		return new URI(getUriString());
 	}
 
+	@Deprecated
 	public String getUriString() {
 		return NxUtil.unescape(toString().substring(1, toString().length() - 1));
 	}
+	
+	@Override
+    public String getLabel() {
+    	return getUriString();
+    }
+
 	/**
 	 * Get URI in N3 notation.
 	 * 

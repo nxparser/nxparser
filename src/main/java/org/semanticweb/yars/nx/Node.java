@@ -26,6 +26,15 @@ public interface Node extends Comparable<Node>, Serializable {
     public String toString();
 
     /**
+     * Return "string-only" representation of the node.
+     * 
+     * For literals, only the part inside the quotation marks.
+     * For URIs, only the URI as string without <>.
+     * For blank nodes, only the blank node label without _:.
+     */
+    public String getLabel();
+
+    /**
      * Equality.
      */
     public boolean equals(Object n);

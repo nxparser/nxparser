@@ -55,6 +55,11 @@ public class Variable implements Node, Serializable {
 	public String toString() {
 		return _data;
 	}
+	
+	@Override
+    public String getLabel() {
+    	return _data.substring(1);
+    }
 
 	@Override
 	public int compareTo(Node n) {
