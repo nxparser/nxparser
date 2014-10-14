@@ -2,10 +2,8 @@ package org.semanticweb.yars.nx;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.semanticweb.yars.nx.parser.ParseException;
+import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
  * An RDF literal of any data type
@@ -15,6 +13,7 @@ import org.semanticweb.yars.nx.parser.ParseException;
  * 
  * @author Andreas Harth
  * @author Tobias Kaefer
+ * @author Leonard Lausen
  */
 public class Literal implements Node {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
@@ -22,10 +21,8 @@ public class Literal implements Node {
 	// the entire string in N3 syntax, including "", @ or ^^
 	private final String _data;
 
-	private static final Pattern PATTERN = Pattern.compile("(?:\"(.*)\")(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\\^\\^(<\\S+>))?");
-
 	// version number for serialization
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	/**
 	 * Constructor (not in N3 syntax).
@@ -37,11 +34,12 @@ public class Literal implements Node {
 	}
 	
 	/**
-	 * Constructor, possibly in in N3 syntax.
+	 * Constructor, possibly in N3 syntax.
 	 * 
 	 * @param data
-	 * @param isN3
-	 *            - true if data is in N3 (i.e., with "" and ^^<> or @)
+	 * @param isN3 true if data is in N3 (i.e., with "" and ^^<> or @) - no guarantees are made, if input does not
+	 * conform to the spec. Make sure your escaping is valid!
+	 * @see <a href="http://www.w3.org/TR/n-triples/">The N3 spec</a>
 	 */
 	public Literal(String data, boolean isN3) {
 		this(data, null, null, isN3);
@@ -51,10 +49,9 @@ public class Literal implements Node {
 	 * Constructor (not in N3 syntax)
 	 * 
 	 * @param data
-	 *            the string representation of the (simple) literal
+	 *            the not-escaped string representation of the (simple) literal
 	 * @param lang
-	 *            the language tag for the literal. Nx spec demands it to be
-	 *            lowercase.
+	 *            the language tag for the literal.
 	 */
 	public Literal(String data, String lang) {
 		this(data, lang, null, false);
@@ -64,7 +61,7 @@ public class Literal implements Node {
 	 * Constructor (not in N3)
 	 * 
 	 * @param data
-	 *            the escaped string representation of the (simple) literal
+	 *            the not-escaped string representation of the (simple) literal
 	 * @param dt
 	 *            the datatype Resource of the Literal
 	 */
@@ -76,10 +73,9 @@ public class Literal implements Node {
 	 * Constructor.
 	 * 
 	 * @param data
-	 *            the escaped string representation of the (simple) literal
+	 *            the not-escaped string representation of the (simple) literal
 	 * @param lang
-	 *            the language tag for the literal. Nx spec demands it to be
-	 *            lowercase.
+	 *            the language tag for the literal.
 	 * @param dt
 	 *            the datatype Resource of the Literal
 	 */
@@ -96,7 +92,9 @@ public class Literal implements Node {
 	 * @param isN3
 	 *            whether parameter data is in already in N3, i.e. can be stored
 	 *            without further checking (if true, parameters lang and dt get
-	 *            ignored).
+	 *            ignored). - no guarantees are made, if input does not
+	 * 			  conform to the spec. Make sure your escaping is valid!
+	 * @see <a href="http://www.w3.org/TR/n-triples/">The N3 spec</a>.
 	 */
 	private Literal(String data, String lang, Resource dt, boolean isN3) {
 		if (isN3) {
@@ -104,6 +102,7 @@ public class Literal implements Node {
 		} else {
 			if (data.equals("") || data.charAt(0) != '\"' || data.charAt(data.length() - 1) != '\"') {
 				_log.log(Level.FINE, "Adding quotes for Literal {}",  data);
+				data = NxUtil.escapeLiteral(data);
 				data = '\"' + data + '\"';
 			}
 
@@ -119,46 +118,30 @@ public class Literal implements Node {
 
 	/**
 	 * Get data. For compatibility's sake, this returns the text of the
-	 * literal (w/o surrounding quotes). (This method will now avoid writing a
-	 * null.)
+	 * literal (w/o surrounding quotes). 
 	 * 
-	 * @return a) the text of the literal, b) the full N3 form of the literal if
-	 *         there is a problem.
-	 * @throws ParseException 
+	 * @return the text of the literal
 	 */
-	@Deprecated
-	public String getLiteralString() {
-		Matcher m = PATTERN.matcher(_data);
-		if (!m.matches()) {
-			throw new RuntimeException("The parsing regex pattern didn't match for " + _data);
-		}
-		
-		return m.group(1);
-	}
-	
 	@Override
     public String getLabel() {
-    	return getLiteralString();
+		int i = _data.lastIndexOf("\"");
+    	return _data.substring(1, i);
     }
 
 	/*
 	 * Get language tag.
 	 * 
 	 * @return a) the language tag if one is supplied b) null pointer, if there
-	 *         is no such language tag, c) null pointer, if there is something
-	 *         wrong with the literal-backing string
-	 * @throws ParseException 
+	 *         is no such language tag
 	 */
-	public String getLanguageTag() throws ParseException {
-		Matcher m = PATTERN.matcher(_data);
-		if (!m.matches()) {
-			throw new ParseException("The parsing regex pattern didn't match for " + _data);
-		}
-
-		if (m.group(2) != null) {
-			return m.group(2);
-		} else {
+	public String getLanguageTag() {
+		int i = _data.lastIndexOf("\"");
+		String str = _data.substring(i + 1);
+		
+		if (!str.startsWith("@")) {
 			return null;
+		} else {
+			return str.substring(1);
 		}
 	}
 
@@ -166,20 +149,17 @@ public class Literal implements Node {
 	 * Get data type.
 	 * 
 	 * @return a) the resource if one is supplied, b) null pointer, if there is
-	 *         no such resource, c) null pointer, if there is something wrong
-	 *         with the literal-backing string
-	 * @throws ParseException 
+	 *         no such resource
 	 */
-	public Resource getDatatype() throws ParseException {
-		Matcher m = PATTERN.matcher(_data);
-		if (!m.matches()) {
-			throw new ParseException("The parsing regex pattern didn't match for " + _data);
-		}
-
-		if (m.group(3) != null) {
-			return new Resource(m.group(3), true);
-		} else {
+	public Resource getDatatype() {
+		int i = _data.lastIndexOf("\"");
+		String str = _data.substring(i + 1);
+		
+		System.out.println(str);
+		if (!str.startsWith("^^<")) {
 			return null;
+		} else {
+			return new Resource(str.substring(2), true);
 		}
 	}
 

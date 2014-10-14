@@ -1,6 +1,7 @@
 package org.semanticweb.yars.nx;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class LiteralTest {
 
@@ -23,6 +24,20 @@ public class LiteralTest {
 //	}
 
 	@Test
+	public void testLangTag() {
+		String data = "\"Test{}…\"@en";
+		Literal l = new Literal(data, true);
+		assertEquals("en", l.getLanguageTag());
+	}
+	
+	@Test
+	public void testIRIREF() {
+		String data = "\"Test{}…\"^^<http://example.org>";
+		Literal l = new Literal(data, true);
+		assertEquals("<http://example.org>", l.getDatatype().toString());
+	}	
+	
+//	@Test
 	public void testEmptyStringN3() throws Exception {
 		String data = "\"\"";
 		System.out.println(data.substring(1, data.length() - 1));
@@ -30,7 +45,6 @@ public class LiteralTest {
 		
 		Literal l = new Literal("\"\"", true);
 		System.out.println(l.toString());
-		System.out.println(l.getLiteralString());
 		System.out.println(l.getDatatype());
 		System.out.println(l.getLanguageTag());
 	}
