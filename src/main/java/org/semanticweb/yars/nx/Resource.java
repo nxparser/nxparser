@@ -13,6 +13,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
  * 
  * @author Andreas Harth
  * @author Tobias Kaefer
+ * @author Leonard Lausen
  */
 public class Resource implements Node, Serializable {
 	private static Logger _log = Logger.getLogger(Resource.class.getName());
@@ -21,48 +22,45 @@ public class Resource implements Node, Serializable {
 	String _data;
 
 	// version number for serialisation
-	public static final long serialVersionUID = 1l;
+	public static final long serialVersionUID = 2l;
 
 	/**
-	 * Constructor. Assumes no angle brackets around the uri like in Nx.
-	 * Assuming conformance to the spec, which can be achieved e.g. using
-	 * {@link NxUtil#escapeForNx(String)} after {@link URI#toASCIIString()}.
+	 * Constructor. Assumes valid IRI.
 	 * 
-	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">The
-	 *      spec</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc3987">The IRI spec</a>
 	 */
-	public Resource(String uri) {
-		this(uri, false);
+	public Resource(String iri) {
+		this(iri, false);
 	}
 
 	/**
-	 * Constructor. Assuming conformance to the spec, which can be achieved e.g.
-	 * using {@link NxUtil#escapeForNx(String)} after
-	 * {@link URI#toASCIIString()}.
+	 * Constructor. Assumes valid IRI or valid N3 (including <> brackets).
 	 * 
-	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">The
-	 *      spec</a>
-	 * @param isN3 - true if angle brackets are already around URI as required by N3.
+	 * @see <a href="http://tools.ietf.org/html/rfc3987">The IRI spec</a> and
+	 * <a href="http://www.w3.org/TR/n-triples/">The N3 spec</a>
+	 * @param isN3 If true expects valid N3, else valid IRI.
 	 */
-	public Resource(String uri, boolean isN3) {
+	public Resource(String iri, boolean isN3) {
 		if (!isN3) {
-			if (uri == null || uri.length() == 0) {
+			if (iri == null || iri.length() == 0) {
 				// maybe throw Exception, or just be silent
 				_log.log(Level.WARNING, "Empty string not allowed.");
 
-				_data = uri;
-			} else if (uri.charAt(0) != '<') {
-				_data = ("<" + uri + ">");
+				_data = iri;
+			} else if (iri.charAt(0) != '<') {
+				//TODO remove?
+				_data = ("<" + iri + ">");
 			} else {
-				_data = uri;
+				_data = NxUtil.escapeIRI(iri);
 			}
 		} else {
-			_data = uri;
+			_data = iri;
 		}
 	}
 
 	/**
-	 * Returns the URI that this resource represents.
+	 * Returns the URI that this resource represents. Be careful, as Java URI represents
+	 * URIs according to RFC2396 and not IRIs according to RFC3986.
 	 * 
 	 * @return the URI
 	 * @throws URISyntaxException 
@@ -73,7 +71,7 @@ public class Resource implements Node, Serializable {
 
 	@Deprecated
 	public String getUriString() {
-		return NxUtil.unescape(toString().substring(1, toString().length() - 1));
+		return NxUtil.unescapeIRI(toString().substring(1, toString().length() - 1));
 	}
 	
 	@Override
