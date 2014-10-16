@@ -49,7 +49,7 @@ public class Resource implements Node, Serializable {
 				_data = iri;
 			} else if (iri.charAt(0) != '<') {
 				//TODO remove?
-				_data = ("<" + iri + ">");
+				_data = ("<" + NxUtil.escapeIRI(iri) + ">");
 			} else {
 				_data = NxUtil.escapeIRI(iri);
 			}

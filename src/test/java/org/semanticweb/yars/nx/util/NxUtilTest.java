@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.semanticweb.nx.yars.util;
+package org.semanticweb.yars.nx.util;
 
 import static org.junit.Assert.*;
 

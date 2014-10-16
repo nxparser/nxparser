@@ -35,6 +35,14 @@ public class LiteralTest {
 		String data = "\"Test{}…\"^^<http://example.org>";
 		Literal l = new Literal(data, true);
 		assertEquals("<http://example.org>", l.getDatatype().toString());
+	}
+	
+	@Test
+	public void testGetLabel() {
+		String data = "Test\"{}…";
+		Literal l = new Literal(data);
+		System.out.println(l);
+		assertEquals("Test\"{}…", l.getLabel());
 	}	
 	
 //	@Test
