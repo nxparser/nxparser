@@ -1,6 +1,8 @@
 package org.semanticweb.yars.nx.util;
 
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Some utility methods that used to be spread over a couple of other classes.
@@ -10,7 +12,8 @@ import java.net.URI;
  * @author Leonard Lausen
  */
 public class NxUtil {
-
+	private static final Pattern IRIPATTERN = 
+			Pattern.compile("^([^:/?#]+)://([^/?#]*)?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?");
 	private NxUtil() {
 
 	}
@@ -670,5 +673,98 @@ public class NxUtil {
 		while (str.indexOf("\\\\") != -1)
 			str = str.replaceAll("\\\\\\\\", "\\\\");
 		return str;
+	}
+	
+	/**
+	 * Normalize IRI using techniques from RFC3987 5.1
+	 * 
+	 * @param iri
+	 * @return normalized form of iri
+	 */
+	public static String normalize(String iri) {
+		String[] iria = splitIRI(iri);
+		StringBuilder b = new StringBuilder();
+		b.append(iria[0].toLowerCase());
+		b.append("://");
+		b.append(iria[1].toLowerCase());
+		b.append(iria[2]);
+		if (iria[3] != "") b.append("?");
+		b.append(iria[3]);
+		if (iria[4] != "") b.append("#");
+		b.append(iria[4]);
+		return b.toString();
+	}
+	
+	/**
+	 * @param iri
+	 * @return array of scheme, authority, path, query, fragment of iri
+	 */
+	public static String[] splitIRI(String iri) {
+		Matcher irim = IRIPATTERN.matcher(iri);
+		String[] a = new String[5];
+		if (irim.find()) {
+			for (int i = 1; i <= 5; i++) {
+				String s = irim.group(i);
+				if (s == null) a[i-1] = "";
+				else a[i-1] = s;
+			}
+			return a;
+		} else return null;
+		
+	}
+	
+	/**
+	 * @param iri
+	 * @return authority part of iri
+	 */
+	public static String getAuthority(String iri) {
+		Matcher irim = IRIPATTERN.matcher(iri);
+		if (irim.find()) {
+			return irim.group(2);
+		} else return null;
+	}
+
+	/**
+	 * @param iri
+	 * @return scheme part of iri
+	 */
+	public static String getScheme(String iri) {
+		Matcher irim = IRIPATTERN.matcher(iri);
+		if (irim.find()) {
+			return irim.group(1);
+		} else return null;
+	}
+
+	/**
+	 * @param iri
+	 * @return query part of iri
+	 */
+	public static String getQuery(String iri) {
+		Matcher irim = IRIPATTERN.matcher(iri);
+		if (irim.find()) {
+			return irim.group(4);
+		} else return null;
+	}
+
+	/**
+	 * @param iri
+	 * @return fragment part of iri
+	 */
+	public static String getFragment(String iri) {
+		Matcher irim = IRIPATTERN.matcher(iri);
+		if (irim.find()) {
+			return irim.group(5);
+		} else return null;
+	}
+
+	/**
+	 * @param iri
+	 * @return path part of iri
+	 */
+	public static String getPath(String iri) {
+		Matcher irim = IRIPATTERN.matcher(iri);
+		if (irim.find()) {
+			return irim.group(3);
+		} else return null;
 	}
 }

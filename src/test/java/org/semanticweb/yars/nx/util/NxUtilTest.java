@@ -30,4 +30,11 @@ public class NxUtilTest {
 		System.out.println(NxUtil.escapeIRI("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';"));
 		assertEquals("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';",  NxUtil.unescapeIRI(NxUtil.escapeIRI("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';")));
 	}
+	
+	@Test
+	public void testNormalize() {
+		assertEquals("http://example.org/test?uiae#123", NxUtil.normalize("HTTp://eXAMple.oRg/test?uiae#123"));
+		assertEquals("http://example.org/test#123", NxUtil.normalize("HTTp://eXAMple.oRg/test#123"));
+		assertEquals("http://example.org/test?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test?uiae"));
+	}
 }
