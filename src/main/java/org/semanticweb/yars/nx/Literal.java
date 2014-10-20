@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.semanticweb.yars.nx.parser.ParseException;
+import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
  * An RDF literal of any data type
@@ -138,7 +139,7 @@ public class Literal implements Node {
 	
 	@Override
     public String getLabel() {
-    	return getLiteralString();
+    	return NxUtil.unescape(getLiteralString());
     }
 
 	/*

@@ -1,5 +1,7 @@
 package org.semanticweb.yars.nx;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class LiteralTest {
@@ -35,6 +37,14 @@ public class LiteralTest {
 		System.out.println(l.getLanguageTag());
 	}
 
+	@Test
+	public void testGetLabel () {
+		String ntriples= "\"K\\u00c4SE\"@de";
+		Literal l = new Literal(ntriples, true);
+		System.out.println(l);
+		assertEquals("KÄSE", l.getLabel());
+	}
+	
 //
 //	@Test
 //	public void testInt() throws Exception {
