@@ -37,4 +37,15 @@ public class NxUtilTest {
 		assertEquals("http://example.org/test#123", NxUtil.normalize("HTTp://eXAMple.oRg/test#123"));
 		assertEquals("http://example.org/test?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test?uiae"));
 	}
+	
+	@Test
+	public void testNormalizeUnicodeComposition() {
+		assertEquals("http://example.org/ä?uääe#123ä", NxUtil.normalize("HTTp://eXAMple.oRg/ä?uääe#123ä"));
+	}
+	
+	@Test
+	public void testPercentEncoding() {
+		assertEquals("<>{}", NxUtil.unescapePercentEncoding("%3C%3E%7B%7D"));
+		assertEquals("http://example.org/test{|}?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test%7B%7C%7D?uiae", false));
+	}
 }

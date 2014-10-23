@@ -1,6 +1,7 @@
 package org.semanticweb.yars.nx.util;
 
 import java.net.URI;
+import java.text.Normalizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,8 @@ import java.util.regex.Pattern;
 public class NxUtil {
 	private static final Pattern IRIPATTERN = 
 			Pattern.compile("^([^:/?#]+)://([^/?#]*)?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?");
+	private static final Pattern PERCENTPATTERN =
+			Pattern.compile("%[\\dA-Fa-f]{2}");
 	private NxUtil() {
 
 	}
@@ -234,12 +237,10 @@ public class NxUtil {
 	}
 
 	/**
-	 * Unescape special characters in literal by removing excess backslashes.
+	 * Unescape special characters in literal.
 	 * 
 	 * @param str
 	 *            The string to escape
-	 * @param clean
-	 *            If true, cleans up excess slashes
 	 */
 	public static String unescapeLiteral(String str) {
 		int sz = str.length();
@@ -682,6 +683,22 @@ public class NxUtil {
 	 * @return normalized form of iri
 	 */
 	public static String normalize(String iri) {
+		return normalize(iri, true);
+	}
+	
+	/**
+	 * Normalize IRI using techniques from RFC3987 5.1
+	 * 
+	 * @param iri
+	 * @param safe if false, uses unsafe percent encoding unescaping which might produce an invalid iri
+	 * @return normalized form of iri
+	 */
+	public static String normalize(String iri, Boolean safe) {
+		if (!Normalizer.isNormalized(iri, Normalizer.Form.NFC)) {
+			iri = Normalizer.normalize(iri, Normalizer.Form.NFC);
+		} if (!safe) {
+			iri = unescapePercentEncoding(iri);
+		}
 		String[] iria = splitIRI(iri);
 		StringBuilder b = new StringBuilder();
 		b.append(iria[0].toLowerCase());
@@ -766,5 +783,32 @@ public class NxUtil {
 		if (irim.find()) {
 			return irim.group(3);
 		} else return null;
+	}
+	
+	/**
+	 * Unescape percent encoding.
+	 * 
+	 * @param str
+	 *            The string to unescape
+	 */
+	public static String unescapePercentEncoding(String str) {
+		StringBuffer buffer = new StringBuffer();
+		Matcher m = PERCENTPATTERN.matcher(str);
+		int last = 0;
+		String enc;
+		while (m.find()) {
+			buffer.append(str.substring(last, m.start()));
+			enc = m.group().substring(1);
+			last = m.end();
+			
+			try {
+				int value = Integer.parseInt(enc, 16);
+				buffer.append((char) value);
+			} catch (NumberFormatException nfe) {
+				buffer.append(enc);
+			}
+		}
+		buffer.append(str.substring(last));
+		return buffer.toString();
 	}
 }
