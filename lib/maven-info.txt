@@ -1,1 +1,0 @@
-This directory is ignored by maven. Maven takes dependencies from pom.xml.
