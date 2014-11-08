@@ -18,35 +18,38 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Literal implements Node {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
-	// the entire string in N3 syntax, including "", @ or ^^
+	// the entire string in N-Triples syntax, including "", @ or ^^
 	private final String _data;
 
 	// version number for serialization
 	private static final long serialVersionUID = 2L;
 
 	/**
-	 * Constructor (not in N3 syntax).
+	 * Constructor (not in N-Triples syntax).
 	 * 
-	 * @param data - the string representation of the (simple) literal
+	 * @param data
+	 *            - the Java string representation of the (simple) literal
 	 */
 	public Literal(String data) {
 		this(data, null, null, false);
 	}
-	
+
 	/**
-	 * Constructor, possibly in N3 syntax.
+	 * Constructor (please state whether data is in N-Triples syntax).
 	 * 
 	 * @param data
-	 * @param isN3 true if data is in N3 (i.e., with "" and ^^<> or @) - no guarantees are made, if input does not
-	 * conform to the spec. Make sure your escaping is valid!
-	 * @see <a href="http://www.w3.org/TR/n-triples/">The N3 spec</a>
+	 * @param isNTriples
+	 *            set to true if data is in N-Triples (i.e., with "" and ^^<> or @)
+	 *            - no guarantees are made, if input does not conform to the
+	 *            spec. Make sure your escaping is valid!
+	 * @see <a href="http://www.w3.org/TR/n-triples/">The N-Triples spec</a>
 	 */
-	public Literal(String data, boolean isN3) {
-		this(data, null, null, isN3);
+	public Literal(String data, boolean isNTriples) {
+		this(data, null, null, isNTriples);
 	}
 
 	/**
-	 * Constructor (not in N3 syntax)
+	 * Constructor (not in N-Triples syntax)
 	 * 
 	 * @param data
 	 *            the not-escaped string representation of the (simple) literal
@@ -58,7 +61,7 @@ public class Literal implements Node {
 	}
 
 	/**
-	 * Constructor (not in N3)
+	 * Constructor (not in N-Triples syntax)
 	 * 
 	 * @param data
 	 *            the not-escaped string representation of the (simple) literal
@@ -70,7 +73,7 @@ public class Literal implements Node {
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor (not in N-Triples syntax).
 	 * 
 	 * @param data
 	 *            the not-escaped string representation of the (simple) literal
@@ -84,51 +87,57 @@ public class Literal implements Node {
 	}
 
 	/**
-	 * Construct a literal from constituent elements (which are not in N3).
+	 * Construct a literal from constituent elements (please state whether data
+	 * is in N-Triples syntax).
 	 * 
 	 * @param data
+	 *            the literal string, in N-Triples or not, see parameter
+	 *            isNTriples
 	 * @param lang
+	 *            the language tag or null
 	 * @param dt
-	 * @param isN3
-	 *            whether parameter data is in already in N3, i.e. can be stored
-	 *            without further checking (if true, parameters lang and dt get
-	 *            ignored). - no guarantees are made, if input does not
-	 * 			  conform to the spec. Make sure your escaping is valid!
-	 * @see <a href="http://www.w3.org/TR/n-triples/">The N3 spec</a>.
+	 *            the datatype or null
+	 * @param isNTriples
+	 *            whether parameter data is in already in N-Triples, i.e. can be
+	 *            stored without further checking (if true, parameters lang and
+	 *            dt get ignored). - no guarantees are made, if input does not
+	 *            conform to the spec. Make sure your escaping is valid!
+	 * @see <a href="http://www.w3.org/TR/n-triples/">The N-Triples spec</a>.
 	 */
-	private Literal(String data, String lang, Resource dt, boolean isN3) {
-		if (isN3) {
+	private Literal(String data, String lang, Resource dt, boolean isNTriples) {
+		if (isNTriples) {
 			_data = data;
 		} else {
-			if (data.equals("") || data.charAt(0) != '\"' || data.charAt(data.length() - 1) != '\"') {
-				_log.log(Level.FINE, "Adding quotes for Literal {}",  data);
-				data = NxUtil.escapeLiteral(data);
+			if (data.equals("") || data.charAt(0) != '\"'
+					|| data.charAt(data.length() - 1) != '\"') {
+				_log.log(Level.FINE,
+						"Escaping and adding quotes for Literal {}", data);
+				data = NxUtil.escapeForNx(data);
 				data = '\"' + data + '\"';
 			}
 
 			if ((lang != null) && dt != null) {
-				throw new IllegalArgumentException("Specify only one of language and datatype.");
+				throw new IllegalArgumentException(
+						"Specify only one of language and datatype.");
 			}
-			
-			_data = (data + ((lang == null) ? (dt == null) ? ""
-					: ("^^" + dt)
-					: ("@" + lang.toLowerCase())));
+
+			_data = (data + ((lang == null) ? (dt == null) ? "" : ("^^" + dt)
+					: ("@" + lang)));
 		}
 	}
 
 	/**
-	 * Get data. For compatibility's sake, this returns the text of the
-	 * literal (w/o surrounding quotes). 
+	 * Get the literal string.
 	 * 
-	 * @return the text of the literal
+	 * @return the text of the literal in Java encoding
 	 */
 	@Override
-    public String getLabel() {
+	public String getLabel() {
 		int i = _data.lastIndexOf("\"");
-    	return NxUtil.unescapeLiteral(_data.substring(1, i));
-    }
+		return NxUtil.unescapeLiteral(_data.substring(1, i));
+	}
 
-	/*
+	/**
 	 * Get language tag.
 	 * 
 	 * @return a) the language tag if one is supplied b) null pointer, if there
@@ -137,7 +146,7 @@ public class Literal implements Node {
 	public String getLanguageTag() {
 		int i = _data.lastIndexOf("\"");
 		String str = _data.substring(i + 1);
-		
+
 		if (!str.startsWith("@")) {
 			return null;
 		} else {
@@ -154,9 +163,8 @@ public class Literal implements Node {
 	public Resource getDatatype() {
 		int i = _data.lastIndexOf("\"");
 		String str = _data.substring(i + 1);
-		
-		System.out.println(str);
-		if (!str.startsWith("^^<")) {
+
+		if (!str.startsWith("^^<") || !str.endsWith(">")) {
 			return null;
 		} else {
 			return new Resource(str.substring(2), true);
@@ -164,8 +172,8 @@ public class Literal implements Node {
 	}
 
 	/**
-	 * Get value as a string.
-	 * 
+	 * Get the literal as a string (i.e., with "" and ^^<> or @). No unescaping
+	 * done.
 	 */
 	@Override
 	public String toString() {
@@ -178,15 +186,14 @@ public class Literal implements Node {
 			return true;
 		}
 
-		return (o instanceof Literal)
-				&& ((Literal) o)._data.equals(_data);
+		return (o instanceof Literal) && ((Literal) o)._data.equals(_data);
 	}
 
 	@Override
 	public int hashCode() {
 		return _data.hashCode();
 	}
-	
+
 	@Override
 	public int compareTo(Node n) {
 		return toString().compareTo(n.toString());
