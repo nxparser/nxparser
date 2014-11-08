@@ -112,7 +112,7 @@ public class Literal implements Node {
 					|| data.charAt(data.length() - 1) != '\"') {
 				_log.log(Level.FINE,
 						"Escaping and adding quotes for Literal {}", data);
-				data = NxUtil.escapeForNx(data);
+				data = NxUtil.escapeLiteral(data);
 				data = '\"' + data + '\"';
 			}
 
