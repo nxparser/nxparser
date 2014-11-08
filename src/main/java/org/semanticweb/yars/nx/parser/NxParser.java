@@ -191,11 +191,11 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				if(nx.isEmpty()){
 					throw new ParseException("Exception at position " + startIndex+ " while parsing: '" + line +"'");
 				}
-				for(int i=startIndex+1; i<line.length(); i++){
-					if(!Character.isWhitespace(line.charAt(i))){
-						throw new ParseException("Exception at position " + i + " while parsing: '" + line +"'");
-					}
-				}
+//				for(int i=startIndex+1; i<line.length(); i++){
+//					if(!Character.isWhitespace(line.charAt(i))){
+//						throw new ParseException("Exception at position " + i + " while parsing: '" + line +"'");
+//					}
+//				}
 				break;
 			} else if (line.charAt(startIndex) == '"') {
 				// literal.
@@ -220,6 +220,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				// variable.
 				endIndex = line.indexOf(' ', startIndex);
 				nx.add(new Variable(line.substring(startIndex, endIndex), true));
+				// TODO: what happened to the unbound?
 //			} else if (line.charAt(startIndex) == Unbound.TO_STRING.charAt(0)) {
 //				// unbound.
 //				if (line.substring(startIndex,
