@@ -55,7 +55,7 @@ public class LiteralTest {
 
 		assertEquals("\"a\\tb\\tc\"", l.toString());
 	}
-	
+
 	@Test
 	public void testQuotesInString() {
 		String s = "he said \"wow\"";
@@ -74,4 +74,30 @@ public class LiteralTest {
 				l.toString());
 	}
 
+	@Test
+	public void testCanonicalNtriplesLiteral() {
+		StringBuffer sb = new StringBuffer();
+
+		// only the following four characters should be escaped:
+		sb.append((char) 0x22); // quotation mark
+		sb.append((char) 0x5c); // slash
+		sb.append((char) 0x0a); // carriage return
+		sb.append((char) 0x0d); // line feed
+
+		// not others like for example:
+		sb.append((char) 0x08); // backspace
+		sb.append((char) 0x09); // tab
+		sb.append("ä");
+		sb.append("'");
+		sb.append((char) 0x0e07); // a Thai character
+		sb.append((char) 0x1ce1); // a Vedic Character
+		char[] pair = Character.toChars(0x100002);
+		sb.append(pair[0]); // UTF-16 surrogate pair part 1
+		sb.append(pair[1]); // UTF-16 surrogate pair part 2
+
+		Literal l = new Literal(sb.toString());
+
+		assertEquals("\"\\\"\\\\\\n\\r\u0008\tä'\u0e07\u1ce1\udbc0\udc02\"",
+				l.toString());
+	}
 }
