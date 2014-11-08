@@ -683,22 +683,13 @@ public class NxUtil {
 	 * @return normalized form of iri
 	 */
 	public static String normalize(String iri) {
-		return normalize(iri, true);
-	}
-	
-	/**
-	 * Normalize IRI using techniques from RFC3987 5.1
-	 * 
-	 * @param iri
-	 * @param safe if false, uses unsafe percent encoding unescaping which might produce an invalid iri
-	 * @return normalized form of iri
-	 */
-	public static String normalize(String iri, Boolean safe) {
 		if (!Normalizer.isNormalized(iri, Normalizer.Form.NFC)) {
 			iri = Normalizer.normalize(iri, Normalizer.Form.NFC);
-		} if (!safe) {
-			iri = unescapePercentEncoding(iri);
 		}
+
+		iri = unescapePercentEncoding(iri);
+		iri = caseNormalizePercentEncoding(iri);
+
 		String[] iria = splitIRI(iri);
 		StringBuilder b = new StringBuilder();
 		b.append(iria[0].toLowerCase());
@@ -786,7 +777,7 @@ public class NxUtil {
 	}
 	
 	/**
-	 * Unescape percent encoding.
+	 * Unescape percent encoding that is allowed in IRI.
 	 * 
 	 * @param str
 	 *            The string to unescape
@@ -803,10 +794,57 @@ public class NxUtil {
 			
 			try {
 				int value = Integer.parseInt(enc, 16);
-				buffer.append((char) value);
+				if ((value >= 0x41 && value <= 0x5A) || // Small alpha
+						(value >= 0x61 && value <= 0x7A) || // Big alpha
+						(value >= 0x30 && value <= 0x39) || // Digit
+						(value == '-' || value == '.' || value == '_' || value == '~') ||
+						(value >= 0xA0 && value <= 0xD7FF) || // RFC 3987 ucschar
+						(value >= 0xF900 && value <= 0xFDCF) ||
+						(value >= 0xFDF0 && value <= 0xFEFF) ||
+						(value >= 0x10000 && value <= 0x1FFFD) ||
+						(value >= 0x20000 && value <= 0x2FFFD) ||
+						(value >= 0x30000 && value <= 0x3FFFD) ||
+						(value >= 0x40000 && value <= 0x4FFFD) ||
+						(value >= 0x50000 && value <= 0x5FFFD) ||
+						(value >= 0x60000 && value <= 0x6FFFD) ||
+						(value >= 0x70000 && value <= 0x7FFFD) ||
+						(value >= 0x80000 && value <= 0x8FFFD) ||
+						(value >= 0x90000 && value <= 0x9FFFD) ||
+						(value >= 0xA0000 && value <= 0xAFFFD) ||
+						(value >= 0xB0000 && value <= 0xBFFFD) ||
+						(value >= 0xC0000 && value <= 0xCFFFD) ||
+						(value >= 0xD0000 && value <= 0xDFFFD) ||
+						(value >= 0xE1000 && value <= 0xEFFFD))
+					//TODO furthermore %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD are
+					// allowed in the query part (iprivate)
+				{
+					buffer.append((char) value);
+				}
 			} catch (NumberFormatException nfe) {
+				buffer.append("%");
 				buffer.append(enc);
 			}
+		}
+		buffer.append(str.substring(last));
+		return buffer.toString();
+	}
+	
+	/**
+	 * Case Normalize percent encoding.
+	 * 
+	 * @param str
+	 *            The string to normalize
+	 */
+	public static String caseNormalizePercentEncoding(String str) {
+		StringBuffer buffer = new StringBuffer();
+		Matcher m = PERCENTPATTERN.matcher(str);
+		int last = 0;
+		String enc;
+		while (m.find()) {
+			buffer.append(str.substring(last, m.start()));
+			enc = m.group();
+			last = m.end();
+			buffer.append(enc.toUpperCase());
 		}
 		buffer.append(str.substring(last));
 		return buffer.toString();

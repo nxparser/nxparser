@@ -27,7 +27,6 @@ public class NxUtilTest {
 	
 	@Test
 	public void testIRI() {
-		System.out.println(NxUtil.escapeIRI("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';"));
 		assertEquals("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';",  NxUtil.unescapeIRI(NxUtil.escapeIRI("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';")));
 	}
 	
@@ -45,7 +44,7 @@ public class NxUtilTest {
 	
 	@Test
 	public void testPercentEncoding() {
-		assertEquals("<>{}", NxUtil.unescapePercentEncoding("%3C%3E%7B%7D"));
-		assertEquals("http://example.org/test{|}?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test%7B%7C%7D?uiae", false));
+		assertEquals("http://example.org/testüöä?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test%fc%f6%e4?uiae"));
+		assertEquals("%3C%3E%7B%7D", NxUtil.caseNormalizePercentEncoding("%3c%3e%7b%7d"));
 	}
 }
