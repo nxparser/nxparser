@@ -211,16 +211,16 @@ public class NxUtil {
 				
 				switch (c) {
 				case '\\':
-					result.append("\\u005C");
+					result.append("\\\\");
 					break;
 				case '"':
-					result.append("\\u0022");
+					result.append("\\\"");
 					break;
 				case 10:
-					result.append("\\u000A");
+					result.append("\\n");
 					break;
 				case 13:
-					result.append("\\u000D");
+					result.append("\\r");
 					break;
 				default:
 					result.append(c);
