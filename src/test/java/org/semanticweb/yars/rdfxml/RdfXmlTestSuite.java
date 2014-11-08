@@ -44,7 +44,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * the Web. Only the approved, non-obsolete, non-entailment ones.
  * 
  * @author Tobias Kaefer
- * 
+ * @author Aidan Hogan
  */
 @RunWith(Parameterized.class)
 public class RdfXmlTestSuite extends TestCase {
