@@ -872,14 +872,14 @@ public class NxUtil {
 						{
 							result.append(Character.toChars(value));
 						} else {
-							result.append(orig.toString());
+							result.append(orig.toString().toUpperCase());
 						}
 					} else {		
-						result.append(orig.toString());
+						result.append(orig.toString().toUpperCase());
 					}
 				} catch (NumberFormatException | UnsupportedEncodingException e) {
 					// It's not possible to decode, so leave the original percent-encoding
-					result.append(orig.toString());
+					result.append(orig.toString().toUpperCase());
 				}
 				
 				orig.setLength(0);

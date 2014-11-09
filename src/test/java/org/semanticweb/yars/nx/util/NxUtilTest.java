@@ -53,7 +53,7 @@ public class NxUtilTest {
 		assertEquals("http://example.org/%E4", NxUtil.normalize("HTTp://eXAMple.oRg/%E4"));
 
 		// Private & 4 Byte UCS
-		assertEquals("http://example.org/%F3%B0%80%80?󰀀", NxUtil.normalize("HTTp://eXAMple.oRg/%F3%B0%80%80?%F3%B0%80%80"));
+		assertEquals("http://example.org/%F3%B0%80%80?󰀀", NxUtil.normalize("HTTp://eXAMple.oRg/%F3%b0%80%80?%F3%B0%80%80"));
 		assertEquals("%3C%3E%7B%7D", NxUtil.caseNormalizePercentEncoding("%3c%3e%7b%7d"));
 	}
 }
