@@ -18,7 +18,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Literal implements Node {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
-	// the entire string in N-Triples syntax, including "", @ or ^^
+	/** The entire string in N-Triples syntax, including "", @ or ^^ . */
 	private final String _data;
 
 	// version number for serialization
