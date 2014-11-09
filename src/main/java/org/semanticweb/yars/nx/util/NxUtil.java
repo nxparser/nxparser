@@ -792,9 +792,9 @@ public class NxUtil {
 
 				// Decode and check if this is valid UTF8
 				value = Integer.parseInt(enc, 16);
-				if ((value & 0b10000000) == 0) { // 1-Byte UTF8
+				if ((value & 0x80) == 0) { // 1-Byte UTF8
 					bytes.write((byte) value);
-				} else if ((value & 0b00100000) == 0 && i + 5 < str.length() &&
+				} else if ((value & 0x20) == 0 && i + 5 < str.length() &&
 						str.charAt(i + 3) == '%') { // 2-Byte UTF8
 					bytes.write((byte) value);
 					i += 3;
@@ -802,7 +802,7 @@ public class NxUtil {
 					orig.append('%');
 					orig.append(enc);
 					bytes.write(Integer.parseInt(enc, 16));
-				} else if ((value & 0b00010000) == 0 && i + 8 < str.length() &&
+				} else if ((value & 0x10) == 0 && i + 8 < str.length() &&
 						str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%') { // 3-Byte UTF8
 					bytes.write((byte) value);
 					for (int j = 0; j < 2; j++) {
@@ -812,7 +812,7 @@ public class NxUtil {
 						orig.append(enc);
 						bytes.write(Integer.parseInt(enc, 16));
 					}
-				} else if ((value & 0b00001000) == 0 && i + 11 < str.length() &&
+				} else if ((value & 0x8) == 0 && i + 11 < str.length() &&
 						str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%' &&
 						str.charAt(i + 9) == '%') { // 4-Byte UTF8
 					bytes.write((byte) value);
@@ -877,7 +877,11 @@ public class NxUtil {
 					} else {		
 						result.append(orig.toString().toUpperCase());
 					}
-				} catch (NumberFormatException | UnsupportedEncodingException e) {
+				} catch (NumberFormatException e) {
+					// It's not possible to decode, so leave the original percent-encoding
+					result.append(orig.toString().toUpperCase());
+				
+				} catch (UnsupportedEncodingException e) {
 					// It's not possible to decode, so leave the original percent-encoding
 					result.append(orig.toString().toUpperCase());
 				}
