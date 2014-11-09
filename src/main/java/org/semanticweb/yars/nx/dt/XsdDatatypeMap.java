@@ -9,7 +9,6 @@ import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.namespace.XSD;
 import org.semanticweb.yars.nx.parser.ParseException;
-import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
  * Map to represent subtypes of built-in datatypes
@@ -190,7 +189,7 @@ public class XsdDatatypeMap {
 
 			if (!canon.equals(l.toString())
 					|| !primitiveDT.equals(l.getDatatype())) {
-				return new Literal(NxUtil.escapeForNTriples1(canon), primitiveDT);
+				return new Literal(canon, primitiveDT);
 			}
 		}
 		

@@ -17,15 +17,16 @@ import java.util.regex.Pattern;
  * @author Leonard Lausen
  */
 public class NxUtil {
-	private static final Pattern IRIPATTERN = 
-			Pattern.compile("^([^:/?#]+)://([^/?#]*)?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?");
-	private static final Pattern PERCENTPATTERN =
-			Pattern.compile("%[\\dA-Fa-f]{2}");
+	private static final Pattern IRIPATTERN = Pattern
+			.compile("^([^:/?#]+)://([^/?#]*)?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?");
+	private static final Pattern PERCENTPATTERN = Pattern
+			.compile("%[\\dA-Fa-f]{2}");
+
 	private NxUtil() {
 
 	}
-	
-	/**
+
+/**
 	 * Escape IRI according to RDF 1.1 N-Triples W3C Recommendation 25 February 2014
 	 * 
 	 * IRIREF	::= 	'<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
@@ -38,12 +39,12 @@ public class NxUtil {
 		StringBuffer result = new StringBuffer();
 
 		final int length = iri.length();
-		for (int offset = 0; offset < length; ) {
+		for (int offset = 0; offset < length;) {
 			final int codepoint = iri.codePointAt(offset);
 
 			if (!Character.isSupplementaryCodePoint(codepoint)) {
 				char c = (char) codepoint;
-				
+
 				switch (c) {
 				case '\\':
 					result.append("\\u005C");
@@ -86,12 +87,11 @@ public class NxUtil {
 
 			offset += Character.charCount(codepoint);
 		}
-		
 
 		return result.toString();
 	}
-	
-	/**
+
+/**
 	 * Unescape IRI according to RDF 1.1 N-Triples W3C Recommendation 25 February 2014
 	 * 
 	 * IRIREF	::= 	'<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
@@ -122,7 +122,8 @@ public class NxUtil {
 						// unicode now contains the four hex digits
 						// which represents our unicode chacater
 						try {
-							int value = Integer.parseInt(unicode.toString(), 16);
+							int value = Integer
+									.parseInt(unicode.toString(), 16);
 							buffer.append((char) value);
 							unicode = new StringBuffer(4);
 							inUnicode = false;
@@ -176,7 +177,8 @@ public class NxUtil {
 					// uh-oh, we're in unicode country....
 					inUnicode = true;
 					break;
-				} case 'U': {
+				}
+				case 'U': {
 					// even more uh-oh, we're in special unicode land...
 					inSpecialUnicode = true;
 					break;
@@ -203,17 +205,17 @@ public class NxUtil {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String escapeLiteral(String lit) {
 		StringBuffer result = new StringBuffer();
 
 		final int length = lit.length();
-		for (int offset = 0; offset < length; ) {
+		for (int offset = 0; offset < length;) {
 			final int codepoint = lit.codePointAt(offset);
 
 			if (!Character.isSupplementaryCodePoint(codepoint)) {
 				char c = (char) codepoint;
-				
+
 				switch (c) {
 				case '\\':
 					result.append("\\\\");
@@ -236,7 +238,6 @@ public class NxUtil {
 
 			offset += Character.charCount(codepoint);
 		}
-		
 
 		return result.toString();
 	}
@@ -379,17 +380,24 @@ public class NxUtil {
 		}
 		return buffer.toString();
 	}
+
 	/**
 	 * Escapes strings to unicode. Note that this method does not all the work
 	 * required by the spec for processing URIs. {@link URI#toASCIIString()}
 	 * could be your friend here.
 	 * 
-	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#ntrip_strings">What the
-	 *      spec says about the encoding of strings</a>
-	 * @see <a href="http://www.w3.org/TR/rdf-testcases/#sec-uri-encoding">What
-	 *      the spec says on the encoding of URIs</a>
+	 * @see <a
+	 *      href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings">What
+	 *      the N-Triples 1.0 spec says about the encoding of strings</a>
+	 * @see <a
+	 *      href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#sec-uri-encoding">What
+	 *      the N-Triples 1.0 spec says on the encoding of URIs</a>
+	 * @deprecated This method escapes for N-Triples 1.0,
+	 *             {@link #escapeLiteral(String)} and {@link #escapeIRI(String)}
+	 *             are the new methods supporting N-Triples 1.1
 	 */
-	public static String escapeForNx(String lit) {
+	@Deprecated
+	public static String escapeForNTriples1(String lit) {
 		StringBuffer result = new StringBuffer();
 
 		for (int i = 0; i < lit.length(); i++) {
@@ -441,7 +449,7 @@ public class NxUtil {
 	 * 
 	 */
 	public static String escapeForMarkup(String lit) {
-		String unescaped = unescape(lit);
+		String unescaped = unescapeLiteral(lit);
 
 		StringBuffer result = new StringBuffer();
 
@@ -506,24 +514,35 @@ public class NxUtil {
 	}
 
 	/**
-	 * Unescape special characters in literal by removing excess backslashes.
+	 * Unescape special characters in N-Triples 1.0 Literals or Resources.
 	 * 
 	 * @param str
 	 *            The string to escape
+	 * @deprecated This method unescapes for N-Triples 1.0, stuff that has been
+	 *             escaped using {@link #escapeForNTriples1(String)}.
+	 *             {@link #unescapeLiteral(String)} and
+	 *             {@link #unescapeIRI(String)} are the new methods supporting
+	 *             N-Triples 1.1
+	 * 
 	 */
-	public static String unescape(String str) {
-		return unescape(str, false);
+	public static String unescapeForNTriples1(String str) {
+		return unescapeForNTriples1(str, false);
 	}
 
 	/**
-	 * Unescape special characters in literal by removing excess backslashes.
+	 * Unescape special characters in N-Triples 1.0 Literals or Resources.
 	 * 
 	 * @param str
 	 *            The string to escape
 	 * @param clean
 	 *            If true, cleans up excess slashes
+	 * @deprecated This method unescapes for N-Triples 1.0, stuff that has been
+	 *             escaped using {@link #escapeForNTriples1(String)}.
+	 *             {@link #unescapeLiteral(String)} and
+	 *             {@link #unescapeIRI(String)} are the new methods supporting
+	 *             N-Triples 1.1
 	 */
-	public static String unescape(String str, boolean clean) {
+	public static String unescapeForNTriples1(String str, boolean clean) {
 		if (clean)
 			str = cleanSlashes(str);
 		int sz = str.length();
@@ -666,7 +685,7 @@ public class NxUtil {
 			str = str.replaceAll("\\\\\\\\", "\\\\");
 		return str;
 	}
-	
+
 	/**
 	 * Normalize IRI using techniques from RFC3987 5.1
 	 * 
@@ -684,13 +703,15 @@ public class NxUtil {
 		b.append("://");
 		b.append(unescapePercentEncoding(iria[1], false).toLowerCase());
 		b.append(unescapePercentEncoding(iria[2], false));
-		if (iria[3] != "") b.append("?");
+		if (iria[3] != "")
+			b.append("?");
 		b.append(unescapePercentEncoding(iria[3], true));
-		if (iria[4] != "") b.append("#");
+		if (iria[4] != "")
+			b.append("#");
 		b.append(unescapePercentEncoding(iria[4], false));
 		return b.toString();
 	}
-	
+
 	/**
 	 * @param iri
 	 * @return array of scheme, authority, path, query, fragment of iri
@@ -701,14 +722,17 @@ public class NxUtil {
 		if (irim.find()) {
 			for (int i = 1; i <= 5; i++) {
 				String s = irim.group(i);
-				if (s == null) a[i-1] = "";
-				else a[i-1] = s;
+				if (s == null)
+					a[i - 1] = "";
+				else
+					a[i - 1] = s;
 			}
 			return a;
-		} else return null;
-		
+		} else
+			return null;
+
 	}
-	
+
 	/**
 	 * @param iri
 	 * @return authority part of iri
@@ -717,7 +741,8 @@ public class NxUtil {
 		Matcher irim = IRIPATTERN.matcher(iri);
 		if (irim.find()) {
 			return irim.group(2);
-		} else return null;
+		} else
+			return null;
 	}
 
 	/**
@@ -728,7 +753,8 @@ public class NxUtil {
 		Matcher irim = IRIPATTERN.matcher(iri);
 		if (irim.find()) {
 			return irim.group(1);
-		} else return null;
+		} else
+			return null;
 	}
 
 	/**
@@ -739,7 +765,8 @@ public class NxUtil {
 		Matcher irim = IRIPATTERN.matcher(iri);
 		if (irim.find()) {
 			return irim.group(4);
-		} else return null;
+		} else
+			return null;
 	}
 
 	/**
@@ -750,7 +777,8 @@ public class NxUtil {
 		Matcher irim = IRIPATTERN.matcher(iri);
 		if (irim.find()) {
 			return irim.group(5);
-		} else return null;
+		} else
+			return null;
 	}
 
 	/**
@@ -761,22 +789,27 @@ public class NxUtil {
 		Matcher irim = IRIPATTERN.matcher(iri);
 		if (irim.find()) {
 			return irim.group(3);
-		} else return null;
+		} else
+			return null;
 	}
-	
+
 	/**
-	 * Unescape percent encoding that is allowed in IRI. This method assumes, that the
-	 * Percent-Encoded characters are UTF8 characters.
+	 * Unescape percent encoding that is allowed in IRI. This method assumes,
+	 * that the Percent-Encoded characters are UTF8 characters.
 	 * 
 	 * @param str
 	 *            The string to unescape
 	 * @param privateUCS
-	 *            Unescape private UCS characters as well. They are only allowed in the
-	 *            query part of an IRI, so be careful to only unescape them there.
+	 *            Unescape private UCS characters as well. They are only allowed
+	 *            in the query part of an IRI, so be careful to only unescape
+	 *            them there.
 	 */
 	public static String unescapePercentEncoding(String str, Boolean privateUCS) {
-		StringBuilder result = new StringBuilder(str.length());	// Here will be the decoded string
-		StringBuilder orig = new StringBuilder();	// Saves the original percent-encoded string
+		StringBuilder result = new StringBuilder(str.length()); // Here will be
+																// the decoded
+																// string
+		StringBuilder orig = new StringBuilder(); // Saves the original
+													// percent-encoded string
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		String enc;
 		int value;
@@ -794,16 +827,17 @@ public class NxUtil {
 				value = Integer.parseInt(enc, 16);
 				if ((value & 0x80) == 0) { // 1-Byte UTF8
 					bytes.write((byte) value);
-				} else if ((value & 0x20) == 0 && i + 5 < str.length() &&
-						str.charAt(i + 3) == '%') { // 2-Byte UTF8
+				} else if ((value & 0x20) == 0 && i + 5 < str.length()
+						&& str.charAt(i + 3) == '%') { // 2-Byte UTF8
 					bytes.write((byte) value);
 					i += 3;
 					enc = str.substring(i + 1, i + 3);
 					orig.append('%');
 					orig.append(enc);
 					bytes.write(Integer.parseInt(enc, 16));
-				} else if ((value & 0x10) == 0 && i + 8 < str.length() &&
-						str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%') { // 3-Byte UTF8
+				} else if ((value & 0x10) == 0 && i + 8 < str.length()
+						&& str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%') { // 3-Byte
+																					// UTF8
 					bytes.write((byte) value);
 					for (int j = 0; j < 2; j++) {
 						i += 3;
@@ -812,9 +846,9 @@ public class NxUtil {
 						orig.append(enc);
 						bytes.write(Integer.parseInt(enc, 16));
 					}
-				} else if ((value & 0x8) == 0 && i + 11 < str.length() &&
-						str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%' &&
-						str.charAt(i + 9) == '%') { // 4-Byte UTF8
+				} else if ((value & 0x8) == 0 && i + 11 < str.length()
+						&& str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%'
+						&& str.charAt(i + 9) == '%') { // 4-Byte UTF8
 					bytes.write((byte) value);
 					for (int j = 0; j < 3; j++) {
 						i += 3;
@@ -832,60 +866,68 @@ public class NxUtil {
 				}
 
 				// Parse the UTF8 to a Java String
-				String s = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
-				assert s.codePointCount(0, s.length()) == 1; // there should only be one character
+				String s = new String(bytes.toByteArray(),
+						StandardCharsets.UTF_8);
+				assert s.codePointCount(0, s.length()) == 1; // there should
+																// only be one
+																// character
 				ByteBuffer b;
 				try {
-					// Convert to UTF32BE, which is "identical" to Unicode Code Points
+					// Convert to UTF32BE, which is "identical" to Unicode Code
+					// Points
 					b = ByteBuffer.wrap(s.getBytes("UTF-32BE"));
 					value = b.getInt();
 
 					// Check whether character is allowed in IRI (RFC 3987 §2.2)
-					if ((value >= 0x41 && value <= 0x5A) || // Small alpha
-							(value >= 0x61 && value <= 0x7A) || // Big alpha
-							(value >= 0x30 && value <= 0x39) || // Digit
-							(value == '-' || value == '.' || value == '_' || value == '~') ||
-							(value >= 0xA0 && value <= 0xD7FF) || // RFC 3987 ucschar
-							(value >= 0xF900 && value <= 0xFDCF) ||
-							(value >= 0xFDF0 && value <= 0xFEFF) ||
-							(value >= 0x10000 && value <= 0x1FFFD) ||
-							(value >= 0x20000 && value <= 0x2FFFD) ||
-							(value >= 0x30000 && value <= 0x3FFFD) ||
-							(value >= 0x40000 && value <= 0x4FFFD) ||
-							(value >= 0x50000 && value <= 0x5FFFD) ||
-							(value >= 0x60000 && value <= 0x6FFFD) ||
-							(value >= 0x70000 && value <= 0x7FFFD) ||
-							(value >= 0x80000 && value <= 0x8FFFD) ||
-							(value >= 0x90000 && value <= 0x9FFFD) ||
-							(value >= 0xA0000 && value <= 0xAFFFD) ||
-							(value >= 0xB0000 && value <= 0xBFFFD) ||
-							(value >= 0xC0000 && value <= 0xCFFFD) ||
-							(value >= 0xD0000 && value <= 0xDFFFD) ||
-							(value >= 0xE1000 && value <= 0xEFFFD))
-					{
+					if ((value >= 0x41 && value <= 0x5A)
+							|| // Small alpha
+							(value >= 0x61 && value <= 0x7A)
+							|| // Big alpha
+							(value >= 0x30 && value <= 0x39)
+							|| // Digit
+							(value == '-' || value == '.' || value == '_' || value == '~')
+							|| (value >= 0xA0 && value <= 0xD7FF)
+							|| // RFC 3987 ucschar
+							(value >= 0xF900 && value <= 0xFDCF)
+							|| (value >= 0xFDF0 && value <= 0xFEFF)
+							|| (value >= 0x10000 && value <= 0x1FFFD)
+							|| (value >= 0x20000 && value <= 0x2FFFD)
+							|| (value >= 0x30000 && value <= 0x3FFFD)
+							|| (value >= 0x40000 && value <= 0x4FFFD)
+							|| (value >= 0x50000 && value <= 0x5FFFD)
+							|| (value >= 0x60000 && value <= 0x6FFFD)
+							|| (value >= 0x70000 && value <= 0x7FFFD)
+							|| (value >= 0x80000 && value <= 0x8FFFD)
+							|| (value >= 0x90000 && value <= 0x9FFFD)
+							|| (value >= 0xA0000 && value <= 0xAFFFD)
+							|| (value >= 0xB0000 && value <= 0xBFFFD)
+							|| (value >= 0xC0000 && value <= 0xCFFFD)
+							|| (value >= 0xD0000 && value <= 0xDFFFD)
+							|| (value >= 0xE1000 && value <= 0xEFFFD)) {
 						result.append(Character.toChars(value));
 					} // If enabled, check if character is in private UCS range
 					else if (privateUCS) {
-						if ((value >= 0xE000 && value <= 0xF8FF) ||
-								(value >= 0xF0000 && value <= 0xFFFFD) ||
-								(value >= 0x100000 && value <= 0x10FFFD))
-						{
+						if ((value >= 0xE000 && value <= 0xF8FF)
+								|| (value >= 0xF0000 && value <= 0xFFFFD)
+								|| (value >= 0x100000 && value <= 0x10FFFD)) {
 							result.append(Character.toChars(value));
 						} else {
 							result.append(orig.toString().toUpperCase());
 						}
-					} else {		
+					} else {
 						result.append(orig.toString().toUpperCase());
 					}
 				} catch (NumberFormatException e) {
-					// It's not possible to decode, so leave the original percent-encoding
+					// It's not possible to decode, so leave the original
+					// percent-encoding
 					result.append(orig.toString().toUpperCase());
-				
+
 				} catch (UnsupportedEncodingException e) {
-					// It's not possible to decode, so leave the original percent-encoding
+					// It's not possible to decode, so leave the original
+					// percent-encoding
 					result.append(orig.toString().toUpperCase());
 				}
-				
+
 				orig.setLength(0);
 				orig.trimToSize();
 				bytes.reset();
@@ -895,10 +937,10 @@ public class NxUtil {
 				i++;
 			}
 		}
-		
+
 		return result.toString();
 	}
-	
+
 	/**
 	 * Case Normalize percent encoding.
 	 * 

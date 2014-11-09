@@ -69,17 +69,26 @@ public class Resource implements Node, Serializable {
 	 * 
 	 * @return the URI
 	 * @throws URISyntaxException
+	 * @see Implemented using {@link #getUriString()}
 	 */
 	public URI toURI() throws URISyntaxException {
 		return new URI(getUriString());
 	}
 
-	@Deprecated
+	/**
+	 * Removes <> from IRI and unescapes such that the bare IRI remains.
+	 * 
+	 * @return IRI without <> and escaping undone.
+	 */
 	public String getUriString() {
 		return NxUtil.unescapeIRI(toString().substring(1,
 				toString().length() - 1));
 	}
 
+	/**
+	 * @return the IRI without <>
+	 * @see Implemented by {@link #getUriString()}
+	 */
 	@Override
 	public String getLabel() {
 		return getUriString();

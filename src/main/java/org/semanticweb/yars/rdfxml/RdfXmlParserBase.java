@@ -21,7 +21,6 @@ import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.namespace.RDF;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.ParseException;
-import org.semanticweb.yars.nx.util.NxUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -579,12 +578,12 @@ public class RdfXmlParserBase extends DefaultHandler {
 	private Literal createLiteral(final String s){
 		Literal l;
 		if(_datatype!=null){
-			l = new Literal(NxUtil.escapeForNx(s), _datatype);
+			l = new Literal(s, _datatype);
 			_datatype = null;
 		} else if(_currentLang!=null){
-			l = new Literal(NxUtil.escapeForNx(s), _currentLang);
+			l = new Literal(s, _currentLang);
 		}  else{
-			l = new Literal(NxUtil.escapeForNx(s));
+			l = new Literal(s);
 		}
 		return l;
 	}
@@ -1145,7 +1144,7 @@ public class RdfXmlParserBase extends DefaultHandler {
 	}
 	
 	public static Resource createResource(String raw){
-		return new Resource(NxUtil.escapeForNx(raw));
+		return new Resource(raw);
 	}
 	
 	private void handleStatement(final Node... triple){

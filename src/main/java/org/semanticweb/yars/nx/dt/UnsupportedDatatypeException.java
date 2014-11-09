@@ -1,7 +1,6 @@
 package org.semanticweb.yars.nx.dt;
 
 
-import org.semanticweb.yars.nx.Resource;
 
 public class UnsupportedDatatypeException extends Exception {
 	/**
