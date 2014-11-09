@@ -190,7 +190,7 @@ public class XsdDatatypeMap {
 
 			if (!canon.equals(l.toString())
 					|| !primitiveDT.equals(l.getDatatype())) {
-				return new Literal(NxUtil.escapeForNx(canon), primitiveDT);
+				return new Literal(NxUtil.escapeForNTriples1(canon), primitiveDT);
 			}
 		}
 		
@@ -199,13 +199,14 @@ public class XsdDatatypeMap {
 
 	public static boolean areDisjoint(Resource dt1, Resource dt2)
 			throws UnsupportedDatatypeException {
-		if (dt1.equals(dt2)) {
+		 if (dt1 == null && XSD.STRING.equals(dt2)) {
 			return false;
-		} else if (dt1 == null && dt2.equals(XSD.STRING)) {
+		} else if (dt2 == null && XSD.STRING.equals(dt1)) {
 			return false;
-		} else if (dt2 == null && dt1.equals(XSD.STRING)) {
+		} if (dt1.equals(dt2)) {
 			return false;
 		}
+
 		DatatypeElement de1 = MAP.get(dt1);
 		DatatypeElement de2 = MAP.get(dt2);
 		if (de1 == null) {
