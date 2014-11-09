@@ -1,6 +1,10 @@
 package org.semanticweb.yars.nx.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -674,19 +678,16 @@ public class NxUtil {
 			iri = Normalizer.normalize(iri, Normalizer.Form.NFC);
 		}
 
-		iri = unescapePercentEncoding(iri);
-		iri = caseNormalizePercentEncoding(iri);
-
 		String[] iria = splitIRI(iri);
 		StringBuilder b = new StringBuilder();
 		b.append(iria[0].toLowerCase());
 		b.append("://");
-		b.append(iria[1].toLowerCase());
-		b.append(iria[2]);
+		b.append(unescapePercentEncoding(iria[1], false).toLowerCase());
+		b.append(unescapePercentEncoding(iria[2], false));
 		if (iria[3] != "") b.append("?");
-		b.append(iria[3]);
+		b.append(unescapePercentEncoding(iria[3], true));
 		if (iria[4] != "") b.append("#");
-		b.append(iria[4]);
+		b.append(unescapePercentEncoding(iria[4], false));
 		return b.toString();
 	}
 	
@@ -764,56 +765,134 @@ public class NxUtil {
 	}
 	
 	/**
-	 * Unescape percent encoding that is allowed in IRI.
+	 * Unescape percent encoding that is allowed in IRI. This method assumes, that the
+	 * Percent-Encoded characters are UTF8 characters.
 	 * 
 	 * @param str
 	 *            The string to unescape
+	 * @param privateUCS
+	 *            Unescape private UCS characters as well. They are only allowed in the
+	 *            query part of an IRI, so be careful to only unescape them there.
 	 */
-	public static String unescapePercentEncoding(String str) {
-		StringBuffer buffer = new StringBuffer();
-		Matcher m = PERCENTPATTERN.matcher(str);
-		int last = 0;
+	public static String unescapePercentEncoding(String str, Boolean privateUCS) {
+		StringBuilder result = new StringBuilder(str.length());	// Here will be the decoded string
+		StringBuilder orig = new StringBuilder();	// Saves the original percent-encoded string
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		String enc;
-		while (m.find()) {
-			buffer.append(str.substring(last, m.start()));
-			enc = m.group().substring(1);
-			last = m.end();
-			
-			try {
-				int value = Integer.parseInt(enc, 16);
-				if ((value >= 0x41 && value <= 0x5A) || // Small alpha
-						(value >= 0x61 && value <= 0x7A) || // Big alpha
-						(value >= 0x30 && value <= 0x39) || // Digit
-						(value == '-' || value == '.' || value == '_' || value == '~') ||
-						(value >= 0xA0 && value <= 0xD7FF) || // RFC 3987 ucschar
-						(value >= 0xF900 && value <= 0xFDCF) ||
-						(value >= 0xFDF0 && value <= 0xFEFF) ||
-						(value >= 0x10000 && value <= 0x1FFFD) ||
-						(value >= 0x20000 && value <= 0x2FFFD) ||
-						(value >= 0x30000 && value <= 0x3FFFD) ||
-						(value >= 0x40000 && value <= 0x4FFFD) ||
-						(value >= 0x50000 && value <= 0x5FFFD) ||
-						(value >= 0x60000 && value <= 0x6FFFD) ||
-						(value >= 0x70000 && value <= 0x7FFFD) ||
-						(value >= 0x80000 && value <= 0x8FFFD) ||
-						(value >= 0x90000 && value <= 0x9FFFD) ||
-						(value >= 0xA0000 && value <= 0xAFFFD) ||
-						(value >= 0xB0000 && value <= 0xBFFFD) ||
-						(value >= 0xC0000 && value <= 0xCFFFD) ||
-						(value >= 0xD0000 && value <= 0xDFFFD) ||
-						(value >= 0xE1000 && value <= 0xEFFFD))
-					//TODO furthermore %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD are
-					// allowed in the query part (iprivate)
-				{
-					buffer.append((char) value);
+		int value;
+		for (int i = 0; i < str.length();) {
+			char c = str.charAt(i);
+
+			// Percent-Encoded stuff ahead
+			if (c == '%' && i + 2 < str.length()) {
+				// Get and save the percent-encoded chars
+				enc = str.substring(i + 1, i + 3);
+				orig.append('%');
+				orig.append(enc);
+
+				// Decode and check if this is valid UTF8
+				value = Integer.parseInt(enc, 16);
+				if ((value & 0b10000000) == 0) { // 1-Byte UTF8
+					bytes.write((byte) value);
+				} else if ((value & 0b00100000) == 0 && i + 5 < str.length() &&
+						str.charAt(i + 3) == '%') { // 2-Byte UTF8
+					bytes.write((byte) value);
+					i += 3;
+					enc = str.substring(i + 1, i + 3);
+					orig.append('%');
+					orig.append(enc);
+					bytes.write(Integer.parseInt(enc, 16));
+				} else if ((value & 0b00010000) == 0 && i + 8 < str.length() &&
+						str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%') { // 3-Byte UTF8
+					bytes.write((byte) value);
+					for (int j = 0; j < 2; j++) {
+						i += 3;
+						enc = str.substring(i + 1, i + 3);
+						orig.append('%');
+						orig.append(enc);
+						bytes.write(Integer.parseInt(enc, 16));
+					}
+				} else if ((value & 0b00001000) == 0 && i + 11 < str.length() &&
+						str.charAt(i + 3) == '%' && str.charAt(i + 6) == '%' &&
+						str.charAt(i + 9) == '%') { // 4-Byte UTF8
+					bytes.write((byte) value);
+					for (int j = 0; j < 3; j++) {
+						i += 3;
+						enc = str.substring(i + 1, i + 3);
+						orig.append('%');
+						orig.append(enc);
+						bytes.write(Integer.parseInt(enc, 16));
+					}
+				} else { // No UTF8
+					result.append(orig.toString());
+					orig.setLength(0);
+					orig.trimToSize();
+					i += 3;
+					continue;
 				}
-			} catch (NumberFormatException nfe) {
-				buffer.append("%");
-				buffer.append(enc);
+
+				// Parse the UTF8 to a Java String
+				String s = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
+				assert s.codePointCount(0, s.length()) == 1; // there should only be one character
+				ByteBuffer b;
+				try {
+					// Convert to UTF32BE, which is "identical" to Unicode Code Points
+					b = ByteBuffer.wrap(s.getBytes("UTF-32BE"));
+					value = b.getInt();
+
+					// Check whether character is allowed in IRI (RFC 3987 §2.2)
+					if ((value >= 0x41 && value <= 0x5A) || // Small alpha
+							(value >= 0x61 && value <= 0x7A) || // Big alpha
+							(value >= 0x30 && value <= 0x39) || // Digit
+							(value == '-' || value == '.' || value == '_' || value == '~') ||
+							(value >= 0xA0 && value <= 0xD7FF) || // RFC 3987 ucschar
+							(value >= 0xF900 && value <= 0xFDCF) ||
+							(value >= 0xFDF0 && value <= 0xFEFF) ||
+							(value >= 0x10000 && value <= 0x1FFFD) ||
+							(value >= 0x20000 && value <= 0x2FFFD) ||
+							(value >= 0x30000 && value <= 0x3FFFD) ||
+							(value >= 0x40000 && value <= 0x4FFFD) ||
+							(value >= 0x50000 && value <= 0x5FFFD) ||
+							(value >= 0x60000 && value <= 0x6FFFD) ||
+							(value >= 0x70000 && value <= 0x7FFFD) ||
+							(value >= 0x80000 && value <= 0x8FFFD) ||
+							(value >= 0x90000 && value <= 0x9FFFD) ||
+							(value >= 0xA0000 && value <= 0xAFFFD) ||
+							(value >= 0xB0000 && value <= 0xBFFFD) ||
+							(value >= 0xC0000 && value <= 0xCFFFD) ||
+							(value >= 0xD0000 && value <= 0xDFFFD) ||
+							(value >= 0xE1000 && value <= 0xEFFFD))
+					{
+						result.append(Character.toChars(value));
+					} // If enabled, check if character is in private UCS range
+					else if (privateUCS) {
+						if ((value >= 0xE000 && value <= 0xF8FF) ||
+								(value >= 0xF0000 && value <= 0xFFFFD) ||
+								(value >= 0x100000 && value <= 0x10FFFD))
+						{
+							result.append(Character.toChars(value));
+						} else {
+							result.append(orig.toString());
+						}
+					} else {		
+						result.append(orig.toString());
+					}
+				} catch (NumberFormatException | UnsupportedEncodingException e) {
+					// It's not possible to decode, so leave the original percent-encoding
+					result.append(orig.toString());
+				}
+				
+				orig.setLength(0);
+				orig.trimToSize();
+				bytes.reset();
+				i += 3;
+			} else {
+				result.append(c);
+				i++;
 			}
 		}
-		buffer.append(str.substring(last));
-		return buffer.toString();
+		
+		return result.toString();
 	}
 	
 	/**

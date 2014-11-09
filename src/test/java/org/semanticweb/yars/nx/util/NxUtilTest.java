@@ -44,7 +44,16 @@ public class NxUtilTest {
 	
 	@Test
 	public void testPercentEncoding() {
-		assertEquals("http://example.org/testüöä?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test%fc%f6%e4?uiae"));
+		assertEquals("http://example.org/testü%22?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test%C3%BC%22?uiae"));
+		
+		// 3 Byte UTF8
+		assertEquals("http://example.org/퀀?퀂", NxUtil.normalize("HTTp://eXAMple.oRg/%ED%80%80?%ED%80%82"));
+
+		//Invalid UTF8
+		assertEquals("http://example.org/%E4", NxUtil.normalize("HTTp://eXAMple.oRg/%E4"));
+
+		// Private & 4 Byte UCS
+		assertEquals("http://example.org/%F3%B0%80%80?󰀀", NxUtil.normalize("HTTp://eXAMple.oRg/%F3%B0%80%80?%F3%B0%80%80"));
 		assertEquals("%3C%3E%7B%7D", NxUtil.caseNormalizePercentEncoding("%3c%3e%7b%7d"));
 	}
 }
