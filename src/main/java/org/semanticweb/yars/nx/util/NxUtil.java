@@ -28,6 +28,7 @@ public class NxUtil {
 	 * 
 	 * @param iri IRI to escape
 	 * @return escaped IRI
+	 * @see <a href="http://www.w3.org/TR/2014/REC-n-triples-20140225/">The N-Triples spec</a>
 	 */
 	public static String escapeIRI(String iri) {
 		StringBuffer result = new StringBuffer();
@@ -498,20 +499,6 @@ public class NxUtil {
 	 **/
 	private static String toHexString(int decimal, int stringLength) {
 		return String.format("%0" + stringLength + "X", decimal);
-
-		// StringBuffer result = new StringBuffer(stringLength);
-		//
-		// String hexVal = Integer.toHexString(decimal).toUpperCase();
-		//
-		// // insert zeros if hexVal has less than stringLength characters:
-		// int nofZeros = stringLength - hexVal.length();
-		// for (int i = 0; i < nofZeros; i++) {
-		// result.append('0');
-		// }
-		//
-		// result.append(hexVal);
-		//
-		// return result.toString();
 	}
 
 	/**
