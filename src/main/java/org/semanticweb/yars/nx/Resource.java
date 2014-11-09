@@ -18,7 +18,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
 public class Resource implements Node, Serializable {
 	private static Logger _log = Logger.getLogger(Resource.class.getName());
 
-	// the value of the Iri in N3 syntax (including <>)
+	/** The value of the Iri in N-Triples syntax (including <>) . */
 	String _data;
 
 	// version number for serialisation
@@ -34,23 +34,28 @@ public class Resource implements Node, Serializable {
 	}
 
 	/**
-	 * Constructor. Assumes valid IRI or valid N3 (including <> brackets).
+	 * Constructor. Assumes valid IRI or valid N-Triples (including <>
+	 * brackets).
 	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc3987">The IRI spec</a> and
-	 * <a href="http://www.w3.org/TR/n-triples/">The N3 spec</a>
-	 * @param isN3 If true expects valid N3, else valid IRI.
+	 * @see <a href="http://tools.ietf.org/html/rfc3987">The IRI spec</a> and <a
+	 *      href="http://www.w3.org/TR/n-triples/">The N-Triples spec</a>
+	 * @param isNTriples
+	 *            If true expects valid N-Triples, else valid IRI.
 	 */
-	public Resource(String iri, boolean isN3) {
-		if (!isN3) {
+	public Resource(String iri, boolean isNTriples) {
+		if (!isNTriples) {
 			if (iri == null || iri.length() == 0) {
 				// maybe throw Exception, or just be silent
 				_log.log(Level.WARNING, "Empty string not allowed.");
 
 				_data = iri;
 			} else if (iri.charAt(0) != '<') {
-				//TODO remove?
 				_data = ("<" + NxUtil.escapeIRI(iri) + ">");
 			} else {
+				_log.log(
+						Level.WARNING,
+						"Bare and valid IRI expected, was supplied something with brackets <>: {0}",
+						iri);
 				_data = NxUtil.escapeIRI(iri);
 			}
 		} else {
@@ -59,11 +64,11 @@ public class Resource implements Node, Serializable {
 	}
 
 	/**
-	 * Returns the URI that this resource represents. Be careful, as Java URI represents
-	 * URIs according to RFC2396 and not IRIs according to RFC3986.
+	 * Returns the URI that this resource represents. Be careful, as Java URI
+	 * represents URIs according to RFC2396 and not IRIs according to RFC3986.
 	 * 
 	 * @return the URI
-	 * @throws URISyntaxException 
+	 * @throws URISyntaxException
 	 */
 	public URI toURI() throws URISyntaxException {
 		return new URI(getUriString());
@@ -71,19 +76,20 @@ public class Resource implements Node, Serializable {
 
 	@Deprecated
 	public String getUriString() {
-		return NxUtil.unescapeIRI(toString().substring(1, toString().length() - 1));
+		return NxUtil.unescapeIRI(toString().substring(1,
+				toString().length() - 1));
 	}
-	
+
 	@Override
-    public String getLabel() {
-    	return getUriString();
-    }
+	public String getLabel() {
+		return getUriString();
+	}
 
 	/**
-	 * Get URI in N3 notation.
+	 * Get URI in N-Triples notation.
 	 * 
 	 */
-//	@Override
+	@Override
 	public String toString() {
 		return _data;
 	}
@@ -105,11 +111,10 @@ public class Resource implements Node, Serializable {
 		if (o == this) {
 			return true;
 		}
-		
-		return  (o instanceof Resource)
-				&& ((Resource) o)._data.equals(_data);
+
+		return (o instanceof Resource) && ((Resource) o)._data.equals(_data);
 	}
-	
+
 	@Override
 	public int compareTo(Node n) {
 		return toString().compareTo(n.toString());
