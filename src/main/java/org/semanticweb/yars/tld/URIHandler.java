@@ -5,7 +5,6 @@ package org.semanticweb.yars.tld;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -16,9 +15,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 
@@ -36,9 +33,6 @@ public class URIHandler implements Comparator<String>{
 	}
 //	private static final String tldFile = ;
 
-	private static Set<String> noTLDSet = new HashSet<String>();
-	private static Set<String> tldSet = new HashSet<String>();
-	private static Set<String> wildcardTLDSet = new HashSet<String>();
 	private static TldManager _tldManager;
 	static {
 		try {
@@ -279,11 +273,10 @@ public class URIHandler implements Comparator<String>{
 	}
 	
 	public static void main(String[] args) throws IOException {
-		URIHandler handler = new URIHandler();
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String line = "";
 		while((line=br.readLine())!=null) {
-			System.out.println(handler.getPLD(line.trim()));
+			System.out.println(getPLD(line.trim()));
 		}
 		
 	}
