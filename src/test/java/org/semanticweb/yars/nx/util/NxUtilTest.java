@@ -3,16 +3,25 @@
  */
 package org.semanticweb.yars.nx.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Test;
-import org.semanticweb.yars.nx.util.NxUtil;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * @author Leonard Lausen
  *
  */
+@RunWith(Enclosed.class)
 public class NxUtilTest {
+	
+	public static class NonParameterisedNxUtilTestCases {
 
 	/**
 	 * Test method for {@link org.semanticweb.yars.nx.util.NxUtil#escapeIRI(java.lang.String)}.
@@ -23,11 +32,6 @@ public class NxUtilTest {
 		for (int i = 1; i <= 32; i++) {
 			assertEquals(NxUtil.escapeIRI(String.valueOf((char) i)), String.format("\\u%04X", i));
 		}
-	}
-	
-	@Test
-	public void testIRI() {
-		assertEquals("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';",  NxUtil.unescapeIRI(NxUtil.escapeIRI("http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';")));
 	}
 	
 	@Test
@@ -72,5 +76,57 @@ public class NxUtilTest {
 		// Private & 4 Byte UCS
 		assertEquals("http://example.org/%F3%B0%80%80?󰀀", NxUtil.normalize("HTTp://eXAMple.oRg/%F3%b0%80%80?%F3%B0%80%80"));
 		assertEquals("%3C%3E%7B%7D", NxUtil.caseNormalizePercentEncoding("%3c%3e%7b%7d"));
+	}
+	}
+	
+	@RunWith(Parameterized.class)
+	public static class ParameterisedNxUtilTestCases {
+
+		String _s;
+
+		@Parameters(name = "{0}")
+		public static Collection<String[]> getParameters() {
+			Collection<String[]> testUris = Arrays.asList(new String[][] {
+					{ "http://exämple.org" },
+					{ "http://el.dbpedia.org/resource/Θεσσαλονίκη" },
+					{ "http://ja.dbpedia.org/resource/東京都" },
+					{ "http://ヒト\\/{}*?()-:@ſ&=><!^][_…#$|~`+%\"';" } });
+
+			return testUris;
+		}
+
+		public ParameterisedNxUtilTestCases(String s) {
+			_s = s;
+		}
+
+		@SuppressWarnings("deprecation")
+		@Test
+		public void newIRIunescapeIsInverseOfOldEscape() {
+			assertEquals(_s, NxUtil.unescapeIRI(NxUtil.escapeForNTriples1(_s)));
+		}
+
+		@SuppressWarnings("deprecation")
+		@Test
+		public void newLiteralUnescapeIsInverseOfOldEscape() {
+			assertEquals(_s,
+					NxUtil.unescapeLiteral(NxUtil.escapeForNTriples1(_s)));
+		}
+
+		@SuppressWarnings("deprecation")
+		@Test
+		public void oldCode_UnescapeIsInverseOfEscape() {
+			assertEquals(_s,
+					NxUtil.unescapeForNTriples1(NxUtil.escapeForNTriples1(_s)));
+		}
+
+		@Test
+		public void newCode_UnescapeIRIisInverseOfEscapeIRI() {
+			assertEquals(_s, NxUtil.unescapeIRI(NxUtil.escapeIRI(_s)));
+		}
+
+		@Test
+		public void newCode_UnescapeLiteralisInverseOfEscapeLiteral() {
+			assertEquals(_s, NxUtil.unescapeLiteral(NxUtil.escapeLiteral(_s)));
+		}
 	}
 }
