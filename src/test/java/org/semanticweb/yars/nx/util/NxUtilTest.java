@@ -35,6 +35,23 @@ public class NxUtilTest {
 		assertEquals("http://example.org/test?uiae#123", NxUtil.normalize("HTTp://eXAMple.oRg/test?uiae#123"));
 		assertEquals("http://example.org/test#123", NxUtil.normalize("HTTp://eXAMple.oRg/test#123"));
 		assertEquals("http://example.org/test?uiae", NxUtil.normalize("HTTp://eXAMple.oRg/test?uiae"));
+		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg:80/"));
+		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg:/"));
+		assertEquals("http://example.org:8080/", NxUtil.normalize("HTTp://eXAMple.oRg:8080/"));
+	}
+	
+	@Test
+	public void testDots() {
+		assertEquals("http://example.org/a/g", NxUtil.normalize("HTTp://eXAMple.oRg/a/b/c/./../../g"));
+		assertEquals("http://example.org/a/b/", NxUtil.normalize("HTTp://eXAMple.oRg/a/b/c/g/../.."));
+		assertEquals("http://example.org/a/b/", NxUtil.normalize("HTTp://eXAMple.oRg/a/b/c/g/../../."));
+		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg/../"));
+		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg/.."));
+		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg/."));
+		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg"));
+		assertEquals("http://example.org/mid/6", NxUtil.normalize("HTTp://eXAMple.oRg/mid/content=5/../6"));
+		assertEquals("http://example.org/?uiae#123", NxUtil.normalize("HTTp://eXAMple.oRg/test/..?uiae#123"));
+		assertEquals("http://example.org/?uiae#123", NxUtil.normalize("HTTp://eXAMple.oRg?uiae#123"));
 	}
 	
 	@Test

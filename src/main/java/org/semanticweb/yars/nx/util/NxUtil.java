@@ -6,6 +6,8 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,8 @@ public class NxUtil {
 			.compile("^([^:/?#]+)://([^/?#]*)?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?");
 	private static final Pattern PERCENTPATTERN = Pattern
 			.compile("%[\\dA-Fa-f]{2}");
+	private static final Pattern PORTPATTERN = Pattern
+			.compile("(.*):([\\d]*)$");
 
 	private NxUtil() {
 
@@ -701,7 +705,9 @@ public class NxUtil {
 		StringBuilder b = new StringBuilder();
 		b.append(iria[0].toLowerCase());
 		b.append("://");
+		iria[1] = removeStandardPorts(iria[0], iria[1]);
 		b.append(unescapePercentEncoding(iria[1], false).toLowerCase());
+		iria[2] = removeDotSegments(iria[2]);
 		b.append(unescapePercentEncoding(iria[2], false));
 		if (iria[3] != "")
 			b.append("?");
@@ -960,5 +966,94 @@ public class NxUtil {
 		}
 		buffer.append(str.substring(last));
 		return buffer.toString();
+	}
+	
+	/**
+	 * Remove default ports from authority as described in RFC3987 5.3.3
+	 * e.g. http://example.org:80 becomes http://example.org
+	 * Currently only http and https schemes are supported.
+	 *  
+	 * @param scheme IRI scheme, e.g. http
+	 * @param authority IRI authority, e.g. example.org or example.org:80
+	 * @return Authority with possibly removed port section
+	 */
+	public static String removeStandardPorts(String scheme, String authority) {
+		Matcher m = PORTPATTERN.matcher(authority);
+		if (m.find()) {
+			if (m.group(2).equals("")) {
+				return m.group(1);
+			}
+			int port = Integer.parseInt(m.group(2));
+			scheme = scheme.toLowerCase();
+			if (scheme.equals("http") && port == 80) {
+				return m.group(1);
+			} else if (scheme.equals("https") && port == 443) {
+				return m.group(1);
+			}
+		}
+		return authority;
+	}
+	
+	
+	/**
+	 * Remove Dot segments from IRI path as described in RFC3987 5.3.2.4
+	 * e.g. "/a/b/c/./../../g" becomes "/a/g" and "" becomes "/"
+	 * 
+	 * @param path IRI path to normalize
+	 * @return Normalized path
+	 */
+	public static String removeDotSegments(String path) {
+		StringBuilder output = new StringBuilder(path.length());
+		Deque<String> in = new ArrayDeque<String>();
+		Deque<String> out = new ArrayDeque<String>();
+		
+		int start = 0;
+		for (int end = 1; end < path.length();) {
+			if (path.charAt(end) == '/') {
+				in.addLast(path.substring(start, end));
+				start = end++;
+			} else {
+				end++;
+			}
+		} // If path doesn't end with / or only is "/", we have to add the last segment manually
+		if (!path.equals("") && (path.charAt(path.length() - 1) != '/' || path.length() == 1)) {
+			in.addLast(path.substring(start));
+		}
+		
+		while (!in.isEmpty()) {
+			String segment = in.removeFirst();
+			if (segment.equals("../") || segment.equals("./")) {
+				continue;
+			} else if (segment.equals("/./") || segment.equals("/.")) {
+				if (in.isEmpty()) {
+					out.addLast("/");
+				}
+			} else if (segment.equals("/../") || segment.equals("/..")) {
+				while ((!out.isEmpty()) && out.removeLast().equals(""));
+				if (in.isEmpty()) {
+					out.addLast("/");
+				}
+			} else if (segment.equals("..") || segment.equals(".")) {
+				continue;
+			} else {
+				if (segment.charAt(segment.length() - 1) != '/' || segment.length() == 1) {
+					out.addLast(segment);
+				} else {
+					out.addLast(segment.substring(0, segment.length() - 1));
+				}
+			}
+			
+		}
+		
+		for (String s : out) {
+			output.append(s);
+		}
+		
+		// See RFC 3987 5.3.3.
+		if (output.length() == 0) {
+			output.append('/');
+		}
+
+		return output.toString();
 	}
 }
