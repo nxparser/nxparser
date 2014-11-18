@@ -40,56 +40,46 @@ public class NxUtil {
 	 * @see <a href="http://www.w3.org/TR/2014/REC-n-triples-20140225/">The N-Triples spec</a>
 	 */
 	public static String escapeIRI(String iri) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
-		final int length = iri.length();
-		for (int offset = 0; offset < length;) {
-			final int codepoint = iri.codePointAt(offset);
+		for (int i = 0; i < iri.length(); i++) {
+			char c = iri.charAt(i);
 
-			if (!Character.isSupplementaryCodePoint(codepoint)) {
-				char c = (char) codepoint;
-
-				switch (c) {
-				case '\\':
-					result.append("\\u005C");
-					break;
-				case '`':
-					result.append("\\u0060");
-					break;
-				case '^':
-					result.append("\\u005E");
-					break;
-				case '|':
-					result.append("\\u007C");
-					break;
-				case '{':
-					result.append("\\u007B");
-					break;
-				case '}':
-					result.append("\\u007D");
-					break;
-				case '"':
-					result.append("\\u0022");
-					break;
-				case '<':
-					result.append("\\u003C");
-					break;
-				case '>':
-					result.append("\\u003E");
-					break;
-				default:
-					if (c <= 32) {
-
-						result.append(String.format("\\u%04X", (int) c));
-					} else {
-						result.append(c);
-					}
+			switch (c) {
+			case '\\':
+				result.append("\\u005C");
+				break;
+			case '`':
+				result.append("\\u0060");
+				break;
+			case '^':
+				result.append("\\u005E");
+				break;
+			case '|':
+				result.append("\\u007C");
+				break;
+			case '{':
+				result.append("\\u007B");
+				break;
+			case '}':
+				result.append("\\u007D");
+				break;
+			case '"':
+				result.append("\\u0022");
+				break;
+			case '<':
+				result.append("\\u003C");
+				break;
+			case '>':
+				result.append("\\u003E");
+				break;
+			default:
+				if (c <= 32) {
+					result.append(String.format("\\u%04X", (int) c));
+				} else {
+					result.append(c);
 				}
-			} else {
-				result.appendCodePoint(codepoint);
 			}
-
-			offset += Character.charCount(codepoint);
 		}
 
 		return result.toString();
@@ -104,143 +94,31 @@ public class NxUtil {
 	 * @return unescaped IRI
 	 */
 	public static String unescapeIRI(String str) {
-		int sz = str.length();
-
-		StringBuffer buffer = new StringBuffer(sz);
-		StringBuffer unicode = new StringBuffer(6);
-
-		boolean hadSlash = false;
-		boolean inUnicode = false;
-		boolean inSpecialUnicode = false;
-
-		for (int i = 0; i < sz; i++) {
-			char ch = str.charAt(i);
-			if (inUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 4) {
-					unicode.append(ch);
-
-					if (unicode.length() == 4) {
-						// unicode now contains the four hex digits
-						// which represents our unicode chacater
-						try {
-							int value = Integer
-									.parseInt(unicode.toString(), 16);
-							buffer.append((char) value);
-							unicode = new StringBuffer(4);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (inSpecialUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 8) {
-					unicode.append(ch);
-
-					if (unicode.length() == 8) {
-						// unicode now contains the six hex digits
-						// which represents our code point
-						try {
-							buffer.appendCodePoint(Integer.parseInt(
-									unicode.toString(), 16));
-
-							unicode = new StringBuffer(8);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (hadSlash) {
-				// handle an escaped value
-				hadSlash = false;
-				switch (ch) {
-				case 'u': {
-					// uh-oh, we're in unicode country....
-					inUnicode = true;
-					break;
-				}
-				case 'U': {
-					// even more uh-oh, we're in special unicode land...
-					inSpecialUnicode = true;
-					break;
-				}
-				default:
-					buffer.append('\\' + ch);
-					break;
-				}
-				continue;
-			}
-
-			else if (ch == '\\') {
-				hadSlash = true;
-				continue;
-			}
-
-			buffer.append(ch);
-		}
-
-		if (hadSlash) {
-			// then we're in the weird case of a \ at the end of the
-			// string, let's output it anyway.
-			buffer.append('\\');
-		}
-		return buffer.toString();
+		return unescape(str, true, false, false);
 	}
 
 	public static String escapeLiteral(String lit) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
-		final int length = lit.length();
-		for (int offset = 0; offset < length;) {
-			final int codepoint = lit.codePointAt(offset);
+		for (int i = 0; i  < lit.length(); i++) {
+			char c = lit.charAt(i);
 
-			if (!Character.isSupplementaryCodePoint(codepoint)) {
-				char c = (char) codepoint;
-
-				switch (c) {
-				case '\\':
-					result.append("\\\\");
-					break;
-				case '"':
-					result.append("\\\"");
-					break;
-				case 10:
-					result.append("\\n");
-					break;
-				case 13:
-					result.append("\\r");
-					break;
-				default:
-					result.append(c);
-				}
-			} else {
-				result.appendCodePoint(codepoint);
+			switch (c) {
+			case '\\':
+				result.append("\\\\");
+				break;
+			case '"':
+				result.append("\\\"");
+				break;
+			case '\n':
+				result.append("\\n");
+				break;
+			case '\r':
+				result.append("\\r");
+				break;
+			default:
+				result.append(c);
 			}
-
-			offset += Character.charCount(codepoint);
 		}
 
 		return result.toString();
@@ -253,136 +131,7 @@ public class NxUtil {
 	 *            The string to escape
 	 */
 	public static String unescapeLiteral(String str) {
-		int sz = str.length();
-
-		StringBuffer buffer = new StringBuffer(sz);
-		StringBuffer unicode = new StringBuffer(6);
-
-		boolean hadSlash = false;
-		boolean inUnicode = false;
-		boolean inSpecialUnicode = false;
-
-		for (int i = 0; i < sz; i++) {
-			char ch = str.charAt(i);
-			if (inUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 4) {
-					unicode.append(ch);
-
-					if (unicode.length() == 4) {
-						// unicode now contains the four hex digits
-						// which represents our unicode chacater
-						try {
-							int value = Integer
-									.parseInt(unicode.toString(), 16);
-							buffer.append((char) value);
-							unicode = new StringBuffer(4);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (inSpecialUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 8) {
-					unicode.append(ch);
-
-					if (unicode.length() == 8) {
-						// unicode now contains the six hex digits
-						// which represents our code point
-						try {
-							buffer.appendCodePoint(Integer.parseInt(
-									unicode.toString(), 16));
-
-							unicode = new StringBuffer(8);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (hadSlash) {
-				// handle an escaped value
-				hadSlash = false;
-				switch (ch) {
-				case '\\':
-					buffer.append('\\');
-					break;
-				case '\'':
-					buffer.append('\'');
-					break;
-				case '\"':
-					buffer.append('"');
-					break;
-				case 'r':
-					buffer.append('\r');
-					break;
-				case 'f':
-					buffer.append('\f');
-					break;
-				case 't':
-					buffer.append('\t');
-					break;
-				case 'n':
-					buffer.append('\n');
-					break;
-				case 'b':
-					buffer.append('\b');
-					break;
-				case 'u': {
-					// uh-oh, we're in unicode country....
-					inUnicode = true;
-					break;
-
-				}
-				case 'U': {
-					// even more uh-oh, we're in special unicode land...
-					inSpecialUnicode = true;
-					break;
-				}
-
-				default:
-					buffer.append('\\' + ch);
-					break;
-				}
-				continue;
-			}
-
-			else if (ch == '\\') {
-				hadSlash = true;
-				continue;
-			}
-
-			buffer.append(ch);
-		}
-
-		if (hadSlash) {
-			// then we're in the weird case of a \ at the end of the
-			// string, let's output it anyway.
-			buffer.append('\\');
-		}
-		return buffer.toString();
+		return unescape(str, false, true, false);
 	}
 
 	/**
@@ -402,7 +151,7 @@ public class NxUtil {
 	 */
 	@Deprecated
 	public static String escapeForNTriples1(String lit) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		for (int i = 0; i < lit.length(); i++) {
 
@@ -449,13 +198,177 @@ public class NxUtil {
 	}
 
 	/**
+	 * Private Code-Sharing method for the different unescapings.
+	 * Only one of the boolean arguments may be true
+	 * 
+	 * @param str String to unescape
+	 * @param iri true iff unescaping IRI
+	 * @param lit true iff unescaping Literal
+	 * @param ntriples1 true iff unescaping old N-Triples1.0
+	 * @return
+	 */
+	private static String unescape(String str, boolean iri, boolean lit,
+			boolean ntriples1) {
+		int check = iri ? 1 : 0;
+		check += lit ? 1 : 0;
+		check += ntriples1 ? 1 : 0;
+
+		// only defined iff one of the booleans is true
+		if (check != 1) {
+			return str;
+		}
+
+		int sz = str.length();
+
+		StringBuilder buffer = new StringBuilder(sz);
+		StringBuilder unicode = new StringBuilder(6);
+
+		boolean hadSlash = false;
+		boolean inUnicode = false;
+		boolean inSpecialUnicode = false;
+
+		for (int i = 0; i < sz; i++) {
+			char ch = str.charAt(i);
+			if (inUnicode) {
+				// if in unicode, then we're reading unicode
+				// values in somehow
+
+				if (unicode.length() < 4) {
+					unicode.append(ch);
+
+					if (unicode.length() == 4) {
+						// unicode now contains the four hex digits
+						// which represents our unicode chacater
+						try {
+							int value = Integer
+									.parseInt(unicode.toString(), 16);
+							buffer.append((char) value);
+							unicode = new StringBuilder(4);
+							inUnicode = false;
+							inSpecialUnicode = false;
+							hadSlash = false;
+						} catch (NumberFormatException nfe) {
+							buffer.append(unicode.toString());
+							continue;
+						}
+						continue;
+					}
+					continue;
+				}
+
+			}
+
+			if (inSpecialUnicode) {
+				// if in unicode, then we're reading unicode
+				// values in somehow
+
+				if (unicode.length() < 8) {
+					unicode.append(ch);
+
+					if (unicode.length() == 8) {
+						// unicode now contains the six hex digits
+						// which represents our code point
+						try {
+							buffer.appendCodePoint(Integer.parseInt(
+									unicode.toString(), 16));
+
+							unicode = new StringBuilder(8);
+							inUnicode = false;
+							inSpecialUnicode = false;
+							hadSlash = false;
+						} catch (NumberFormatException nfe) {
+							buffer.append(unicode.toString());
+							continue;
+						}
+						continue;
+					}
+					continue;
+				}
+
+			}
+
+			if (hadSlash) {
+				// handle an escaped value
+				hadSlash = false;
+				switch (ch) {
+				case 'u': {
+					// uh-oh, we're in unicode country....
+					inUnicode = true;
+					break;
+				}
+				case 'U': {
+					// even more uh-oh, we're in special unicode land...
+					inSpecialUnicode = true;
+					break;
+				}
+				default:
+					if (ntriples1 || lit) {
+						switch (ch) {
+						case '\\':
+							buffer.append('\\');
+							break;
+						case '\'':
+							buffer.append('\'');
+							break;
+						case '\"':
+							buffer.append('"');
+							break;
+						case 'r':
+							buffer.append('\r');
+							break;
+						case 'f':
+							buffer.append('\f');
+							break;
+						case 't':
+							buffer.append('\t');
+							break;
+						case 'n':
+							buffer.append('\n');
+							break;
+						case 'b':
+							buffer.append('\b');
+							break;
+						default:
+							if (ntriples1) {
+								buffer.append(ch);
+							} else {
+								buffer.append("\\" + ch);
+							}
+							break;
+						}
+
+					} else {
+						buffer.append("\\" + ch);
+					}
+					break;
+				}
+				continue;
+			}
+
+			else if (ch == '\\') {
+				hadSlash = true;
+				continue;
+			}
+
+			buffer.append(ch);
+		}
+
+		if (hadSlash) {
+			// then we're in the weird case of a \ at the end of the
+			// string, let's output it anyway.
+			buffer.append('\\');
+		}
+		return buffer.toString();
+	}
+
+	/**
 	 * Escapes strings for markup.
 	 * 
 	 */
 	public static String escapeForMarkup(String lit) {
 		String unescaped = unescapeLiteral(lit);
 
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		for (int i = 0; i < unescaped.length(); i++) {
 			int cp = unescaped.codePointAt(i);
@@ -549,136 +462,7 @@ public class NxUtil {
 	public static String unescapeForNTriples1(String str, boolean clean) {
 		if (clean)
 			str = cleanSlashes(str);
-		int sz = str.length();
-
-		StringBuffer buffer = new StringBuffer(sz);
-		StringBuffer unicode = new StringBuffer(6);
-
-		boolean hadSlash = false;
-		boolean inUnicode = false;
-		boolean inSpecialUnicode = false;
-
-		for (int i = 0; i < sz; i++) {
-			char ch = str.charAt(i);
-			if (inUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 4) {
-					unicode.append(ch);
-
-					if (unicode.length() == 4) {
-						// unicode now contains the four hex digits
-						// which represents our unicode chacater
-						try {
-							int value = Integer
-									.parseInt(unicode.toString(), 16);
-							buffer.append((char) value);
-							unicode = new StringBuffer(4);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (inSpecialUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 8) {
-					unicode.append(ch);
-
-					if (unicode.length() == 8) {
-						// unicode now contains the six hex digits
-						// which represents our code point
-						try {
-							buffer.appendCodePoint(Integer.parseInt(
-									unicode.toString(), 16));
-
-							unicode = new StringBuffer(8);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (hadSlash) {
-				// handle an escaped value
-				hadSlash = false;
-				switch (ch) {
-				case '\\':
-					buffer.append('\\');
-					break;
-				case '\'':
-					buffer.append('\'');
-					break;
-				case '\"':
-					buffer.append('"');
-					break;
-				case 'r':
-					buffer.append('\r');
-					break;
-				case 'f':
-					buffer.append('\f');
-					break;
-				case 't':
-					buffer.append('\t');
-					break;
-				case 'n':
-					buffer.append('\n');
-					break;
-				case 'b':
-					buffer.append('\b');
-					break;
-				case 'u': {
-					// uh-oh, we're in unicode country....
-					inUnicode = true;
-					break;
-
-				}
-				case 'U': {
-					// even more uh-oh, we're in special unicode land...
-					inSpecialUnicode = true;
-					break;
-				}
-
-				default:
-					buffer.append(ch);
-					break;
-				}
-				continue;
-			}
-
-			else if (ch == '\\') {
-				hadSlash = true;
-				continue;
-			}
-
-			buffer.append(ch);
-		}
-
-		if (hadSlash) {
-			// then we're in the weird case of a \ at the end of the
-			// string, let's output it anyway.
-			buffer.append('\\');
-		}
-		return buffer.toString();
+		return unescape(str, false, false, true);
 	}
 
 	/**
@@ -954,7 +738,7 @@ public class NxUtil {
 	 *            The string to normalize
 	 */
 	public static String caseNormalizePercentEncoding(String str) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		Matcher m = PERCENTPATTERN.matcher(str);
 		int last = 0;
 		String enc;
