@@ -19,9 +19,9 @@ public class BNode implements Node {
 
 	final static String PREFIX = "_:";
 
-//	public static boolean PRETTY_PRINT = false;
+	// public static boolean PRETTY_PRINT = false;
 
-	// the value of the bnode in N3 syntax (including _:)
+	// the value of the bnode in N-Triples syntax (including _:)
 	private final String _data;
 
 	// version number for serialization
@@ -30,13 +30,16 @@ public class BNode implements Node {
 	/**
 	 * Constructor if we have a bnode with a nodeID. Need to add context of the
 	 * file to the nodeID later, otherwise there will be clashes.
+	 * 
+	 * If you can vouch that your data is conforming to the spec, use
+	 * {@link #BNode(String, boolean)}.
 	 */
 	public BNode(String nodeid) {
 		this(nodeid, false);
 	}
 
-	public BNode(String nodeid, boolean isN3) {
-		if (isN3) {
+	public BNode(String nodeid, boolean isNTriples) {
+		if (isNTriples) {
 			_data = nodeid;
 		} else if (!nodeid.startsWith(PREFIX)) {
 			_data = (PREFIX + nodeid);
@@ -45,32 +48,32 @@ public class BNode implements Node {
 		}
 	}
 
-	/**
-	 * Get URI.
-	 */
-//	@Override
-//	public String toString() {
-//		if (PRETTY_PRINT) {
-//			try {
-//				String[] conb = parseContextualBNode();
-//				return conb[1] + "@[" + conb[0] + "]";
-//			} catch (ParseException pe) {
-//				return unescapeForBNode(_data.substring(PREFIX.length()));
-//			}
-//		} else {
-//			return _data.substring(PREFIX.length());
-//		}
-//	}
-	
+	// /**
+	// * Get URI.
+	// */
+	// @Override
+	// public String toString() {
+	// if (PRETTY_PRINT) {
+	// try {
+	// String[] conb = parseContextualBNode();
+	// return conb[1] + "@[" + conb[0] + "]";
+	// } catch (ParseException pe) {
+	// return unescapeForBNode(_data.substring(PREFIX.length()));
+	// }
+	// } else {
+	// return _data.substring(PREFIX.length());
+	// }
+	// }
+
 	@Deprecated
 	public String getBNodeString() {
 		return _data.substring(PREFIX.length());
 	}
-	
+
 	@Override
-    public String getLabel() {
-    	return getBNodeString();
-    }
+	public String getLabel() {
+		return getBNodeString();
+	}
 
 	@Override
 	public String toString() {
@@ -93,7 +96,7 @@ public class BNode implements Node {
 	public int hashCode() {
 		return _data.hashCode();
 	}
-	
+
 	@Override
 	public int compareTo(Node n) {
 		return toString().compareTo(n.toString());
@@ -103,7 +106,8 @@ public class BNode implements Node {
 		String d = _data.substring(PREFIX.length());
 		String[] uri = d.toString().split("xx");
 		if (uri.length != 2) {
-			throw new ParseException("Not a valid context encoded BNode " + _data);
+			throw new ParseException("Not a valid context encoded BNode "
+					+ _data);
 		}
 		uri[0] = unescapeForBNode(uri[0]);
 		uri[1] = unescapeForBNode(uri[1]);

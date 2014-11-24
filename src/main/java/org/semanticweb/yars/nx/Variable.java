@@ -8,6 +8,16 @@ public class Variable implements Node, Serializable {
 	private final String _data;
 	private final boolean _existential;
 
+	/**
+	 * Constructor for Variables. Although they do not exist in N-Triples, they
+	 * are sometimes useful.
+	 * 
+	 * @param data
+	 * @param existential
+	 * @param isN3
+	 *            whether the data comes according to N3, i.e. with a question
+	 *            mark
+	 */
 	public Variable(String data,  boolean existential, boolean isN3) {
 		if (isN3) {
 			_data = data;
@@ -21,10 +31,24 @@ public class Variable implements Node, Serializable {
 		_existential = existential;
 	}
 
+	/**
+	 * Constructor for Variables. Although they do not exist in N-Triples, they
+	 * are sometimes useful.
+	 * 
+	 * @param data
+	 * @param isN3 whether the data comes according to N3, i.e. with a question mark
+	 */
 	public Variable(String data, boolean isN3) {
 		this(data, false, isN3);
 	}
 
+	/**
+	 * Constructor for Variables. Although they do not exist in N-Triples, they
+	 * are sometimes useful. If you can vouch that your data with a
+	 * question mark, use {@link #Variable(String, boolean)}.
+	 * 
+	 * @param data
+	 */
 	public Variable(String data) {
 		this(data, false, false);
 	}

@@ -79,7 +79,9 @@ public class Resource implements Node, Serializable {
 	 * Removes <> from IRI and unescapes such that the bare IRI remains.
 	 * 
 	 * @return IRI without <> and escaping undone.
+	 * @deprecated use {@link #getLabel()} instead
 	 */
+	@Deprecated
 	public String getUriString() {
 		return NxUtil.unescapeIRI(toString().substring(1,
 				toString().length() - 1));
