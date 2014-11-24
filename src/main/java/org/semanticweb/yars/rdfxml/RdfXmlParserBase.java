@@ -950,7 +950,7 @@ public class RdfXmlParserBase extends DefaultHandler {
 	}
 
 	private static boolean isCMP(Resource p1) {
-		return p1.equals(RDF.LI) || p1.getUriString().startsWith(RDF.NS+"_");
+		return p1.equals(RDF.LI) || p1.toString().startsWith("<" + RDF.NS + "_");
 	}
 
 	private void handleParseTypeLiteralEndElement(final String name, final String lname, final String qname){
