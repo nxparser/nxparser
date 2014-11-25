@@ -25,6 +25,9 @@ public class NxUtil {
 			.compile("%[\\dA-Fa-f]{2}");
 	private static final Pattern PORTPATTERN = Pattern
 			.compile("(.*):([\\d]*)$");
+	private enum EscapeType {
+		IRI, Literal, NTriples1
+	}
 
 	private NxUtil() {
 
@@ -94,7 +97,7 @@ public class NxUtil {
 	 * @return unescaped IRI
 	 */
 	public static String unescapeIRI(String str) {
-		return unescape(str, true, false, false);
+		return unescape(str, EscapeType.IRI);
 	}
 
 	public static String escapeLiteral(String lit) {
@@ -131,7 +134,7 @@ public class NxUtil {
 	 *            The string to escape
 	 */
 	public static String unescapeLiteral(String str) {
-		return unescape(str, false, true, false);
+		return unescape(str, EscapeType.Literal);
 	}
 
 	/**
@@ -198,26 +201,14 @@ public class NxUtil {
 	}
 
 	/**
-	 * Private Code-Sharing method for the different unescapings.
-	 * Only one of the boolean arguments may be true
+	 * Unescape special characters in the given String using the rules
+	 * of the given EscapeType.
 	 * 
 	 * @param str String to unescape
-	 * @param iri true iff unescaping IRI
-	 * @param lit true iff unescaping Literal
-	 * @param ntriples1 true iff unescaping old N-Triples1.0
+	 * @param type Type of escaping used. IRI, Literal or old NTriples1.
 	 * @return
 	 */
-	private static String unescape(String str, boolean iri, boolean lit,
-			boolean ntriples1) {
-		int check = iri ? 1 : 0;
-		check += lit ? 1 : 0;
-		check += ntriples1 ? 1 : 0;
-
-		// only defined iff one of the booleans is true
-		if (check != 1) {
-			return str;
-		}
-
+	private static String unescape(String str, EscapeType type) {
 		int sz = str.length();
 
 		StringBuilder buffer = new StringBuilder(sz);
@@ -302,7 +293,7 @@ public class NxUtil {
 					break;
 				}
 				default:
-					if (ntriples1 || lit) {
+					if (type == EscapeType.NTriples1 || type == EscapeType.Literal) {
 						switch (ch) {
 						case '\\':
 							buffer.append('\\');
@@ -329,7 +320,7 @@ public class NxUtil {
 							buffer.append('\b');
 							break;
 						default:
-							if (ntriples1) {
+							if (type == EscapeType.NTriples1) {
 								buffer.append(ch);
 							} else {
 								buffer.append("\\" + ch);
@@ -462,7 +453,7 @@ public class NxUtil {
 	public static String unescapeForNTriples1(String str, boolean clean) {
 		if (clean)
 			str = cleanSlashes(str);
-		return unescape(str, false, false, true);
+		return unescape(str, EscapeType.NTriples1);
 	}
 
 	/**
