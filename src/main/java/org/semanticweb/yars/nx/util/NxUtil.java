@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Some utility methods that used to be spread over a couple of other classes.
- * 
+ *
  * @author Tobias Kaefer
  * @author others that wrote the methods in the first place
  * @author Leonard Lausen
@@ -35,9 +35,9 @@ public class NxUtil {
 
 /**
 	 * Escape IRI according to RDF 1.1 N-Triples W3C Recommendation 25 February 2014
-	 * 
+	 *
 	 * IRIREF	::= 	'<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
-	 * 
+	 *
 	 * @param iri IRI to escape
 	 * @return escaped IRI
 	 * @see <a href="http://www.w3.org/TR/2014/REC-n-triples-20140225/">The N-Triples spec</a>
@@ -90,9 +90,9 @@ public class NxUtil {
 
 /**
 	 * Unescape IRI according to RDF 1.1 N-Triples W3C Recommendation 25 February 2014
-	 * 
+	 *
 	 * IRIREF	::= 	'<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
-	 * 
+	 *
 	 * @param str IRI to escape
 	 * @return unescaped IRI
 	 */
@@ -129,7 +129,7 @@ public class NxUtil {
 
 	/**
 	 * Unescape special characters in literal.
-	 * 
+	 *
 	 * @param str
 	 *            The string to escape
 	 */
@@ -141,7 +141,7 @@ public class NxUtil {
 	 * Escapes strings to unicode. Note that this method does not all the work
 	 * required by the spec for processing URIs. {@link URI#toASCIIString()}
 	 * could be your friend here.
-	 * 
+	 *
 	 * @see <a
 	 *      href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings">What
 	 *      the N-Triples 1.0 spec says about the encoding of strings</a>
@@ -203,7 +203,7 @@ public class NxUtil {
 	/**
 	 * Unescape special characters in the given String using the rules
 	 * of the given EscapeType.
-	 * 
+	 *
 	 * @param str String to unescape
 	 * @param type Type of escaping used. IRI, Literal or old NTriples1.
 	 * @return
@@ -212,88 +212,82 @@ public class NxUtil {
 		int sz = str.length();
 
 		StringBuilder buffer = new StringBuilder(sz);
-		StringBuilder unicode = new StringBuilder(6);
+		StringBuilder unicode = null;
 
 		boolean hadSlash = false;
-		boolean inUnicode = false;
-		boolean inSpecialUnicode = false;
+		byte expectedUnicodeLength = 0;
+
+		int start = 0;    // Keeps track of the beginning of the current chunk
+		                  // of unmodified input characters.
+		int end = 0;
+
 
 		for (int i = 0; i < sz; i++) {
 			char ch = str.charAt(i);
-			if (inUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
 
-				if (unicode.length() < 4) {
-					unicode.append(ch);
+			if (expectedUnicodeLength != 0) {
+				// reading hex digits of a codepoint (after "u" or "U")
 
-					if (unicode.length() == 4) {
-						// unicode now contains the four hex digits
-						// which represents our unicode chacater
-						try {
-							int value = Integer
-									.parseInt(unicode.toString(), 16);
-							buffer.append((char) value);
-							unicode = new StringBuilder(4);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
+				unicode.append(ch);
+
+				if (unicode.length() == expectedUnicodeLength) {
+					// unicode now contains the all hex digits that
+					// represents our unicode character
+					expectedUnicodeLength = 0;
+
+					// Copy last unmodified chunk to output
+					buffer.append(str.substring(start, end));
+					// Set start of new chunk after current position
+					start = i + 1;
+					end = start;
+
+					try {
+
+						buffer.appendCodePoint(
+							Integer.parseInt(unicode.toString(), 16)
+						);
 					}
-					continue;
+					catch (NumberFormatException nfe) {
+						// Invalid codepoint, just copy back the input.
+						//
+						// TODO: Should probably throw an exception / log a
+						//       warning
+						buffer.append(
+							'\\' + expectedUnicodeLength == 8 ? 'U' : 'u' +
+							unicode.toString()
+						);
+					}
 				}
-
 			}
 
-			if (inSpecialUnicode) {
-				// if in unicode, then we're reading unicode
-				// values in somehow
-
-				if (unicode.length() < 8) {
-					unicode.append(ch);
-
-					if (unicode.length() == 8) {
-						// unicode now contains the six hex digits
-						// which represents our code point
-						try {
-							buffer.appendCodePoint(Integer.parseInt(
-									unicode.toString(), 16));
-
-							unicode = new StringBuilder(8);
-							inUnicode = false;
-							inSpecialUnicode = false;
-							hadSlash = false;
-						} catch (NumberFormatException nfe) {
-							buffer.append(unicode.toString());
-							continue;
-						}
-						continue;
-					}
-					continue;
-				}
-
-			}
-
-			if (hadSlash) {
+			else if (hadSlash) {
 				// handle an escaped value
 				hadSlash = false;
+
 				switch (ch) {
 				case 'u': {
-					// uh-oh, we're in unicode country....
-					inUnicode = true;
+					// Expect to parse 4 hex characters as a unicode codepoint
+					expectedUnicodeLength = 4;
+					unicode = new StringBuilder(4);
 					break;
 				}
 				case 'U': {
-					// even more uh-oh, we're in special unicode land...
-					inSpecialUnicode = true;
+					// Expect to parse 8 hex characters as a unicode codepoint
+					expectedUnicodeLength = 8;
+					unicode = new StringBuilder(8);
 					break;
 				}
 				default:
 					if (type == EscapeType.NTriples1 || type == EscapeType.Literal) {
+
+						// Copy last unmodified chunk to output
+						buffer.append(str.substring(start, end));
+						// Set start of new chunk after current position
+						start = i + 1;
+						end = start;
+
+						// Append an unescaped string:
+
 						switch (ch) {
 						case '\\':
 							buffer.append('\\');
@@ -333,15 +327,15 @@ public class NxUtil {
 					}
 					break;
 				}
-				continue;
 			}
 
 			else if (ch == '\\') {
 				hadSlash = true;
-				continue;
 			}
 
-			buffer.append(ch);
+			else {
+				end++;    // Mark end of unmodified input string chunk
+			}
 		}
 
 		if (hadSlash) {
@@ -349,12 +343,18 @@ public class NxUtil {
 			// string, let's output it anyway.
 			buffer.append('\\');
 		}
+
+		// Append the rest of the unprocessed chunk
+		if (end - start > 0) {
+			buffer.append(str.substring(start, end));
+		}
+
 		return buffer.toString();
 	}
 
 	/**
 	 * Escapes strings for markup.
-	 * 
+	 *
 	 */
 	public static String escapeForMarkup(String lit) {
 		String unescaped = unescapeLiteral(lit);
@@ -411,7 +411,7 @@ public class NxUtil {
 	/**
 	 * Converts a decimal value to a hexadecimal string represention of the
 	 * specified length. For unicode escaping.
-	 * 
+	 *
 	 * @param decimal
 	 *            A decimal value.
 	 * @param stringLength
@@ -423,7 +423,7 @@ public class NxUtil {
 
 	/**
 	 * Unescape special characters in N-Triples 1.0 Literals or Resources.
-	 * 
+	 *
 	 * @param str
 	 *            The string to escape
 	 * @deprecated This method unescapes for N-Triples 1.0, stuff that has been
@@ -431,7 +431,7 @@ public class NxUtil {
 	 *             {@link #unescapeLiteral(String)} and
 	 *             {@link #unescapeIRI(String)} are the new methods supporting
 	 *             N-Triples 1.1
-	 * 
+	 *
 	 */
 	public static String unescapeForNTriples1(String str) {
 		return unescapeForNTriples1(str, false);
@@ -439,7 +439,7 @@ public class NxUtil {
 
 	/**
 	 * Unescape special characters in N-Triples 1.0 Literals or Resources.
-	 * 
+	 *
 	 * @param str
 	 *            The string to escape
 	 * @param clean
@@ -467,7 +467,7 @@ public class NxUtil {
 
 	/**
 	 * Normalize IRI using techniques from RFC3987 5.1
-	 * 
+	 *
 	 * @param iri
 	 * @return normalized form of iri
 	 */
@@ -577,7 +577,7 @@ public class NxUtil {
 	/**
 	 * Unescape percent encoding that is allowed in IRI. This method assumes,
 	 * that the Percent-Encoded characters are UTF8 characters.
-	 * 
+	 *
 	 * @param str
 	 *            The string to unescape
 	 * @param privateUCS
@@ -724,7 +724,7 @@ public class NxUtil {
 
 	/**
 	 * Case Normalize percent encoding.
-	 * 
+	 *
 	 * @param str
 	 *            The string to normalize
 	 */
@@ -742,12 +742,12 @@ public class NxUtil {
 		buffer.append(str.substring(last));
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Remove default ports from authority as described in RFC3987 5.3.3
 	 * e.g. http://example.org:80 becomes http://example.org
 	 * Currently only http and https schemes are supported.
-	 *  
+	 *
 	 * @param scheme IRI scheme, e.g. http
 	 * @param authority IRI authority, e.g. example.org or example.org:80
 	 * @return Authority with possibly removed port section
@@ -768,12 +768,12 @@ public class NxUtil {
 		}
 		return authority;
 	}
-	
-	
+
+
 	/**
 	 * Remove Dot segments from IRI path as described in RFC3987 5.3.2.4
 	 * e.g. "/a/b/c/./../../g" becomes "/a/g" and "" becomes "/"
-	 * 
+	 *
 	 * @param path IRI path to normalize
 	 * @return Normalized path
 	 */
@@ -781,7 +781,7 @@ public class NxUtil {
 		StringBuilder output = new StringBuilder(path.length());
 		Deque<String> in = new ArrayDeque<String>();
 		Deque<String> out = new ArrayDeque<String>();
-		
+
 		int start = 0;
 		for (int end = 1; end < path.length();) {
 			if (path.charAt(end) == '/') {
@@ -794,7 +794,7 @@ public class NxUtil {
 		if (!path.equals("") && (path.charAt(path.length() - 1) != '/' || path.length() == 1)) {
 			in.addLast(path.substring(start));
 		}
-		
+
 		while (!in.isEmpty()) {
 			String segment = in.removeFirst();
 			if (segment.equals("../") || segment.equals("./")) {
@@ -817,13 +817,13 @@ public class NxUtil {
 					out.addLast(segment.substring(0, segment.length() - 1));
 				}
 			}
-			
+
 		}
-		
+
 		for (String s : out) {
 			output.append(s);
 		}
-		
+
 		// See RFC 3987 5.3.3.
 		if (output.length() == 0) {
 			output.append('/');

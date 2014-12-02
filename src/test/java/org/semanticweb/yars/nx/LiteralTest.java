@@ -53,7 +53,11 @@ public class LiteralTest {
 		String s = "a\tb\tc";
 		Literal l = new Literal(s);
 
-		assertEquals("\"a\\tb\\tc\"", l.toString());
+		// assertEquals("\"a\\tb\\tc\"", l.toString());
+		//
+		// Tabs do no have to be espace; only quotes, LF and CR and backslash:
+		// http://www.w3.org/TR/n-triples/#sec-literals
+		assertEquals("\"a\tb\tc\"", l.toString());
 	}
 
 	@Test
