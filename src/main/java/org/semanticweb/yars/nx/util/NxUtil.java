@@ -220,7 +220,7 @@ public class NxUtil {
 		StringBuilder unicode = null;
 
 		boolean hadSlash = false;
-		byte expectedUnicodeLength = 0;
+		byte expectedUnicodeLength = 0; // known values: 0, 4, 8
 
 		for (int i = 0; i < sz; i++) {
 			char ch = str.charAt(i);
@@ -267,43 +267,44 @@ public class NxUtil {
 					break;
 				}
 				default:
-					if (type == EscapeType.NTriples1 || type == EscapeType.Literal) {
-						switch (ch) {
-						case '\\':
-							buffer.append('\\');
-							break;
-						case '\'':
-							buffer.append('\'');
-							break;
-						case '\"':
-							buffer.append('"');
-							break;
-						case 'r':
-							buffer.append('\r');
-							break;
-						case 'f':
-							buffer.append('\f');
-							break;
-						case 't':
-							buffer.append('\t');
-							break;
-						case 'n':
-							buffer.append('\n');
-							break;
-						case 'b':
-							buffer.append('\b');
-							break;
-						default:
-							if (type == EscapeType.NTriples1) {
-								buffer.append(ch);
-							} else {
-								buffer.append("\\" + ch);
-							}
-							break;
-						}
-
-					} else {
-						buffer.append("\\" + ch);
+					switch (ch) {
+					case '\\':
+						buffer.append('\\');
+						break;
+					case '\'':
+						buffer.append('\'');
+						break;
+					case '\"':
+						buffer.append('\"');
+						break;
+					case 'r':
+						buffer.append('\r');
+						break;
+					case 'f':
+						buffer.append('\f');
+						break;
+					case 't':
+						buffer.append('\t');
+						break;
+					case 'n':
+						buffer.append('\n');
+						break;
+					case 'b':
+						buffer.append('\b');
+						break;
+					default:
+						// There must not be backslashes in IRIs (the backslash
+						// is not in the productions of the grammar at
+						// http://www.ietf.org/rfc/rfc3987.txt ), and all
+						// backslashes in RDF Literals have to start escape
+						// sequences (
+						// http://www.w3.org/TR/2014/REC-n-triples-20140225/#sec-literals
+						// ), so whatever comes is free game. Therefore, and for
+						// compatibility's sake with NxParser 1.2.x, we ignore
+						// that there has been a backslash for which no escape
+						// sequence has been defined.
+						buffer.append(ch);
+						break;
 					}
 					break;
 				}

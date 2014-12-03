@@ -96,7 +96,7 @@ public class NxUtilTest {
 					   + "\u00df"       // 2 utf-8 / 1 utf-16 / 1 utf-32 code unit character
 					   + "\u6771"       // 3 utf-8 / 1 utf-16 / 1 utf-32 code unit character
 					   + "\ud801\udc00" // 4 utf-8 / 2 utf-16 / 1 utf-32 code unit character 
-							} });
+							},{"    %\"    "} });
 
 			return testUris;
 		}
@@ -106,8 +106,12 @@ public class NxUtilTest {
 		}
 
 		@SuppressWarnings("deprecation")
-		@Ignore("Known issue: New code cannot unescape UTF-32 escaped using the 1.2.x code")
+		@Test
+//		@Ignore("Known issue")
 		public void newIRIunescapeIsInverseOfOldEscape() {
+			System.err.println(_s);
+			System.err.println(NxUtil.escapeForNTriples1(_s));
+			System.err.println(NxUtil.escapeIRI(_s));
 			assertEquals(_s, NxUtil.unescapeIRI(NxUtil.escapeForNTriples1(_s)));
 		}
 
