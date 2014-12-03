@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,8 +19,11 @@ import java.util.regex.Pattern;
  * @author Tobias Kaefer
  * @author others that wrote the methods in the first place
  * @author Leonard Lausen
+ * @author Johannes Schmitz
  */
 public class NxUtil {
+	private static Logger _log = Logger.getLogger(NxUtil.class.getName());
+
 	private static final Pattern IRIPATTERN = Pattern
 			.compile("^([^:/?#]+)://([^/?#]*)?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?");
 	private static final Pattern PERCENTPATTERN = Pattern
@@ -217,11 +222,6 @@ public class NxUtil {
 		boolean hadSlash = false;
 		byte expectedUnicodeLength = 0;
 
-		int start = 0;    // Keeps track of the beginning of the current chunk
-		                  // of unmodified input characters.
-		int end = 0;
-
-
 		for (int i = 0; i < sz; i++) {
 			char ch = str.charAt(i);
 
@@ -235,43 +235,32 @@ public class NxUtil {
 					// represents our unicode character
 					expectedUnicodeLength = 0;
 
-					// Copy last unmodified chunk to output
-					buffer.append(str.substring(start, end));
-					// Set start of new chunk after current position
-					start = i + 1;
-					end = start;
-
 					try {
-
 						buffer.appendCodePoint(
-							Integer.parseInt(unicode.toString(), 16)
-						);
-					}
-					catch (NumberFormatException nfe) {
+							Integer.parseInt(unicode.toString(), 16));
+					} catch (NumberFormatException nfe) {
 						// Invalid codepoint, just copy back the input.
-						//
-						// TODO: Should probably throw an exception / log a
-						//       warning
+						_log.log(Level.WARNING, "Invalid unicode code point in {1}", str);
 						buffer.append(
 							'\\' + expectedUnicodeLength == 8 ? 'U' : 'u' +
 							unicode.toString()
 						);
 					}
 				}
-			}
-
-			else if (hadSlash) {
+			} else if (hadSlash) {
 				// handle an escaped value
 				hadSlash = false;
 
 				switch (ch) {
 				case 'u': {
+					// uh-oh, we're in unicode country....
 					// Expect to parse 4 hex characters as a unicode codepoint
 					expectedUnicodeLength = 4;
 					unicode = new StringBuilder(4);
 					break;
 				}
 				case 'U': {
+					// even more uh-oh, we're in special unicode land...
 					// Expect to parse 8 hex characters as a unicode codepoint
 					expectedUnicodeLength = 8;
 					unicode = new StringBuilder(8);
@@ -279,15 +268,6 @@ public class NxUtil {
 				}
 				default:
 					if (type == EscapeType.NTriples1 || type == EscapeType.Literal) {
-
-						// Copy last unmodified chunk to output
-						buffer.append(str.substring(start, end));
-						// Set start of new chunk after current position
-						start = i + 1;
-						end = start;
-
-						// Append an unescaped string:
-
 						switch (ch) {
 						case '\\':
 							buffer.append('\\');
@@ -327,14 +307,10 @@ public class NxUtil {
 					}
 					break;
 				}
-			}
-
-			else if (ch == '\\') {
+			} else if (ch == '\\') {
 				hadSlash = true;
-			}
-
-			else {
-				end++;    // Mark end of unmodified input string chunk
+			} else {
+				buffer.append(ch);
 			}
 		}
 
@@ -343,12 +319,6 @@ public class NxUtil {
 			// string, let's output it anyway.
 			buffer.append('\\');
 		}
-
-		// Append the rest of the unprocessed chunk
-		if (end - start > 0) {
-			buffer.append(str.substring(start, end));
-		}
-
 		return buffer.toString();
 	}
 
