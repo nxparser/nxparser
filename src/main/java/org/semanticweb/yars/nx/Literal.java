@@ -134,7 +134,7 @@ public class Literal implements Node {
 	@Override
 	public String getLabel() {
 		int i = _data.lastIndexOf("\"");
-		return NxUtil.unescapeLiteral(_data.substring(1, i));
+		return NxUtil.unescape(_data.substring(1, i));
 	}
 
 	/**

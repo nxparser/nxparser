@@ -30,9 +30,6 @@ public class NxUtil {
 			.compile("%[\\dA-Fa-f]{2}");
 	private static final Pattern PORTPATTERN = Pattern
 			.compile("(.*):([\\d]*)$");
-	private enum EscapeType {
-		IRI, Literal, NTriples1
-	}
 
 	private NxUtil() {
 
@@ -93,18 +90,6 @@ public class NxUtil {
 		return result.toString();
 	}
 
-/**
-	 * Unescape IRI according to RDF 1.1 N-Triples W3C Recommendation 25 February 2014
-	 *
-	 * IRIREF	::= 	'<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
-	 *
-	 * @param str IRI to escape
-	 * @return unescaped IRI
-	 */
-	public static String unescapeIRI(String str) {
-		return unescape(str, EscapeType.IRI);
-	}
-
 	public static String escapeLiteral(String lit) {
 		StringBuilder result = new StringBuilder();
 
@@ -130,16 +115,6 @@ public class NxUtil {
 		}
 
 		return result.toString();
-	}
-
-	/**
-	 * Unescape special characters in literal.
-	 *
-	 * @param str
-	 *            The string to escape
-	 */
-	public static String unescapeLiteral(String str) {
-		return unescape(str, EscapeType.Literal);
 	}
 
 	/**
@@ -207,13 +182,21 @@ public class NxUtil {
 
 	/**
 	 * Unescape special characters in the given String using the rules
-	 * of the given EscapeType.
+	 * from RDF 1.1 N-Triples W3C Recommendation 25 February 2014
+	 * or the good old 2004 N-Triples testcases.
 	 *
 	 * @param str String to unescape
-	 * @param type Type of escaping used. IRI, Literal or old NTriples1.
-	 * @return
+	 * @see http://www.w3.org/TR/2014/REC-n-triples-20140225/
+	 * @see http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntriples
+	 * @return the String unescaped
 	 */
-	private static String unescape(String str, EscapeType type) {
+	public static String unescape(String str) {
+		
+		// speed optimisation: if there is nothing to do, then don't even try
+		// unescaping.
+		if (!str.contains("\\"))
+			return str;
+		
 		int sz = str.length();
 
 		StringBuilder buffer = new StringBuilder(sz);
@@ -328,7 +311,7 @@ public class NxUtil {
 	 *
 	 */
 	public static String escapeForMarkup(String lit) {
-		String unescaped = unescapeLiteral(lit);
+		String unescaped = unescape(lit);
 
 		StringBuilder result = new StringBuilder();
 
@@ -397,34 +380,18 @@ public class NxUtil {
 	 *
 	 * @param str
 	 *            The string to escape
-	 * @deprecated This method unescapes for N-Triples 1.0, stuff that has been
-	 *             escaped using {@link #escapeForNTriples1(String)}.
-	 *             {@link #unescapeLiteral(String)} and
-	 *             {@link #unescapeIRI(String)} are the new methods supporting
-	 *             N-Triples 1.1
-	 *
-	 */
-	public static String unescapeForNTriples1(String str) {
-		return unescapeForNTriples1(str, false);
-	}
-
-	/**
-	 * Unescape special characters in N-Triples 1.0 Literals or Resources.
-	 *
-	 * @param str
-	 *            The string to escape
 	 * @param clean
 	 *            If true, cleans up excess slashes
 	 * @deprecated This method unescapes for N-Triples 1.0, stuff that has been
 	 *             escaped using {@link #escapeForNTriples1(String)}.
-	 *             {@link #unescapeLiteral(String)} and
-	 *             {@link #unescapeIRI(String)} are the new methods supporting
+	 *             {@link #unescape(String)} and
+	 *             {@link #unescape(String)} are the new methods supporting
 	 *             N-Triples 1.1
 	 */
 	public static String unescapeForNTriples1(String str, boolean clean) {
 		if (clean)
 			str = cleanSlashes(str);
-		return unescape(str, EscapeType.NTriples1);
+		return unescape(str);
 	}
 
 	/**

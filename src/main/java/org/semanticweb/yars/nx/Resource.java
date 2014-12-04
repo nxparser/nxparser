@@ -83,7 +83,7 @@ public class Resource implements Node, Serializable {
 	 */
 	@Deprecated
 	public String getUriString() {
-		return NxUtil.unescapeIRI(toString().substring(1,
+		return NxUtil.unescape(toString().substring(1,
 				toString().length() - 1));
 	}
 

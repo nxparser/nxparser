@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -107,36 +106,18 @@ public class NxUtilTest {
 
 		@SuppressWarnings("deprecation")
 		@Test
-//		@Ignore("Known issue")
-		public void newIRIunescapeIsInverseOfOldEscape() {
-			System.err.println(_s);
-			System.err.println(NxUtil.escapeForNTriples1(_s));
-			System.err.println(NxUtil.escapeIRI(_s));
-			assertEquals(_s, NxUtil.unescapeIRI(NxUtil.escapeForNTriples1(_s)));
-		}
-
-		@SuppressWarnings("deprecation")
-		@Test
-		public void newLiteralUnescapeIsInverseOfOldEscape() {
-			assertEquals(_s,
-					NxUtil.unescapeLiteral(NxUtil.escapeForNTriples1(_s)));
-		}
-
-		@SuppressWarnings("deprecation")
-		@Test
-		public void oldCode_UnescapeIsInverseOfEscape() {
-			assertEquals(_s,
-					NxUtil.unescapeForNTriples1(NxUtil.escapeForNTriples1(_s)));
+		public void unescapeIsInverseOfOldEscape() {
+			assertEquals(_s, NxUtil.unescape(NxUtil.escapeForNTriples1(_s)));
 		}
 
 		@Test
-		public void newCode_UnescapeIRIisInverseOfEscapeIRI() {
-			assertEquals(_s, NxUtil.unescapeIRI(NxUtil.escapeIRI(_s)));
+		public void unescapeIsInverseOfEscapeIRI() {
+			assertEquals(_s, NxUtil.unescape(NxUtil.escapeIRI(_s)));
 		}
 
 		@Test
-		public void newCode_UnescapeLiteralisInverseOfEscapeLiteral() {
-			assertEquals(_s, NxUtil.unescapeLiteral(NxUtil.escapeLiteral(_s)));
+		public void unescapeIsInverseOfEscapeLiteral() {
+			assertEquals(_s, NxUtil.unescape(NxUtil.escapeLiteral(_s)));
 		}
 	}
 }
