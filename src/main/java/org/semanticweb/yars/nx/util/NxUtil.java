@@ -194,9 +194,11 @@ public class NxUtil {
 		
 		// speed optimisation: if there is nothing to do, then don't even try
 		// unescaping.
-		if (!str.contains("\\"))
-			return str;
+		int startOfDataToBeUnescaped = str.indexOf("\\");
 		
+		if (startOfDataToBeUnescaped == -1)
+			return str;
+
 		int sz = str.length();
 
 		StringBuilder buffer = new StringBuilder(sz);
@@ -205,7 +207,9 @@ public class NxUtil {
 		boolean hadSlash = false;
 		byte expectedUnicodeLength = 0; // known values: 0, 4, 8
 
-		for (int i = 0; i < sz; i++) {
+		buffer.append(str.substring(0, startOfDataToBeUnescaped));
+
+		for (int i = startOfDataToBeUnescaped; i < sz; i++) {
 			char ch = str.charAt(i);
 
 			if (expectedUnicodeLength != 0) {
