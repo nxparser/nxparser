@@ -1,0 +1,9 @@
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:random="http://random.ioctl.org/#">
+ 
+<rdf:Description rdf:about="http://random.ioctl.org/#bar">
+  <random:someProperty random:prop2="baz" random:prop3="baz2" rdf:nodeID="bnode"  />
+  <random:someProperty rdf:resource="http://resource.com/" random:prop2="baz" random:prop3="baz2" />
+  <random:someOtherProperty rdf:resource="http://example.com" />
+</rdf:Description>
+</rdf:RDF>
