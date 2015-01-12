@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 /**
  * A bnode, anonymous resource.
@@ -102,7 +102,6 @@ public class BNode implements Node {
 		return toString().compareTo(n.toString());
 	}
 
-	// TODO Move to utilites
 	public String[] parseContextualBNode() throws ParseException {
 		String d = _data.substring(PREFIX.length());
 		String[] uri = d.toString().split("xx");
@@ -115,7 +114,6 @@ public class BNode implements Node {
 		return uri;
 	}
 
-	// TODO Move to utilities
 	public static String[] parseContextualBNode(BNode b) throws ParseException {
 		String[] uri = b.toString().split("xx");
 		if (uri.length != 2) {
@@ -126,20 +124,17 @@ public class BNode implements Node {
 		return uri;
 	}
 
-	// TODO Move to utilities
 	public static BNode createBNode(String docURI, String localID) {
 		String escapedDU = escapeForBNode(docURI);
 		String escapedLI = escapeForBNode(localID);
 		return new BNode(escapedLI + "xx" + escapedDU);
 	}
 
-	// TODO Move to utilities
 	public static BNode createBNode(String unescaped) {
 		String escaped = escapeForBNode(unescaped);
 		return new BNode(escaped);
 	}
 
-	// TODO Move to utilities
 	public static String escapeForBNode(String unescaped) {
 		try {
 			return URLEncoder.encode(unescaped, "utf-8").replace("x", "x78")
@@ -151,7 +146,6 @@ public class BNode implements Node {
 		}
 	}
 
-	// TODO Move to utilities
 	public static String unescapeForBNode(String escaped) {
 		try {
 			return URLDecoder.decode(escaped.replace('x', '%'), "utf-8");
