@@ -2,7 +2,7 @@ package org.semanticweb.yars.nx.dt;
 
 
 import org.semanticweb.yars.nx.Resource;
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 public class DatatypeParseException extends ParseException {
 	/**

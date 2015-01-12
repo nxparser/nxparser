@@ -20,7 +20,7 @@ import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.namespace.RDF;
 import org.semanticweb.yars.nx.parser.Callback;
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;

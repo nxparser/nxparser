@@ -15,7 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.parser.Callback;
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 import org.xml.sax.SAXException;
 
 /**

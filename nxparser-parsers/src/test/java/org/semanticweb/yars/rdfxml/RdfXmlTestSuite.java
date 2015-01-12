@@ -28,7 +28,7 @@ import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.parser.NxParser;
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;

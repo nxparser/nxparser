@@ -1,4 +1,4 @@
-package org.semanticweb.yars.nx.util;
+package org.semanticweb.yars.nx.parser;
 
 
 public class ParseException extends Exception {

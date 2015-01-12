@@ -8,7 +8,7 @@ import java.util.TreeSet;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.namespace.XSD;
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 /**
  * Map to represent subtypes of built-in datatypes

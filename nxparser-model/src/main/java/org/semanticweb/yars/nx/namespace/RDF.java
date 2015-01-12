@@ -1,7 +1,7 @@
 package org.semanticweb.yars.nx.namespace;
 
 import org.semanticweb.yars.nx.Resource;
-import org.semanticweb.yars.nx.util.ParseException;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 public class RDF {
 	public static final String NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -54,7 +54,6 @@ public class RDF {
 
 	public static final Resource LI = new Resource(NS+"li");
 	
-	// TODO Move to utilities module
 	public static final int parseContainerMembershipProperty(String p) throws ParseException{
 		if(!p.startsWith(NS+"_") || p.equals(NS+"_")){
 			throw new ParseException("Not a valid container membership property "+p);

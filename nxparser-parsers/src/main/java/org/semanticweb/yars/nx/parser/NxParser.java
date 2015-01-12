@@ -17,7 +17,6 @@ import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.Variable;
-import org.semanticweb.yars.nx.util.ParseException;
 
 /**
  * NxParser is a non-validating N1, N2, N3, N4, Nx parser.
