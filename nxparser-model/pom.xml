@@ -14,4 +14,15 @@
 	<packaging>jar</packaging>
 	<name>NxParser Model</name>
 
+	<dependencies>
+
+		<!-- NxParser Dependencies -->
+		<dependency>
+			<groupId>org.semanticweb.yars</groupId>
+			<artifactId>nxparser-commons</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+	</dependencies>
+
 </project>

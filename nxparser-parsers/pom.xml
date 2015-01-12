@@ -14,4 +14,50 @@
 	<packaging>jar</packaging>
 	<name>NxParser Parsers</name>
 
+	<dependencies>
+
+		<!-- NxParser Dependencies -->
+		<dependency>
+			<groupId>org.semanticweb.yars</groupId>
+			<artifactId>nxparser-model</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<!-- Testing Dependencies -->
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-core</artifactId>
+			<scope>test</scope>
+			<version>2.11.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-arq</artifactId>
+			<scope>test</scope>
+			<version>2.11.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<!-- <configuration> -->
+				<!-- <archive> -->
+				<!-- <manifest> -->
+				<!-- <addClasspath>true</addClasspath> -->
+				<!-- <classpathPrefix>lib/</classpathPrefix> -->
+				<!-- <mainClass>org.semanticweb.yars.nx.cli.Main</mainClass> -->
+				<!-- </manifest> -->
+				<!-- </archive> -->
+				<!-- </configuration> -->
+			</plugin>
+		</plugins>
+
+	</build>
+
 </project>
