@@ -78,7 +78,7 @@ public class GetPlds {
 		int ticks = Main.getTicks(cmd);
 		int[] pos = null;
 		if(cmd.hasOption("p"))
-			pos = NodeComparatorArgs.getIntegerMask(cmd.getOptionValue("p"));
+			pos = Main.getIntegerMask(cmd.getOptionValue("p"));
 		
 		Iterator<Node[]> it = new NxParser(is);
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));

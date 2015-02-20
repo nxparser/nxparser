@@ -131,15 +131,15 @@ public class Sort {
 		
 		NodeComparatorArgs nca = new NodeComparatorArgs();
 		if(cmd.hasOption("so")){
-			nca.setOrder(NodeComparatorArgs.getIntegerMask(cmd.getOptionValue("so")));
+			nca.setOrder(Main.getIntegerMask(cmd.getOptionValue("so")));
 		}
 		
 		if(cmd.hasOption("no")){
-			nca.setNumeric(NodeComparatorArgs.getBooleanMask(cmd.getOptionValue("no")));
+			nca.setNumeric(Main.getBooleanMask(cmd.getOptionValue("no")));
 		}
 		
 		if(cmd.hasOption("ro")){
-			nca.setReverse(NodeComparatorArgs.getBooleanMask(cmd.getOptionValue("ro")));
+			nca.setReverse(Main.getBooleanMask(cmd.getOptionValue("ro")));
 		}
 		
 		if(cmd.hasOption("ad")){

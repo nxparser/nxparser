@@ -297,6 +297,29 @@ public class Main {
 		return reorder;
 	}
 	
+	public static int[] getIntegerMask(String arg){
+		return Main.getMask(arg);
+	}
+	
+	public static boolean[] getBooleanMask(String arg){
+		int[] m = getIntegerMask(arg);
+		
+		int max = 0;
+		for(int i:m){
+			if(max<i)
+				max = i;
+		}
+		
+		boolean[] bmask = new boolean[max+1];
+		
+		for(int i:m){
+			bmask[i] = true;
+		}
+		
+		return bmask;
+	}
+	
+	
 	public static boolean mkdirs(String dir){
 		return new File(dir).mkdirs();
 	}
