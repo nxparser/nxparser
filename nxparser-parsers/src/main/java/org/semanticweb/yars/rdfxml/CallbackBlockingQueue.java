@@ -6,7 +6,7 @@ import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.parser.Callback;
 
-public class CallbackBlockingQueue implements Callback{
+public class CallbackBlockingQueue extends Callback{
 	BlockingQueue<Node[]> _q;
 	InterruptedException _e;
 	
@@ -14,10 +14,6 @@ public class CallbackBlockingQueue implements Callback{
 		_q = q;
 	}
 
-	public void endDocument() {
-		processStatement(Nodes.EOM);
-	}
-	
 	public boolean successful(){
 		return _e == null;
 	}
@@ -26,7 +22,7 @@ public class CallbackBlockingQueue implements Callback{
 		return _e;
 	}
 
-	public void processStatement(Node[] nx) {
+	protected void processStatementInternal(Node[] nx) {
 		try{
 			_q.put(nx);
 		} catch(InterruptedException e){
@@ -34,10 +30,12 @@ public class CallbackBlockingQueue implements Callback{
 		}
 	}
 
-	public void startDocument() {
+	protected void startDocumentInternal() {
 		;
 	}
 	
-	
+	protected void endDocumentInternal() {
+		processStatement(Nodes.EOM);
+	}
 
 }

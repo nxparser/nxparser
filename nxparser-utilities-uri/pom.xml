@@ -10,8 +10,8 @@
 		<version>2.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>nxparser-serialiser</artifactId>
+	<artifactId>nxparser-utilities-uri</artifactId>
 	<packaging>jar</packaging>
-	<name>NxParser Serialiser</name>
+	<name>NxParser Utilities for URI Handling</name>
 
 </project>

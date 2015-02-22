@@ -10,8 +10,15 @@
 		<version>2.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>nxparser-utilities</artifactId>
+	<artifactId>nxparser-serialisers</artifactId>
 	<packaging>jar</packaging>
-	<name>NxParser Utilities</name>
+	<name>NxParser Serialisers</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.semanticweb.yars</groupId>
+			<artifactId>nxparser-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+	</dependencies>
 </project>

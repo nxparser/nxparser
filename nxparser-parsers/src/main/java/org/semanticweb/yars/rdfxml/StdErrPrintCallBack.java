@@ -9,17 +9,17 @@ import org.semanticweb.yars.nx.parser.Callback;
  * @author aidhog
  *
  */
-public class PrintCallBack implements Callback{
+public class StdErrPrintCallBack extends Callback {
 
-	public void endDocument() {
+	public void endDocumentInternal() {
 		;
 	}
 
-	public void processStatement(Node[] ns) {
+	public void processStatementInternal(Node[] ns) {
 		System.err.println(new Nodes(ns));
 	}
 
-	public void startDocument() {
+	public void startDocumentInternal() {
 		// TODO Auto-generated method stub
 		
 	}

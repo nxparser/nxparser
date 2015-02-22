@@ -19,7 +19,7 @@
 		<!-- NxParser Dependencies -->
 		<dependency>
 			<groupId>org.semanticweb.yars</groupId>
-			<artifactId>nxparser-model</artifactId>
+			<artifactId>nxparser-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 

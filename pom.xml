@@ -22,14 +22,17 @@
 	</properties>
 
 	<modules>
+		<module>nxparser-api</module>
 		<module>nxparser-cli</module>
 		<module>nxparser-commons</module>
 		<module>nxparser-model</module>
 		<module>nxparser-model-datatypes</module>
 		<module>nxparser-parsers</module>
 		<module>nxparser-parsers-external</module>
-		<module>nxparser-serialiser</module>
+		<module>nxparser-serialisers</module>
 		<module>nxparser-utilities</module>
+		<module>nxparser-utilities-nx</module>
+		<module>nxparser-utilities-uri</module>
 	</modules>
 
 	<repositories>

@@ -1,5 +1,6 @@
 package org.semanticweb.yars.nx;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -31,8 +32,9 @@ public class SerialisationTest {
 		System.out.println("Triples: " + set.size() + " iterations: " + i);
 
 		System.out.println("Parsing: time elapsed " + (time1-time) + " ms");
-		
-		FileOutputStream fout = new FileOutputStream("target/w3c-testcase.ser");
+		File f = File.createTempFile("target/w3c-testcase", "ser");
+		f.deleteOnExit();
+		FileOutputStream fout = new FileOutputStream(f);
 		ObjectOutputStream out = new ObjectOutputStream(fout);
 		out.writeObject(set);
 		out.close();

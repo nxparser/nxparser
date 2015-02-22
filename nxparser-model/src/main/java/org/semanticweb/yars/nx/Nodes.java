@@ -77,12 +77,20 @@ public class Nodes implements Serializable, Comparable<Nodes> {
 
 	@Override
 	public String toString() {
-		return toN3(_data);
+		return toString(_data);
 	}
 
-	static String toN3(Node[] ns) {
+	/**
+	 * Returns the Nodes in the Node array as a String representation of a
+	 * Nx-Statement, i.e. with spaces in between and a full stop at the end.
+	 * 
+	 * @param nx
+	 *            Node objects in an array
+	 * @return The statement
+	 */
+	public static String toString(Node[] nx) {
 		StringBuilder buf = new StringBuilder();
-		for (Node n : ns) {
+		for (Node n : nx) {
 			buf.append(n.toString());
 			buf.append(" ");
 		}
