@@ -30,8 +30,6 @@ import org.xml.sax.XMLReader;
  */
 public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 
-	StreamProcessor sp;
-
 	BlockingDeque<Node[]> _deque = new LinkedBlockingDeque<Node[]>();
 
 	boolean _streamOpen = true;
@@ -85,7 +83,7 @@ public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 
 	private StreamProcessor createStreamProcessor(final String baseUri)
 			throws SAXException {
-		sp = new StreamProcessor(RdfaParser.connect(new QuadSink() {
+		StreamProcessor sp = new StreamProcessor(RdfaParser.connect(new QuadSink() {
 
 			Resource _context = new Resource(baseUri);
 			String _contextString = baseUri;
