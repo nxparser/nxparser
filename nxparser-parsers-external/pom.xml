@@ -14,4 +14,21 @@
 	<packaging>jar</packaging>
 	<name>NxParser Parsers External</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.semanticweb.yars</groupId>
+			<artifactId>nxparser-model</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ccil.cowan.tagsoup</groupId>
+			<artifactId>tagsoup</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.semarglproject</groupId>
+			<artifactId>semargl-rdfa</artifactId>
+			<version>0.6.1</version>
+		</dependency>
+	</dependencies>
 </project>
