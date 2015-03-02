@@ -58,7 +58,7 @@ public class DatatypeFactory {
 	 * @throws DatatypeParseException if supported datatype with bad syntax
 	 */
 	public static Datatype<? extends Object> getDatatype(Literal l) throws DatatypeParseException, ParseException {
-		return getDatatype(l.toString(), l.getDatatype());
+		return getDatatype(l.getLabel(), l.getDatatype());
 	}
 
 	/**
