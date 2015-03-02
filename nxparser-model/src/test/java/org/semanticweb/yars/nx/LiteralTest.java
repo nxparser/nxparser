@@ -1,6 +1,7 @@
 package org.semanticweb.yars.nx;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
@@ -8,8 +9,22 @@ import org.junit.Test;
 public class LiteralTest {
 
 	@Test
+	public void testEmptyStringInConstructor() {
+		String data = "";
+		Literal l = new Literal(data);
+		assertEquals(l.toString(), "\"\"");
+	}
+
+	@Test
+	public void testProperLiteralSupplied() {
+		String data = "\"Test\"^^<http://example.org>";
+		Literal l = new Literal(data);
+		assertNotEquals(data, l.toString());
+	}
+
+	@Test
 	public void testLangTag() {
-		String data = "\"Test{}…\"@en";
+	String data = "\"Test{}…\"@en";
 		Literal l = new Literal(data, true);
 		assertEquals("en", l.getLanguageTag());
 	}
