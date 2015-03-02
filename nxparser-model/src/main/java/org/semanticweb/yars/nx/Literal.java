@@ -114,6 +114,8 @@ public class Literal implements Node {
 						"Escaping and adding quotes for Literal {}", data);
 				data = NxUtil.escapeLiteral(data);
 				data = '\"' + data + '\"';
+			} else {
+				_log.log(Level.FINE, "Assuming spec conformity for Literal {}", data);
 			}
 
 			if ((lang != null) && dt != null) {

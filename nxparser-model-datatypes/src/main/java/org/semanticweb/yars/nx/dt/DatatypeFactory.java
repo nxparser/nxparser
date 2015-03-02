@@ -67,11 +67,11 @@ public class DatatypeFactory {
 	 * @return datatype value or null if (i) unsupported datatype; (ii) lex is null or dt is null
 	 * @throws DatatypeParseException if supported datatype with bad syntax
 	 */
-	public static Datatype<? extends Object> getDatatype(String lex, Resource dt) throws DatatypeParseException{
-		if(dt==null || lex==null)
+	public static Datatype<? extends Object> getDatatype(String lex, Resource dt) throws DatatypeParseException {
+		if (dt == null || lex == null)
 			return null;
-		else if(dt.toString().startsWith(XSD.NS)){
-			if(dt.equals(XSD.STRING)){
+		else if (dt.toString().startsWith("<" + XSD.NS)) {
+			if (dt.equals(XSD.STRING)){
 				return new XsdString(lex);
 			} else if(dt.equals(XSD.BOOLEAN)){
 				return new XsdBoolean(lex);
@@ -148,9 +148,5 @@ public class DatatypeFactory {
 			return new RdfXmlLiteral(lex);
 		}
 		return null;
-	}
-	
-	public static void main(String args[]) throws DatatypeParseException{
-		System.err.println(getDatatype("2005-03-04",XSD.DATETIME));
 	}
 }

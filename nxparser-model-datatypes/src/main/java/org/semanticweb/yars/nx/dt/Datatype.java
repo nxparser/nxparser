@@ -56,4 +56,19 @@ public abstract class Datatype<E> {
 		}
 		return false;
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof Datatype))
+			return false;
+		else
+			return getCanonicalRepresentation().equals(
+					((Datatype) other).getCanonicalRepresentation());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getCanonicalRepresentation().hashCode();
+	}
 }
