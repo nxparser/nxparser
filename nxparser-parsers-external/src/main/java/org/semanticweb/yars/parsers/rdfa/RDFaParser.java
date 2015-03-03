@@ -177,4 +177,9 @@ public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 		return sp;
 	}
 
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+
 }
