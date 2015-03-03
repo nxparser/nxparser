@@ -35,11 +35,6 @@ public class XsdDateTimeStamp extends Datatype<GregorianCalendar>{
 		return Iso8601Parser.getCanonicalRepresentation(getValue(), true, true, true, true, true);
 	}
 	
-	public static void main(String args[]) throws DatatypeParseException{
-		XsdDateTimeStamp dt = new XsdDateTimeStamp("1600-02-29T07:17:55Z");
-		System.err.println(dt.getCanonicalRepresentation());
-	}
-	
 	/**
 	 * Add leading zeros
 	 * @return

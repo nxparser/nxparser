@@ -34,9 +34,5 @@ public class XsdGMonth extends Datatype<GregorianCalendar>{
 	public String getCanonicalRepresentation() {
 		return Iso8601Parser.getCanonicalRepresentation(getValue(), false, true, false, false, true);
 	}
-	
-	public static void main(String args[]) throws DatatypeParseException{
-		XsdGMonth dt = new XsdGMonth("--05--");
-		System.err.println(dt.getCanonicalRepresentation());
-	}
+
 }

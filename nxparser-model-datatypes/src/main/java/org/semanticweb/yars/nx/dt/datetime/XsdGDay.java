@@ -34,9 +34,5 @@ public class XsdGDay extends Datatype<GregorianCalendar>{
 	public String getCanonicalRepresentation() {
 		return Iso8601Parser.getCanonicalRepresentation(getValue(), false, false, true, false, true);
 	}
-	
-	public static void main(String args[]) throws DatatypeParseException{
-		XsdGDay dt = new XsdGDay("---12+05:00");
-		System.err.println(dt.getCanonicalRepresentation());
-	}
+
 }

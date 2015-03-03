@@ -31,9 +31,5 @@ public class XsdHexBinary extends Datatype<String> {
 	public String getCanonicalRepresentation() {
 		return _h.toUpperCase();
 	}
-	
-	public static void main(String args[]) throws DatatypeParseException{
-		XsdHexBinary hex = new XsdHexBinary("098acbcDF087123D");
-		System.err.println(hex.getCanonicalRepresentation());
-	}
+
 }

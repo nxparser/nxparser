@@ -16,6 +16,7 @@ public class XsdBase64Binary extends Datatype<String> {
 	public static final Resource DT = XSD.BASE64BINARY;
 	private String _h;
 	
+	// cf. http://www.w3.org/TR/2004/PER-xmlschema-2-20040318/#base64Binary
 	public static final String REGEX = "((([A-Za-z0-9+/] ?){4})*(([A-Za-z0-9+/] ?){3}[A-Za-z0-9+/]|([A-Za-z0-9+/] ?){2}[AEIMQUYcgkosw048] ?=|[A-Za-z0-9+/] ?[AQgw] ?= ?=))?";
 	
 	public XsdBase64Binary(String s) throws DatatypeParseException{
@@ -30,10 +31,5 @@ public class XsdBase64Binary extends Datatype<String> {
 
 	public String getCanonicalRepresentation() {
 		return _h;
-	}
-	
-	public static void main(String args[]) throws DatatypeParseException{
-		XsdBase64Binary hex = new XsdBase64Binary("098abzxcbvks/ajg+r--cDF087123D");
-		System.err.println(hex.getCanonicalRepresentation());
 	}
 }

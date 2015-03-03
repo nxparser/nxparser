@@ -35,9 +35,5 @@ public class XsdDate extends Datatype<GregorianCalendar>{
 	public String getCanonicalRepresentation() {
 		return Iso8601Parser.getCanonicalRepresentation(getValue(), true, true, true, false, true);
 	}
-	
-	public static void main(String args[]) throws DatatypeParseException{
-		XsdDate dt = new XsdDate("-1543-12-12-05:41");
-		System.err.println(dt.getCanonicalRepresentation());
-	}
+
 }
