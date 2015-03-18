@@ -172,6 +172,7 @@ public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 			}
 		}));
 
+		// for cleaning the HTML
 		XMLReader reader = SAXParserImpl.newInstance(null).getXMLReader();
 		sp.setProperty(StreamProcessor.XML_READER_PROPERTY, reader);
 		return sp;
