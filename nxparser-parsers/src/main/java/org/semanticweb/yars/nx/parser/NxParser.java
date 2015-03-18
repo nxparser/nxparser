@@ -16,6 +16,7 @@ import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Resource;
+import org.semanticweb.yars.nx.Unbound;
 import org.semanticweb.yars.nx.Variable;
 
 /**
@@ -221,19 +222,21 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				endIndex = line.indexOf(' ', startIndex);
 				nx.add(new Variable(line.substring(startIndex, endIndex), true));
 				// TODO: what happened to the unbound?
-//			} else if (line.charAt(startIndex) == Unbound.TO_STRING.charAt(0)) {
-//				// unbound.
-//				if (line.substring(startIndex,
-//						startIndex + Unbound.TO_STRING.length()).equals(
-//						Unbound.TO_STRING)) {
-//					nx.add(new Unbound());
-//					endIndex = startIndex + Unbound.TO_STRING.length();
-//					if(endIndex >= line.length() || line.charAt(endIndex)!=' '){
-//						throw new ParseException("Exception at position " + startIndex+ " while parsing: '" + line +"'");
-//					}
-//				} else{
-//					throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
-//				}
+			} else if (line.charAt(startIndex) == Unbound.TO_STRING.charAt(0)) {
+				// unbound.
+				if (line.substring(startIndex,
+						startIndex + Unbound.TO_STRING.length()).equals(
+						Unbound.TO_STRING)) {
+					nx.add(new Unbound());
+					endIndex = startIndex + Unbound.TO_STRING.length();
+					if (endIndex >= line.length()
+							|| line.charAt(endIndex) != ' ') {
+						throw new ParseException("Exception at position "
+								+ startIndex + " while parsing: '" + line + "'");
+					}
+				} else {
+					throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
+				}
 			} else{
 				throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
 			}
