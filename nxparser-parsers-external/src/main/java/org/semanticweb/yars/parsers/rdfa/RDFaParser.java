@@ -27,12 +27,22 @@ import org.xml.sax.XMLReader;
  * deal with dirty HTML.
  * 
  * @author Tobias Käfer
+ * @author Leonard Lausen
  */
 public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 
-	BlockingDeque<Node[]> _deque = new LinkedBlockingDeque<Node[]>();
+	BlockingDeque<Node[]> _deque;
+	StreamProcessor _sp;
 
 	boolean _streamOpen = true;
+
+	/**
+	 * @throws SAXException
+	 */
+	public RDFaParser() throws SAXException {
+		this._deque = new LinkedBlockingDeque<Node[]>();
+		this._sp = createStreamProcessor();
+	}
 
 	public Iterator<Node[]> parse(Reader r, String baseURI)
 			throws SAXException, ParseException {
@@ -51,8 +61,8 @@ public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 
 	public Iterator<Node[]> parse(BufferedReader br, String baseURI)
 			throws SAXException, ParseException {
-		StreamProcessor sp = createStreamProcessor(baseURI);
-		sp.process(br, baseURI);
+		_sp.setProperty("setBaseUri", baseURI);
+		_sp.process(br, baseURI);
 		return this;
 	}
 
@@ -81,96 +91,111 @@ public class RDFaParser implements Iterator<Node[]>, Iterable<Node[]> {
 				node.substring(3)) : new Resource(node);
 	}
 
-	private StreamProcessor createStreamProcessor(final String baseUri)
-			throws SAXException {
-		StreamProcessor sp = new StreamProcessor(RdfaParser.connect(new QuadSink() {
+	private StreamProcessor createStreamProcessor() throws SAXException {
+		StreamProcessor sp = new StreamProcessor(
+				RdfaParser.connect(new QuadSink() {
 
-			Resource _context = new Resource(baseUri);
-			String _contextString = baseUri;
+					Resource _context = null;
+					String _contextString = null;
 
-			@Override
-			public void addNonLiteral(String arg0, String arg1, String arg2) {
-				if (_contextString == null)
-					throw new IllegalStateException("need context to work.");
-				_deque.add(new Node[] {
-						createBnodeOrResource(arg0, _contextString),
-						new Resource(arg1),
-						createBnodeOrResource(arg2, _contextString), _context });
+					@Override
+					public void addNonLiteral(String arg0, String arg1,
+							String arg2) {
+						if (_contextString == null)
+							throw new IllegalStateException(
+									"need context to work.");
+						_deque.add(new Node[] {
+								createBnodeOrResource(arg0, _contextString),
+								new Resource(arg1),
+								createBnodeOrResource(arg2, _contextString),
+								_context });
 
-			}
+					}
 
-			@Override
-			public void addPlainLiteral(String arg0, String arg1, String arg2,
-					String arg3) {
-				if (_contextString == null)
-					throw new IllegalStateException("need context to work.");
-				_deque.add(new Node[] {
-						createBnodeOrResource(arg0, _contextString),
-						new Resource(arg1), new Literal(arg2, arg3), _context });
+					@Override
+					public void addPlainLiteral(String arg0, String arg1,
+							String arg2, String arg3) {
+						if (_contextString == null)
+							throw new IllegalStateException(
+									"need context to work.");
+						_deque.add(new Node[] {
+								createBnodeOrResource(arg0, _contextString),
+								new Resource(arg1), new Literal(arg2, arg3),
+								_context });
 
-			}
+					}
 
-			@Override
-			public void addTypedLiteral(String arg0, String arg1, String arg2,
-					String arg3) {
+					@Override
+					public void addTypedLiteral(String arg0, String arg1,
+							String arg2, String arg3) {
 
-				if (_contextString == null)
-					throw new IllegalStateException("need context to work.");
-				_deque.add(new Node[] {
-						createBnodeOrResource(arg0, _contextString),
-						new Resource(arg1),
-						new Literal(arg2, new Resource(arg3)), _context });
+						if (_contextString == null)
+							throw new IllegalStateException(
+									"need context to work.");
+						_deque.add(new Node[] {
+								createBnodeOrResource(arg0, _contextString),
+								new Resource(arg1),
+								new Literal(arg2, new Resource(arg3)), _context });
 
-			}
+					}
 
-			@Override
-			public void endStream() throws ParseException {
-				_streamOpen = false;
-			}
+					@Override
+					public void endStream() throws ParseException {
+						_streamOpen = false;
+					}
 
-			@Override
-			public void setBaseUri(String arg0) {
-				_contextString = arg0;
-				_context = new Resource(arg0);
-			}
+					@Override
+					public void setBaseUri(String arg0) {
+						_contextString = arg0;
+						_context = new Resource(arg0);
+					}
 
-			@Override
-			public boolean setProperty(String arg0, Object arg1) {
-				return false;
-			}
+					@Override
+					public boolean setProperty(String arg0, Object arg1) {
+						if (arg0.equals("setBaseUri")
+								&& (arg1 instanceof String)) {
+							setBaseUri((String) arg1);
+							return true;
+						}
+						return false;
+					}
 
-			@Override
-			public void startStream() throws ParseException {
-				_streamOpen = true;
-			}
+					@Override
+					public void startStream() throws ParseException {
+						_streamOpen = true;
+					}
 
-			@Override
-			public void addNonLiteral(String arg0, String arg1, String arg2,
-					String arg3) {
-				_deque.add(new Node[] { createBnodeOrResource(arg0, arg3),
-						new Resource(arg1), createBnodeOrResource(arg2, arg3),
-						new Resource(arg3) });
+					@Override
+					public void addNonLiteral(String arg0, String arg1,
+							String arg2, String arg3) {
+						_deque.add(new Node[] {
+								createBnodeOrResource(arg0, arg3),
+								new Resource(arg1),
+								createBnodeOrResource(arg2, arg3),
+								new Resource(arg3) });
 
-			}
+					}
 
-			@Override
-			public void addPlainLiteral(String arg0, String arg1, String arg2,
-					String arg3, String arg4) {
-				_deque.add(new Node[] { createBnodeOrResource(arg0, arg4),
-						new Resource(arg1), new Literal(arg2, arg3),
-						new Resource(arg4) });
+					@Override
+					public void addPlainLiteral(String arg0, String arg1,
+							String arg2, String arg3, String arg4) {
+						_deque.add(new Node[] {
+								createBnodeOrResource(arg0, arg4),
+								new Resource(arg1), new Literal(arg2, arg3),
+								new Resource(arg4) });
 
-			}
+					}
 
-			@Override
-			public void addTypedLiteral(String arg0, String arg1, String arg2,
-					String arg3, String arg4) {
-				_deque.add(new Node[] { createBnodeOrResource(arg0, arg4),
-						new Resource(arg1),
-						new Literal(arg2, new Resource(arg3)),
-						new Resource(arg4) });
-			}
-		}));
+					@Override
+					public void addTypedLiteral(String arg0, String arg1,
+							String arg2, String arg3, String arg4) {
+						_deque.add(new Node[] {
+								createBnodeOrResource(arg0, arg4),
+								new Resource(arg1),
+								new Literal(arg2, new Resource(arg3)),
+								new Resource(arg4) });
+					}
+				}));
 
 		// for cleaning the HTML
 		XMLReader reader = SAXParserImpl.newInstance(null).getXMLReader();
