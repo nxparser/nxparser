@@ -111,6 +111,9 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			loadNext();
 		}
 		
+		if (next == null)
+			return;
+		
 		if(next.length==0)//valid but empty: skip and try again
 			loadNext();
 	}
