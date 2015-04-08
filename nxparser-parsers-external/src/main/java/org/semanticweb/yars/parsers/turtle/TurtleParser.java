@@ -1,6 +1,9 @@
 package org.semanticweb.yars.parsers.turtle;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -34,14 +37,16 @@ public class TurtleParser implements Iterator<Node[]>, Iterable<Node[]> {
 
 	}
 
-	public void parse(InputStream is, String baseURI) {
+	public void parse(InputStream is, String baseURI, Charset cs) {
 		_tripleIterator = new PipedRDFIterator<Triple>();
 		_baseURI = baseURI;
 		_resBaseURI = new Resource(_baseURI, false);
 
-		LangTurtle lt = new LangTurtle(TokenizerFactory.makeTokenizerUTF8(is),
-				RiotLib.profile(RDFLanguages.TURTLE, baseURI),
-				new PipedTriplesStream(_tripleIterator));
+		LangTurtle lt = new LangTurtle(
+				TokenizerFactory.makeTokenizer(new BufferedReader(
+						new InputStreamReader(is, cs))), RiotLib.profile(
+						RDFLanguages.TURTLE, baseURI), new PipedTriplesStream(
+						_tripleIterator));
 		try {
 			lt.parse();
 		} catch (RiotParseException e1) {

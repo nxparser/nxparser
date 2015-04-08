@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 import org.semanticweb.yars.nx.Node;
@@ -28,16 +29,16 @@ public class TurtleParserTest {
 
 		String baseURI = "http://base.uri/";
 
-		InputStream is = new ByteArrayInputStream(turtleString.getBytes());
+		InputStream is = new ByteArrayInputStream(turtleString.getBytes(StandardCharsets.UTF_8));
 
 		TurtleParser tp = new TurtleParser();
-		tp.parse(is, baseURI);
+		tp.parse(is, baseURI, StandardCharsets.UTF_8);
 
 		Model nxparserModel = createModelFromNodesCollection(tp);
 
 		Model turtleModel = ModelFactory.createDefaultModel();
 
-		is = new ByteArrayInputStream(turtleString.getBytes());
+		is = new ByteArrayInputStream(turtleString.getBytes(StandardCharsets.UTF_8));
 		turtleModel.read(is, baseURI, "TURTLE");
 
 		assertTrue(nxparserModel.isIsomorphicWith(turtleModel));
@@ -57,7 +58,7 @@ public class TurtleParserTest {
 		sw.close();
 
 		InputStream is2 = new ByteArrayInputStream(sw.getBuffer().toString()
-				.getBytes());
+				.getBytes(StandardCharsets.UTF_8));
 		modelTest.read(is2, "", "N-TRIPLES");
 		is2.close();
 
