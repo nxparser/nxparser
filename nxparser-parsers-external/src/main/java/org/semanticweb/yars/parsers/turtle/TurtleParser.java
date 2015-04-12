@@ -81,6 +81,11 @@ public class TurtleParser implements Iterator<Node[]>, Iterable<Node[]> {
 
 	}
 
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+
 	public org.semanticweb.yars.nx.Node jenaToNxParser(
 			com.hp.hpl.jena.graph.Node jenaNode) {
 		if (jenaNode instanceof Node_URI)
