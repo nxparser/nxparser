@@ -1,6 +1,6 @@
 package org.semanticweb.yars.parsers.turtle;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,8 +9,10 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
+import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
+import org.semanticweb.yars.nx.parser.ParseException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -29,7 +31,8 @@ public class TurtleParserTest {
 
 		String baseURI = "http://base.uri/";
 
-		InputStream is = new ByteArrayInputStream(turtleString.getBytes(StandardCharsets.UTF_8));
+		InputStream is = new ByteArrayInputStream(
+				turtleString.getBytes(StandardCharsets.UTF_8));
 
 		TurtleParser tp = new TurtleParser();
 		tp.parse(is, baseURI, StandardCharsets.UTF_8);
@@ -38,7 +41,8 @@ public class TurtleParserTest {
 
 		Model turtleModel = ModelFactory.createDefaultModel();
 
-		is = new ByteArrayInputStream(turtleString.getBytes(StandardCharsets.UTF_8));
+		is = new ByteArrayInputStream(
+				turtleString.getBytes(StandardCharsets.UTF_8));
 		turtleModel.read(is, baseURI, "TURTLE");
 
 		assertTrue(nxparserModel.isIsomorphicWith(turtleModel));
@@ -63,6 +67,45 @@ public class TurtleParserTest {
 		is2.close();
 
 		return modelTest;
+
+	}
+
+	@Test
+	public void testBnodeIds() throws ParseException {
+		String turtleWithManyBnodes = "[] a [], [], [], [], [], [], [], [], [], [], [], [], [], []. [] a [a []] .";
+		String baseURI = "http://ex.org/";
+
+		InputStream is = new ByteArrayInputStream(
+				turtleWithManyBnodes.getBytes(StandardCharsets.UTF_8));
+
+		TurtleParser tp = new TurtleParser();
+		tp.parse(is, baseURI, StandardCharsets.UTF_8);
+
+		int i = 0;
+		int j = 0;
+
+		for (Node[] nx : tp) {
+			++i;
+			for (Node n : nx) {
+				if (n instanceof BNode) {
+					++j;
+					BNode bn = (BNode) n;
+
+					String[] parts = bn.parseContextualBNode();
+
+					for (String s : parts) {
+						char firstChar = s.charAt(0);
+						assertFalse(
+								"RDFXML does not like bnode labels with numbers in the beginning like " + bn.getLabel()
+										+ " in triple #" + i + ": "
+										+ Nodes.toString(nx), firstChar <= 57
+										&& firstChar >= 48);
+
+					}
+				}
+			}
+		}
+		System.err.println("tested " + j + " blank nodes in " + i + " triples.");
 
 	}
 }

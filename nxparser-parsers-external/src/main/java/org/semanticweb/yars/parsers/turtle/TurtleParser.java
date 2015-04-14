@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.jena.riot.RDFLanguages;
@@ -90,8 +91,19 @@ public class TurtleParser implements Iterator<Node[]>, Iterable<Node[]> {
 			com.hp.hpl.jena.graph.Node jenaNode) {
 		if (jenaNode instanceof Node_URI)
 			return new Resource(jenaNode.getURI(), false);
-		else if (jenaNode instanceof Node_Blank)
-			return BNode.createBNode(_baseURI, jenaNode.getBlankNodeLabel());
+		else if (jenaNode instanceof Node_Blank) {
+			String bNlabel = jenaNode.getBlankNodeLabel();
+			char firstChar = bNlabel.charAt(0);
+			if (firstChar <= 57 && firstChar >= 48) {
+				_log.log(
+						Level.FINE,
+						"Adding j because first character in Jena-supplied Blank node id is a number, which is bad for RDF/XML: {0}",
+						bNlabel);
+				bNlabel = "j" + bNlabel;
+			}
+
+			return BNode.createBNode(_baseURI, bNlabel);
+		}
 		else if (jenaNode instanceof Node_Literal) {
 			return new Literal(jenaNode.getLiteralLexicalForm(),
 					jenaNode.getLiteralLanguage() == null ? null : jenaNode
