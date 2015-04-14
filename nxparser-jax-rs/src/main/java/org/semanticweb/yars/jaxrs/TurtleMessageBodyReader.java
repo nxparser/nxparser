@@ -38,7 +38,7 @@ import org.semarglproject.sink.TripleSink;
 @Consumes({ "text/turtle" })
 @Produces({ "text/turtle" })
 @Provider
-@MetaInfServices({MessageBodyWriter.class, MessageBodyReader.class})
+@MetaInfServices({ MessageBodyWriter.class, MessageBodyReader.class })
 public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter {
 
 	@Context
@@ -71,27 +71,27 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			ts.startStream();
 
 			for (Node[] nx : arg0) {
-				
-				String subject;
-				if (nx[0] instanceof BNode)
-					// it's a blank node
-					subject = nx[0].toString();
-				else
-					// it's a resource
-					subject = nx[0].getLabel();
-				
+
 				if (!(nx[2] instanceof Literal))
 					// it's not a literal
-					ts.addNonLiteral(subject, nx[1].getLabel(),
-							nx[2].getLabel());
+					ts.addNonLiteral(
+							nx[0] instanceof BNode ? nx[0].toString() : nx[0]
+									.getLabel(),
+							nx[1].getLabel(),
+							nx[2] instanceof BNode ? nx[2].toString() : nx[2]
+									.getLabel());
 				else {
 					// it's a literal
 					Literal l = (Literal) nx[2];
 					if (l.getDatatype() != null)
-						ts.addTypedLiteral(subject, nx[1].getLabel(),
+						ts.addTypedLiteral(
+								nx[0] instanceof BNode ? nx[0].toString()
+										: nx[0].getLabel(), nx[1].getLabel(),
 								nx[2].getLabel(), l.getDatatype().getLabel());
 					else
-						ts.addPlainLiteral(subject, nx[1].getLabel(),
+						ts.addPlainLiteral(
+								nx[0] instanceof BNode ? nx[0].toString()
+										: nx[0].getLabel(), nx[1].getLabel(),
 								nx[2].getLabel(), l.getLanguageTag());
 
 				}
