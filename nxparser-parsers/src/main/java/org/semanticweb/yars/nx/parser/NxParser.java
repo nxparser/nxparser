@@ -156,7 +156,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	 * @return
 	 * @throws ParseException
 	 */
-	private static Node[] parseNodesInternal(final String line) throws ParseException {
+	protected static Node[] parseNodesInternal(final String line) throws ParseException {
 		int startIndex = 0;
 		int endIndex = 0;
 		List<Node> nx = new LinkedList<Node>();
@@ -183,12 +183,23 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 
 			if (line.charAt(startIndex) == '<') {
 				// resource.
-				endIndex = line.indexOf("> ", startIndex)+1;
+				endIndex = startIndex;
+
+				while (line.charAt(endIndex) != '>'
+						&& (line.charAt(endIndex + 1) != '.'
+						 || !Character.isWhitespace(line.charAt(endIndex + 1))))			
+					++endIndex;
+				++endIndex;
+
 				if(endIndex==0) throw new ParseException("Could not find closing '>' bracket for resource starting at char "+startIndex+" while parsing line "+line);
 				nx.add(new Resource(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == '_') {
 				// bnode.
-				endIndex = line.indexOf(' ', startIndex);
+				endIndex = startIndex;
+				do
+					++endIndex;
+				while (endIndex < line.length() && !Character.isWhitespace(line.charAt(endIndex))
+						&& line.charAt(endIndex) != '.');
 				nx.add(new BNode(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == '.') {
 				// statement's end.
@@ -213,7 +224,8 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 								endIndex - 1)) % 2) == 0));
 				// ^^ if the number of backslashes in front of a quote is even,
 				// the found quote is the literal-delimiting one.
-				while (line.charAt(endIndex) != ' ') {
+				while (endIndex < line.length() && !Character.isWhitespace(line.charAt(endIndex))
+						&& line.charAt(endIndex) != '.') {
 					++endIndex;
 				}
 				nx.add(new Literal(line.substring(startIndex, endIndex), true));
@@ -222,9 +234,11 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				return new Node[0];
 			} else if (line.charAt(startIndex) == '?') {
 				// variable.
-				endIndex = line.indexOf(' ', startIndex);
+				do
+					++endIndex;
+				while (endIndex < line.length() && !Character.isWhitespace(line.charAt(endIndex))
+						&& line.charAt(endIndex) != '.');
 				nx.add(new Variable(line.substring(startIndex, endIndex), true));
-				// TODO: what happened to the unbound?
 			} else if (line.charAt(startIndex) == Unbound.TO_STRING.charAt(0)) {
 				// unbound.
 				if (line.substring(startIndex,
@@ -243,8 +257,10 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			} else{
 				throw new ParseException("Exception at position " + endIndex+ " while parsing: '" + line +"'");
 			}
-
-			startIndex = endIndex + 1;
+			if (line.charAt(endIndex) == '.')
+				break;
+			else
+				startIndex = endIndex + 1;
 		}
 		return nx.toArray(new Node[nx.size()]);
 	}
