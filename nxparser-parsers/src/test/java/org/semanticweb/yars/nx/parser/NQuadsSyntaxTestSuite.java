@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -18,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.semanticweb.yars.nx.Node;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -28,8 +30,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
- * Runs the W3C test cases against the Parser. Loads them straight from
- * the Web.
+ * Runs the W3C test cases against the Parser. Loads them straight from the Web.
  * 
  * @author Tobias Kaefer
  * @author Aidan Hogan
@@ -88,7 +89,7 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 	}
 
 	@Test
-	public void test() throws IOException {
+	public void test() throws IOException, ParseException {
 		if (_isPositive) {
 
 			// positive test
@@ -103,19 +104,28 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 
 			boolean failed = false;
 
+			Node[] nx = null;
+
 			String line = null;
+			
+			Set<String> lineDataAndException = new HashSet<String>();
+			
 			while ((line = bw.readLine()) != null) {
 
 				try {
-					NxParser.parseNodes(line);
+					nx = NxParser.parseNodesInternal(line);
+					// sanity check. a length of 0 is returned for lines only consisting in comments
+					// the test cases contain both triples and quad, hence < 3
+					if (nx.length > 0 && nx.length < 3)
+						throw new ParseException("Returned too few RDF terms. The test cases contain triples and quads.");
 				} catch (ParseException e) {
 					System.err
 							.println(" -- Failed to parse! " + e.getMessage());
-					failed = true;
+					throw e;
 				}
 			}
 
-			assertFalse(failed);
+			assertFalse(lineDataAndException.toString(), failed);
 			if (!failed)
 				System.err.println(" ++ Success");
 		} else {
