@@ -98,18 +98,5 @@ public class Nodes implements Serializable, Comparable<Nodes> {
 
 		return buf.toString();
 	}
-//
-//	/**
-//	 * Fast hashcode method for Node arrays
-//	 */
-//	public static int hashCode(Node... nx) {
-//		return Array.hashCode(nx, 0, nx.length);
-//	}
-//
-//	/**
-//	 * Fast hashcode method for Node arrays
-//	 */
-//	public static int hashCode(Node[] nx, int pos, int length) {
-//		return Array.hashCode(nx, pos, length);
-//	}
+
 }
