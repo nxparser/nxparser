@@ -196,21 +196,19 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			} else if (line.charAt(startIndex) == '_') {
 				// bnode.
 				endIndex = startIndex;
-				do
+				while (!((line.charAt(endIndex) == '.' && (endIndex + 2 >= line
+						.length() || Character.isWhitespace(endIndex + 1))) || Character
+						.isWhitespace(line.charAt(endIndex)))) {
+					// (fullstop at endIndex and (at endIndex+1, whitespace or
+					// line end )) OR whitespace at endIndex ends the thing.
 					++endIndex;
-				while (endIndex < line.length() && !Character.isWhitespace(line.charAt(endIndex))
-						&& line.charAt(endIndex) != '.');
+				}
 				nx.add(new BNode(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == '.') {
 				// statement's end.
 				if(nx.isEmpty()){
 					throw new ParseException("Exception at position " + startIndex+ " while parsing: '" + line +"'");
 				}
-//				for(int i=startIndex+1; i<line.length(); i++){
-//					if(!Character.isWhitespace(line.charAt(i))){
-//						throw new ParseException("Exception at position " + i + " while parsing: '" + line +"'");
-//					}
-//				}
 				break;
 			} else if (line.charAt(startIndex) == '"') {
 				// literal.
@@ -224,8 +222,11 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 								endIndex - 1)) % 2) == 0));
 				// ^^ if the number of backslashes in front of a quote is even,
 				// the found quote is the literal-delimiting one.
-				while (endIndex < line.length() && !Character.isWhitespace(line.charAt(endIndex))
-						&& line.charAt(endIndex) != '.') {
+				while (!((line.charAt(endIndex) == '.' && (endIndex + 2 >= line
+						.length() || Character.isWhitespace(endIndex + 1))) || Character
+						.isWhitespace(line.charAt(endIndex)))) {
+					// (fullstop at endIndex and (at endIndex+1, whitespace or
+					// line end )) OR whitespace at endIndex ends the thing.
 					++endIndex;
 				}
 				nx.add(new Literal(line.substring(startIndex, endIndex), true));
@@ -234,10 +235,14 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 				return new Node[0];
 			} else if (line.charAt(startIndex) == '?') {
 				// variable.
-				do
+				endIndex = startIndex;
+				while (!((line.charAt(endIndex) == '.' && (endIndex + 2 >= line
+						.length() || Character.isWhitespace(endIndex + 1))) || Character
+						.isWhitespace(line.charAt(endIndex)))) {
+					// (fullstop at endIndex and (at endIndex+1, whitespace or
+					// line end )) OR whitespace at endIndex ends the thing.
 					++endIndex;
-				while (endIndex < line.length() && !Character.isWhitespace(line.charAt(endIndex))
-						&& line.charAt(endIndex) != '.');
+				}
 				nx.add(new Variable(line.substring(startIndex, endIndex), true));
 			} else if (line.charAt(startIndex) == Unbound.TO_STRING.charAt(0)) {
 				// unbound.

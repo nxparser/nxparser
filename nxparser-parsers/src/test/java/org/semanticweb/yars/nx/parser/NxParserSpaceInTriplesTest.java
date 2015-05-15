@@ -2,6 +2,7 @@ package org.semanticweb.yars.nx.parser;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.semanticweb.yars.nx.Variable;
 public class NxParserSpaceInTriplesTest {
 
 	@Test
-	public void testLiterals() throws ParseException {
+	public void testLiteralsLangTagged() throws ParseException {
 
 		Node[] goldStandard = new Node[] {
 				new Resource(
@@ -38,19 +39,65 @@ public class NxParserSpaceInTriplesTest {
 				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en . ",
 				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en .",
 				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en .                   " };
-		List<String> lines = Arrays
-				.asList(new String[] {
-						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en.",
-						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en. ",
-						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en . ",
-						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en .",
-						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"@en .                   " });
+		List<String> lines = Arrays.asList(lines1);
+
 		lines = new LinkedList<String>(lines);
 		for (String line : lines1)
 			lines.add(line.replaceAll(" ", "\t"));
 
 		for (String line : lines)
 			assertArrayEquals(goldStandard, NxParser.parseNodesInternal(line));
+	}
+
+	@Test
+	public void testLiterals() throws ParseException {
+
+		Node[] goldStandard = new Node[] {
+				new Resource(
+						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey>",
+						true),
+				new Resource("<http://dbpedia.org/ontology/postalCode>", true),
+				new Literal("\"07726-Englishtown\"", true) };
+
+		String[] lines1 = new String[] {
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\".",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\". ",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\" . ",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\" .",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\" .                   " };
+		List<String> lines = Arrays.asList(lines1);
+
+		lines = new ArrayList<String>(lines);
+		for (String line : lines1)
+			lines.add(line.replaceAll(" ", "\t"));
+
+		for (String line : lines)
+			assertArrayEquals(goldStandard, NxParser.parseNodesInternal(line));
+	}
+
+	@Test
+	public void testLiteralsDatatyped() throws ParseException {
+		
+		assertFalse(Character.isWhitespace('.'));
+
+		Node[] goldStandard = new Node[] {
+				new Resource(
+						"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey>",
+						true),
+				new Resource("<http://dbpedia.org/ontology/postalCode>", true),
+				new Literal("\"07726-Englishtown\"^^<http://ex.org/>", true) };
+
+		String[] lines1 = new String[] {
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"^^<http://ex.org/>.",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"^^<http://ex.org/>. ",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"^^<http://ex.org/> . ",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"^^<http://ex.org/> .",
+				"<http://dbpedia.org/resource/Manalapan_Township,_New_Jersey> <http://dbpedia.org/ontology/postalCode> \"07726-Englishtown\"^^<http://ex.org/> .                   " };
+		List<String> lines = Arrays.asList(lines1);
+
+		lines = new LinkedList<String>(lines);
+		for (String line : lines1)
+			lines.add(line.replaceAll(" ", "\t"));
 
 		for (String line : lines)
 			assertArrayEquals(goldStandard, NxParser.parseNodesInternal(line));
