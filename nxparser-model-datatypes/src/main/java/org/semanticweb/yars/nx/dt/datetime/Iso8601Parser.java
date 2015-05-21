@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 import org.semanticweb.yars.nx.dt.DatatypeParseException;
-import org.semanticweb.yars.nx.parser.ParseException;
 
 public class Iso8601Parser {	
 	private static String NO_TOKEN = "\n";
