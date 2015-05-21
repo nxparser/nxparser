@@ -102,11 +102,10 @@ public class RdfXmlParser implements Iterator<Node[]>, Iterable<Node[]> {
 	
 	/**
 	 * Constructor given Callback. 
-	 * Interaction outside of iterator model but analagous to NxParser :(.
-	 * 
-	 * @@@ need always context for relative URIs?
+	 * Interaction outside of iterator model but analogous to NxParser :(.
 	 */
 	@Deprecated
+	// @@@@ need always context for relative URIs?
 	public void parse(InputStream in, boolean strict, boolean skolemise, String baseURI, Callback c) throws ParseException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(true);

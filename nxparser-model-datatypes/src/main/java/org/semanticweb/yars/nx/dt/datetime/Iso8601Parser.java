@@ -19,20 +19,14 @@ public class Iso8601Parser {
 	//4** Outside valid value range
 	
 	/**
-	 * Parse an ISO8601 compliant datetime
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant datetime.
 	 */
 	public static GregorianCalendar parseISO8601DateTime(String s) throws DatatypeParseException {
 		return parseISO8601DateTime(s, false);
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant datetime or datetimestamp with required TZ
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant datetime or datetimestamp with required TZ.
 	 */
 	public static GregorianCalendar parseISO8601DateTime(String s, boolean tzRequired) throws DatatypeParseException {
 		if(s==null || s.isEmpty())
@@ -65,10 +59,7 @@ public class Iso8601Parser {
 	
 	
 	/**
-	 * Parse an ISO8601 compliant date
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant date.
 	 */
 	public static GregorianCalendar parseISO8601Date(String s) throws DatatypeParseException {
 		GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("Etc/UTC"));
@@ -104,10 +95,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant gYearMonth
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant gYearMonth.
 	 */
 	public static GregorianCalendar parseISO8601YearMonth(String s) throws DatatypeParseException {
 		GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("Etc/UTC"));
@@ -136,10 +124,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant gYear
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant gYear.
 	 */
 	public static GregorianCalendar parseISO8601Year(String s) throws DatatypeParseException {
 		GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("Etc/UTC"));
@@ -196,10 +181,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant gYearMonth
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant gYearMonth.
 	 */
 	public static GregorianCalendar parseISO8601MonthDay(String s) throws DatatypeParseException {
 		if(s==null || s.isEmpty())
@@ -237,10 +219,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant gYear
-	 * @param s Lexical string
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant gYear.
 	 */
 	public static GregorianCalendar parseISO8601Month(String s) throws DatatypeParseException {
 		if(s==null || s.isEmpty())
@@ -293,10 +272,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant gDay
-	 * @param s Lexical string
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant gDay.
 	 */
 	public static GregorianCalendar parseISO8601Day(String s) throws DatatypeParseException {
 		if(s==null || s.isEmpty())
@@ -353,10 +329,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Parse an ISO8601 compliant time
-	 * @param s
-	 * @return
-	 * @throws ParseException
+	 * Parse an ISO8601 compliant time.
 	 */
 	public static GregorianCalendar parseISO8601Time(String s) throws DatatypeParseException {
 		if(s==null || s.isEmpty())
@@ -631,8 +604,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Add leading zeros
-	 * @return
+	 * Add leading zeros.
 	 */
 	public static String leadZeros(int v, int l){
 		String val = Integer.toString(v);
@@ -643,8 +615,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Remove trailing zeros
-	 * @return
+	 * Remove trailing zeros.
 	 */
 	public static String removeTrailingZeros(String s){
 		while(s.endsWith("0"))
@@ -653,9 +624,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * Quick testcase
-	 * @return
-	 * @throws ParseException
+	 * Quick testcase.
 	 */
 	public static void main(String args[]) throws DatatypeParseException{
 		GregorianCalendar cl = parseISO8601Date("1242-04-14");
@@ -696,11 +665,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * 
-	 * @param year
-	 * @param month 1-12
-	 * @param day
-	 * @return
+	 * Verifies if the day exits in a given month and year.
 	 */
 			
 	public static boolean verifyDay(int year, int month, int day){
@@ -717,11 +682,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * 
-	 * @param year
-	 * @param month 1-12
-	 * @param day
-	 * @return
+	 * Verifies if the day exits in a given month.
 	 */	
 	public static boolean verifyDay(int month, int day){
 		if(!verifyDay(day))
@@ -738,11 +699,7 @@ public class Iso8601Parser {
 	}
 	
 	/**
-	 * 
-	 * @param year
-	 * @param month 1-12
-	 * @param day
-	 * @return
+	 * Verifies if the day exits in some month.
 	 */	
 	public static boolean verifyDay(int day){
 		if(day>31){

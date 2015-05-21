@@ -148,12 +148,13 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 	}
 
 	/**
-	 * Parses line and returns a Node[] contained within that line.
-	 * May return an empty Node[] if the line is valid N-Triples
-	 * but contains no nodes (e.g., a blank or comment line).
+	 * Parses line and returns a Node[] contained within that line. May return
+	 * an empty Node[] if the line is valid N-Triples but contains no nodes
+	 * (e.g., a blank or comment line).
 	 * 
 	 * @param line
-	 * @return
+	 * @return A {@link Node} array with the RDF terms found in the line. Can be
+	 *         of zero length.
 	 * @throws ParseException
 	 */
 	protected static Node[] parseNodesInternal(final String line) throws ParseException {

@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -283,8 +282,6 @@ public class Main {
 	 * 
 	 * Used for CLI interface.
 	 * 
-	 * @param arg
-	 * @return
 	 */
 	public static int[] getMask(String arg){
 		int[] reorder = new int[arg.length()];

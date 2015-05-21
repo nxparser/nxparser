@@ -32,14 +32,12 @@ public abstract class Datatype<E> {
 	};
 	
 	/**
-	 * Get a Java object representing the value of the Datatype
-	 * @return
+	 * Get a Java object representing the value of the Datatype.
 	 */
 	public abstract E getValue();
 	
 	/**
 	 * Get the canonicalised form of the lexical value.
-	 * @return
 	 */
 	public abstract String getCanonicalRepresentation();
 	

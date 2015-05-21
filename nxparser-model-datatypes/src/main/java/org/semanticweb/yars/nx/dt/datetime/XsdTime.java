@@ -41,8 +41,7 @@ public class XsdTime extends Datatype<GregorianCalendar>{
 	}
 	
 	/**
-	 * Remove trailing zeros
-	 * @return
+	 * Remove trailing zeros.
 	 */
 	public static String removeTrailingZeros(String s){
 		while(s.endsWith("0"))

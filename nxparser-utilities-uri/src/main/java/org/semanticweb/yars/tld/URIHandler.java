@@ -42,9 +42,6 @@ public class URIHandler implements Comparator<String>{
 		}
 	}
 	
-	/**
-	 * @param string
-	 */
 	public static void logMem(String msg) {
 		long mem = runtime.maxMemory() - runtime.totalMemory();
 		float KBytes = mem / (float) 1024;
@@ -58,10 +55,6 @@ public class URIHandler implements Comparator<String>{
 			System.err.println("[MEMLOG] ("+msg+") FreeMemory: " + FMT.format(KBytes) + " KB");
 	
 	}
-	/**
-	 * @return
-	 * @throws IOException 
-	 */
 	private static void parseTLD() throws IOException {
 		_tldManager = new TldManager();
 		
@@ -69,10 +62,6 @@ public class URIHandler implements Comparator<String>{
 //			throw new FileNotFoundException("WARNING:::TLD file is missing!!");
 //		_tldManager.readList(URIHandler.class.getResourceAsStream("tld.dat"));
 	}
-	/**
-	 * @param node
-	 * @return
-	 */
 	public static String getPLD(String uri) {
 		URI tmp = null;
 		try {
@@ -89,10 +78,6 @@ public class URIHandler implements Comparator<String>{
 		if(pld==null) return NO_HOST;
 		return pld;
 	}
-	/**
-	 * @param uri
-	 * @return
-	 */
 	public static String[] getPathTokens(String uri) {
 		List<String> result = new ArrayList<String>();
 		List<String> tokens = new ArrayList<String>();
@@ -178,10 +163,6 @@ public class URIHandler implements Comparator<String>{
 		return result.toArray(tmp);
 	}
 	
-	/**
-	 * @param uri
-	 * @return
-	 */
 	public static String getFileName(String uri) {
 		String path = "";
 		try {
@@ -213,10 +194,6 @@ public class URIHandler implements Comparator<String>{
 		}
 		return "/"+fName;
 	}
-	/**
-	 * @param uri
-	 * @return
-	 */
 	public static String getFileExtension(String uri) {
 		String ext = "";
 		String path = "";
@@ -287,16 +264,9 @@ public class URIHandler implements Comparator<String>{
 		System.out.println("compare("+o1+","+o2+")");
 		return o1.compareTo(o2);
 	}
-	/**
-	 * @return
-	 */
 	public static long getFreeMem() {
 		return runtime.maxMemory() - runtime.totalMemory();
 	}
-	/**
-	 * @param line
-	 * @return
-	 */
 	public String getDomain(String uri) {
 		URL url;
 		try {

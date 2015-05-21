@@ -186,9 +186,9 @@ public class NxUtil {
 	 * or the good old 2004 N-Triples testcases.
 	 *
 	 * @param str String to unescape
-	 * @see http://www.w3.org/TR/2014/REC-n-triples-20140225/
-	 * @see http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntriples
-	 * @return the String unescaped
+	 * @see <a href="http://www.w3.org/TR/2014/REC-n-triples-20140225/">The N-Triples 1.1 spec</a>
+	 * @see <a href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntriples">N-Triples from the RDF 1.0 testcases</a>
+	 * @return The String unescaped
 	 */
 	public static String unescape(String str) {
 		

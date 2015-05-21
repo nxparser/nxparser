@@ -66,10 +66,11 @@ public class Resource implements Node, Serializable {
 	/**
 	 * Returns the URI that this resource represents. Be careful, as Java URI
 	 * represents URIs according to RFC2396 and not IRIs according to RFC3986.
+	 * Implemented using {@link #getUriString()}.
 	 * 
 	 * @return the URI
 	 * @throws URISyntaxException
-	 * @see Implemented using {@link #getUriString()}
+	 * @see #getUriString()
 	 */
 	public URI toURI() throws URISyntaxException {
 		return new URI(getUriString());
@@ -89,7 +90,7 @@ public class Resource implements Node, Serializable {
 
 	/**
 	 * @return the IRI without <>
-	 * @see Implemented by {@link #getUriString()}
+	 * @see #getUriString()
 	 */
 	@Override
 	public String getLabel() {

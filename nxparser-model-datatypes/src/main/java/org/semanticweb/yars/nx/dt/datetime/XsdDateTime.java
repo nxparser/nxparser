@@ -36,8 +36,7 @@ public class XsdDateTime extends Datatype<GregorianCalendar>{
 	}
 	
 	/**
-	 * Add leading zeros
-	 * @return
+	 * Add leading zeros.
 	 */
 	public static String leadZeros(int v, int l){
 		String val = Integer.toString(v);

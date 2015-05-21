@@ -166,9 +166,7 @@ public class XsdDatatypeMap {
 	}
 
 	/**
-	 * Get the canonicalised version of the literal
-	 * 
-	 * @return
+	 * Get the canonicalised version of the literal.
 	 */
 	public static Literal getCanonicalLiteral(Literal l) throws DatatypeParseException, ParseException {
 		if (l.getDatatype() != null

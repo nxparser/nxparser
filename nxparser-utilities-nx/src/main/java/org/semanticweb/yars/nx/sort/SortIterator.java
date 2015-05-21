@@ -63,11 +63,7 @@ public class SortIterator implements Iterator<Node[]>, Iterable<Node[]>{
 	}
 	
 	/**
-	 * Returns a sorted iterator over input
-	 * @param args
-	 * @return
-	 * @throws IOException
-	 * @throws ParseException
+	 * Returns a sorted iterator over input.
 	 */
 	private void sort(SortArgs args) throws IOException, ParseException {
 		long count=0;
@@ -344,8 +340,7 @@ public class SortIterator implements Iterator<Node[]>, Iterable<Node[]>{
 		}
 		
 		/**
-		 * Set GZipping of batch files (slower but less disk used)
-		 * @param tmpDir
+		 * Set GZipping of batch files (slower but less disk used).
 		 */
 		public void setGzipBatches(boolean gzbat){
 			_gzipBatch = gzbat;
@@ -363,7 +358,6 @@ public class SortIterator implements Iterator<Node[]>, Iterable<Node[]>{
 		 * Only really useful if adaptive batches are used.
 		 * 
 		 * @param fw size of flyweight cache
-		 * @return
 		 */
 		public void setFlyWeight(int fw){
 			_fw = fw;
