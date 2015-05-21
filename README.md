@@ -81,11 +81,12 @@ def all_triples(fname, use_gzip=False):
   if use_gzip:
       in_file = GZIPInputStream(in_file)
 	 
-      nxp = NxParser(in_file, False)
+      nxp = NxParser()
+      nxp.parse(in_file)
 	 
       while nxp.hasNext():
         triple = nxp.next()
-        n3 = ([i.toN3() for i in triple])
+        n3 = ([i.toString() for i in triple])
         yield n3
 ```
 The code above defines a generator function which will yield a stream of NQuad records. We can now add some demo code in order to see it in action:
