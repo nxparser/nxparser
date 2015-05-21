@@ -12,7 +12,7 @@
 
 	<artifactId>nxparser-jax-rs</artifactId>
 	<packaging>jar</packaging>
-	<name>NxParser readers/writers for JAX-RS</name>
+	<name>NxParser Readers/Writers for JAX-RS</name>
 
 	<dependencies>
 		<dependency>
