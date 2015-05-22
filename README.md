@@ -28,10 +28,11 @@ The NxParser is non-validating, meaning that, e.g., it will happily eat non-conf
 ```java
 FileInputStream is = new FileInputStream("path/to/file.nq");
 
-NxParser nxp = new NxParser(is);
+NxParser nxp = new NxParser();
+nxp.parse(is);
 
 for (Node[] nx : nxp)
-  // prints the subject
+  // prints the subject, eg. <http://example.org/>
   System.out.println(nx[0]);
 ```
 
@@ -43,10 +44,11 @@ Resource predRes = new Resource("<http://example.org/123>", true);
 BNode bn = new BNode("_:bnodeId", true);
 
 Node[] triple = new Node[]{subjRes, predRes, bn};
+// yields <http://example.org/123> <http://example.org/123> _:bnodeId
 System.out.println(Arrays.toString(triple));
 ```
 
-### Use unicode-characters ###
+### Use Unicode-characters ###
 ```java
 String japaneseString = ("祝福は、チーズのメーカーです。");
 Literal japaneseLiteral = new Literal(japaneseString, "ja");
@@ -58,7 +60,8 @@ System.out.println(japaneseLiteral);
 System.out.println(japaneseLiteral.getLabel());
 ```
 
-### Get a Calendar object from an `xsd:dateTime`-typed Literal
+### Use datatyped literals ###
+Example: Get a Calendar object from an `xsd:dateTime`-typed Literal
 ```java
 Literal dtl; // parser-generated
 XSDDateTime dt = (XSDDateTime)DatatypeFactory.getDatatype(dtl); 
