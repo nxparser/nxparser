@@ -28,7 +28,8 @@ The NxParser is non-validating, meaning that, e.g., it will happily eat non-conf
 ```java
 FileInputStream is = new FileInputStream("path/to/file.nq");
 
-NxParser nxp = new NxParser(is);
+NxParser nxp = new NxParser();
+nxp.parse(is);
 
 for (Node[] nx : nxp)
   // prints the subject, eg. <http://example.org/>
