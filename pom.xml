@@ -8,12 +8,23 @@
 	<version>2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>NxParser</name>
-	<url>https://code.google.com/p/nxparser/</url>
+	<url>https://github.com/nxparser/nxparser</url>
+	<description>NxParser is a Java open source, streaming, non-validating parser for the Nx format, where x = Triples, Quads, or any other number.</description>
+
+	<developers>
+	</developers>
 
 	<issueManagement>
-		<system>Google Code</system>
-		<url>https://code.google.com/p/nxparser/issues/list</url>
+		<system>GitHub Issues</system>
+		<url>https://github.com/nxparser/nxparser/issues</url>
 	</issueManagement>
+
+	<licenses>
+		<license>
+			<name>BSD 3-Clause License</name>
+			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -88,9 +99,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>svn:http://nxparser.googlecode.com/svn/trunk</connection>
-		<developerConnection>svn:https://nxparser.googlecode.com/svn/trunk</developerConnection>
-		<url>https://code.google.com/p/nxparser/source/browse/</url>
+		<connection>scm:git:https://github.com/nxparser/nxparser.git</connection>
+		<developerConnection>scm:git:git@github.com:nxparser/nxparser.git</developerConnection>
+		<url>https://github.com/nxparser/nxparser</url>
 	</scm>
 
 	<build>
