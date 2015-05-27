@@ -88,13 +88,9 @@
 	</dependencies>
 
 	<distributionManagement>
-		<repository>
-			<id>nxparser-repo</id>
-			<url>svn:https://nxparser.googlecode.com/svn/repository</url>
-		</repository>
 		<snapshotRepository>
-			<id>nxparser-snapshots</id>
-			<url>svn:https://nxparser.googlecode.com/svn/snapshots</url>
+				<id>ossrh</id>
+				<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -167,6 +163,17 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.5</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
