@@ -8,3 +8,6 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+# account details to deploy to OSSRH are stored in the settings.xml file
+settings.xml
