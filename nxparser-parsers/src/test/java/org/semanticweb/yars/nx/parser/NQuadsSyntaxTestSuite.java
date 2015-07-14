@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.semanticweb.yars.nx.Node;
+import org.semanticweb.yars.nx.RDFTestCase;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -38,15 +39,21 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 @RunWith(Parameterized.class)
 public class NQuadsSyntaxTestSuite extends TestCase {
 
-	static Collection<TestCaseQuadruple> _testCases;
+	static Collection<RDFTestCase> _testCases;
 
 	public static URI baseURI;
 
 	private URI _uri;
+	private URI _action;
+	private URI _result;
 	private String _name;
 	@SuppressWarnings("unused")
 	private String _comment;
+	
 	private Boolean _isPositive;
+	
+	private Class _type;
+
 
 	@Parameters(name = "{4} {1}: {2}")
 	public static Collection<Object[]> getTestCaseQuadruples()
@@ -55,10 +62,10 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 
 		Collection<Object[]> ret = new HashSet<Object[]>();
 
-		for (TestCaseQuadruple tcq : _testCases)
+		for (RDFTestCase tcq : _testCases)
 			ret.add(new Object[] { tcq.getUri(), tcq.getName(),
-					tcq.getComment(), tcq.isPositive(),
-					tcq.isPositive() ? "+" : "-" });
+					tcq.getComment(), tcq instanceof RDFTestCase.TestCasePositive,
+					tcq instanceof RDFTestCase.TestCasePositive ? "+" : "-" });
 
 		return ret;
 	}
@@ -82,7 +89,7 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 
 	public static void init() throws IOException, URISyntaxException {
 
-		_testCases = new HashSet<TestCaseQuadruple>();
+		_testCases = new HashSet<RDFTestCase>();
 
 		// reading in the normative document for the N-Quads 1.1 test cases.
 		prepareCollections("http://www.w3.org/2013/N-QuadsTests/manifest.ttl");
@@ -188,10 +195,10 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 		QuerySolution solution = null;
 		while (results.hasNext()) {
 			solution = results.next();
-			_testCases.add(new TestCaseQuadruple(new URI(solution.getResource(
+			_testCases.add(new RDFTestCase.TestCasePositive(new URI(solution.getResource(
 					"test").getURI()), solution.getLiteral("name")
 					.getLexicalForm(), solution.getLiteral("comment")
-					.getLexicalForm(), true));
+					.getLexicalForm(), new URI(null /*TODO*/)));
 		}
 
 		exec.close();
@@ -212,10 +219,10 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 
 		while (results.hasNext()) {
 			solution = results.next();
-			_testCases.add(new TestCaseQuadruple(new URI(solution.getResource(
+			_testCases.add(new RDFTestCase.TestCaseNegative(new URI(solution.getResource(
 					"test").getURI()), solution.getLiteral("name")
 					.getLexicalForm(), solution.getLiteral("comment")
-					.getLexicalForm(), false));
+					.getLexicalForm(), new URI(null /*TODO*/)));
 		}
 		exec.close();
 	}
@@ -226,35 +233,4 @@ public class NQuadsSyntaxTestSuite extends TestCase {
 		}
 	}
 
-	public static class TestCaseQuadruple {
-		private URI _uri;
-		private String _name;
-		private String _comment;
-		private Boolean _isPositive;
-
-		public URI getUri() {
-			return _uri;
-		}
-
-		public String getName() {
-			return _name;
-		}
-
-		public String getComment() {
-			return _comment;
-		}
-
-		public Boolean isPositive() {
-			return _isPositive;
-		}
-
-		public TestCaseQuadruple(URI uri, String name, String comment,
-				Boolean isPositive) {
-			_uri = uri;
-			_name = name;
-			_comment = comment;
-			_isPositive = isPositive;
-		}
-
-	}
 }
