@@ -4,7 +4,7 @@ import org.semanticweb.yars.nx.Node;
 
 public abstract class Callback {
 
-	enum State {
+	public enum State {
 		DOCUMENT_STARTED, DOCUMENT_ENDED
 	};
 
@@ -35,6 +35,9 @@ public abstract class Callback {
 			processStatementInternal(nx);
 	}
 	
+	public State getState() {
+		return _state;
+	}
 
 	abstract protected void startDocumentInternal();
 
