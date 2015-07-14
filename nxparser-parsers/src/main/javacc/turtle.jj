@@ -32,7 +32,7 @@ options
 //   DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(TurtleParser)
+PARSER_BEGIN(TurtleParserInternal)
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -57,29 +57,31 @@ import java.net.URI;
 
 import org.semanticweb.yars.nx.*;
 import org.semanticweb.yars.nx.parser.Callback;
-//import org.semanticweb.yars.nx.parser.ParseException;
-import org.semanticweb.yars.turtle.ParserBase;
+import org.semanticweb.yars.turtle.TurtleParserBase;
+import org.semanticweb.yars.turtle.TurtleParseException;
 
 
-public class TurtleParser extends ParserBase
+public class TurtleParserInternal extends TurtleParserBase
 {
 }
-PARSER_END(TurtleParser)
+PARSER_END(TurtleParserInternal)
 
 // --- Entry point
 
-void parse(Callback callback, URI base) : {
+void parse(Callback callback, URI base) throws TurtleParseException: {
 // maybe get base here as well
 _callback = callback;
 _prologue.setBase(base);
 }
 {
+  {_callback.startDocument();}
   (<BOM>)?
   (Statement())* <EOF>
+  {_callback.endDocument();}
 }
 
 /** [2] in Turtle spec */
-void Statement() : {}
+void Statement() throws TurtleParseException: {}
 {
   (Directive() | Triples() )
   <DOT>
@@ -110,7 +112,7 @@ TOKEN:
 // ---- TRIPLES
 
 /** [6] */
-void Triples() : { Node s ; }
+void Triples() throws TurtleParseException: { Node s ; }
 {
   s = Subject()
   PredicateObjectList(s)
@@ -120,7 +122,7 @@ void Triples() : { Node s ; }
 }
 
 /** [7] */
-void PredicateObjectList(Node s) : { Node p ; }
+void PredicateObjectList(Node s) throws TurtleParseException: { Node p ; }
 {
   p = Verb()
   ObjectList(s, p)
@@ -128,14 +130,14 @@ void PredicateObjectList(Node s) : { Node p ; }
 }
 
 /** [8] */
-void ObjectList(Node s, Node p): {} 
+void ObjectList(Node s, Node p) throws TurtleParseException: {} 
 {
   Object(s, p)
   ( <COMMA> Object(s, p) )*
 }
 
 /** [9] */
-Node Verb() : { Node p ; }
+Node Verb() throws TurtleParseException: { Node p ; }
 {
    (
    p = Predicate()
@@ -143,13 +145,13 @@ Node Verb() : { Node p ; }
    | <EQ>
       { p = new Resource("http://www.w3.org/2002/07/owl#sameAs");
         if ( strictTurtle )
-          throwParseException("= (owl:sameAs) not legal in Turtle",
+          throw new TurtleParseException("= (owl:sameAs) not legal in Turtle",
                           token.beginLine, token.beginColumn ) ;
      }
    | <ARROW> 
       { p = new Resource("http://www.w3.org/2000/10/swap/log#implies");
         if ( strictTurtle )
-          throwParseException("=> (log:implies) not legal in Turtle",
+          throw new TurtleParseException("=> (log:implies) not legal in Turtle",
                           token.beginLine, token.beginColumn ) ;
       }
     )
@@ -162,7 +164,7 @@ Node Verb() : { Node p ; }
 // a number of triples
 
 /** [10] */
-Node Subject() : { Node n; }
+Node Subject() throws TurtleParseException : { Node n; }
 {
   n = IRI()      { return n ; }
   |
@@ -172,13 +174,13 @@ Node Subject() : { Node n; }
 }
 
 /** [11] */
-Resource Predicate() : { Resource r; }
+Resource Predicate() throws TurtleParseException : { Resource r; }
 {
   r = IRI() { return r; }
 }
 
 /** [12] */
-void Object(Node s, Node p): { Node o ; }
+void Object(Node s, Node p) throws TurtleParseException: { Node o ; }
 {
   o = IRI() { Nodes t = new Nodes(s,p,o) ; 
     emitTriple(token.beginLine, token.beginColumn, t) ; }  
@@ -196,7 +198,7 @@ void Object(Node s, Node p): { Node o ; }
 }
 
 /** [13] */
-Node Literal() : { Node l ; }
+Node Literal() throws TurtleParseException : { Node l ; }
 {
   l = RDFLiteral()      { return l ; }
 |
@@ -206,7 +208,7 @@ Node Literal() : { Node l ; }
 }
 
 /** [14] */
-Node BlankNodePropertyList() : { }
+Node BlankNodePropertyList() throws TurtleParseException : { }
 {
   <LBRACKET> 
     { Node n = createBNode() ; }
@@ -216,7 +218,7 @@ Node BlankNodePropertyList() : { }
 }
 
 /** [15] */
-Node Collection() : 
+Node Collection() throws TurtleParseException : 
     { Node listHead = nRDFnil ; Node lastCell = null ; Node n ; }
 {
   <LPAREN> (Object(null, null))* <RPAREN> { return null; }
@@ -254,7 +256,7 @@ Literal NumericLiteral() : { Token t ; }
 | t = <DOUBLE> { return createLiteralDouble(t.image) ; }
 }
 
-Literal RDFLiteral() : { Token t ; String lex = null ; }
+Literal RDFLiteral() throws TurtleParseException: { Token t ; String lex = null ; }
 {
   lex = String()
   // Optional lang tag and datatype.
@@ -286,7 +288,7 @@ Literal BooleanLiteral() : {}
    <FALSE> { return XSD_FALSE ; }
 }
 
-String String() : { Token t ;  String lex ; }
+String String() throws TurtleParseException: { Token t ;  String lex ; }
 {
   ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
   | t = <STRING_LITERAL2> { lex = stripQuotes(t.image) ; }
@@ -298,14 +300,14 @@ String String() : { Token t ;  String lex ; }
     }
 }
 
-Resource IRI() : { String iri; }
+Resource IRI() throws TurtleParseException : { String iri; }
 {
   iri = IRIREF() { return createResource(iri); }
 |
   iri = PrefixedName() { return new Resource(iri) ; }
 }
 
-String PrefixedName() : { Token t ; }
+String PrefixedName() throws TurtleParseException: { Token t ; }
 {
   ( t = <PNAME_LN>
     { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
