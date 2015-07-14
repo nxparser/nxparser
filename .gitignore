@@ -11,3 +11,14 @@ buildNumber.properties
 
 # account details to deploy to OSSRH are stored in the settings.xml file
 settings.xml
+
+#Some eclipse
+.metadata
+bin/
+.settings/
+
+# Eclipse Core
+.project
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
