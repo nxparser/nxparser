@@ -222,7 +222,11 @@ public class TurtleTestSuite {
 					protected void endDocumentInternal() {;}
 
 					@Override
-					protected void processStatementInternal(Node[] nx) {;}},
+					protected void processStatementInternal(Node[] nx) {
+						if (nx.length != 3)
+							throw new RuntimeException ("Expected a triple. Got something else.");
+						}
+					},
 					
 					_action);
 				
