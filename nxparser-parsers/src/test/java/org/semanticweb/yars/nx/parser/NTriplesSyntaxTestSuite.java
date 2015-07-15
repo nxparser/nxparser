@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.semanticweb.yars.nx.RDFTestCase;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 @RunWith(Parameterized.class)
 public class NTriplesSyntaxTestSuite extends TestCase {
 
-	static Collection<TestCaseQuadruple> _testCases;
+	static Collection<RDFTestCase> _testCases;
 
 	public static URI baseURI;
 
@@ -55,10 +56,10 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 
 		Collection<Object[]> ret = new HashSet<Object[]>();
 
-		for (TestCaseQuadruple tcq : _testCases)
-			ret.add(new Object[] { tcq.getUri(), tcq.getName(),
-					tcq.getComment(), tcq.isPositive(),
-					tcq.isPositive() ? "+" : "-" });
+		for (RDFTestCase tcq : _testCases)
+			ret.add(new Object[] { tcq.getAction(), tcq.getName(),
+					tcq.getComment(), tcq instanceof RDFTestCase.TestCasePositive,
+					tcq instanceof RDFTestCase.TestCasePositive ? "+" : "-" });
 
 		return ret;
 	}
@@ -82,7 +83,7 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 
 	public static void init() throws IOException, URISyntaxException {
 
-		_testCases = new HashSet<TestCaseQuadruple>();
+		_testCases = new HashSet<RDFTestCase>();
 
 		// reading in the normative document for the N-Triples 1.1 test cases.
 		prepareCollections("http://www.w3.org/2013/N-TriplesTests/manifest.ttl");
@@ -161,7 +162,7 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 				+ "prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> \n";
 
 		String queryString = prefixes
-				+ "SELECT ?test ?name ?comment "
+				+ "SELECT ?case ?test ?name ?comment "
 				+ "WHERE { ?case rdf:type rdft:TestNTriplesPositiveSyntax . "
 				+ "?case mf:action ?test . ?case rdfs:comment ?comment. ?case mf:name ?name. "
 				+ " {SELECT ?case WHERE {?x rdf:type mf:Manifest. ?x mf:entries/rdf:rest*/rdf:first ?case. }}"
@@ -179,10 +180,11 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 		QuerySolution solution = null;
 		while (results.hasNext()) {
 			solution = results.next();
-			_testCases.add(new TestCaseQuadruple(new URI(solution.getResource(
-					"test").getURI()), solution.getLiteral("name")
+			_testCases.add(new RDFTestCase.TestCasePositive(new URI(solution.getResource(
+					"case").getURI()), solution.getLiteral("name")
 					.getLexicalForm(), solution.getLiteral("comment")
-					.getLexicalForm(), true));
+					.getLexicalForm(),new URI(solution.getResource(
+							"test").getURI())));
 		}
 
 		exec.close();
@@ -192,7 +194,7 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 		// extract negative tests
 
 		queryString = prefixes
-				+ "SELECT ?test ?name ?comment "
+				+ "SELECT ?case ?test ?name ?comment "
 				+ "WHERE { ?case rdf:type rdft:TestNTriplesNegativeSyntax . "
 				+ "?case mf:action ?test . ?case rdfs:comment ?comment. ?case mf:name ?name. "
 				+ " {SELECT ?case WHERE {?x rdf:type mf:Manifest. ?x mf:entries/rdf:rest*/rdf:first ?case. }}"
@@ -203,10 +205,11 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 
 		while (results.hasNext()) {
 			solution = results.next();
-			_testCases.add(new TestCaseQuadruple(new URI(solution.getResource(
-					"test").getURI()), solution.getLiteral("name")
+			_testCases.add(new RDFTestCase.TestCaseNegative(new URI(solution.getResource(
+					"case").getURI()), solution.getLiteral("name")
 					.getLexicalForm(), solution.getLiteral("comment")
-					.getLexicalForm(), false));
+					.getLexicalForm(),new URI(solution.getResource(
+							"test").getURI())));
 		}
 		exec.close();
 	}
@@ -215,37 +218,5 @@ public class NTriplesSyntaxTestSuite extends TestCase {
 		@Override
 		public void write(int b) throws IOException {
 		}
-	}
-
-	public static class TestCaseQuadruple {
-		private URI _uri;
-		private String _name;
-		private String _comment;
-		private Boolean _isPositive;
-
-		public URI getUri() {
-			return _uri;
-		}
-
-		public String getName() {
-			return _name;
-		}
-
-		public String getComment() {
-			return _comment;
-		}
-
-		public Boolean isPositive() {
-			return _isPositive;
-		}
-
-		public TestCaseQuadruple(URI uri, String name, String comment,
-				Boolean isPositive) {
-			_uri = uri;
-			_name = name;
-			_comment = comment;
-			_isPositive = isPositive;
-		}
-
 	}
 }
