@@ -1,4 +1,4 @@
-package org.semanticweb.yars.parsers.turtle;
+package org.semanticweb.yars.turtle;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
@@ -17,25 +19,29 @@ import org.semanticweb.yars.nx.parser.ParseException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-public class TurtleParserTest {
+public class TurtleParserTest2 {
 
 	@Test
-	public void test() throws IOException {
+	public void test() throws IOException, TurtleParseException, org.semanticweb.yars.turtle.ParseException, URISyntaxException {
 		String turtleString = "@prefix ex: <http://example.org/> .\n"
 				+ "<> a ex:document , [ a ex:bla ] ; ex:lsdf ex:123.\n"
-				+ "</213> ex:hasMembers (ex:SnoopDogg ex:NateDogg) .\n"
+				+ "</213> ex:hasMembers ( ex:SnoopDogg ex:NateDogg ) .\n"
 				+ "<> ex:label \"lskdfsdf\" \n"
 				+ ", \"lskdfsdf\"@de-de  \n"
 				+ ", \"lskdäääääfsdf\"^^ex:datatype , \n \"\"\"dsfsdf\nsdfsdfsdf\ndfsd sdfsdf\nsdfsdf\"\"\""
 				+ " .\n";
-
+		
+		System.err.println("========= INPUT =============");
+		System.err.println(turtleString);
+		System.err.println("======= END INPUT ===========");
+		
 		String baseURI = "http://base.uri/";
 
 		InputStream is = new ByteArrayInputStream(
 				turtleString.getBytes(StandardCharsets.UTF_8));
 
 		TurtleParser tp = new TurtleParser();
-		tp.parse(is, baseURI, StandardCharsets.UTF_8);
+		tp.parse(is, StandardCharsets.UTF_8, new URI(baseURI));
 
 		Model nxparserModel = createModelFromNodesCollection(tp);
 
@@ -56,7 +62,9 @@ public class TurtleParserTest {
 		Model modelTest = ModelFactory.createDefaultModel();
 
 		for (Node[] ns : cns) {
-			sw.write(Nodes.toString(new Node[] { ns[0], ns[1], ns[2] }));
+			String s = Nodes.toString(new Node[] { ns[0], ns[1], ns[2] });
+			System.err.println(s);
+			sw.write(s);
 			sw.write('\n');
 		}
 		sw.close();
@@ -71,7 +79,7 @@ public class TurtleParserTest {
 	}
 
 	@Test
-	public void testBnodeIds() throws ParseException {
+	public void testBnodeIds() throws ParseException, org.semanticweb.yars.turtle.ParseException, URISyntaxException {
 		String turtleWithManyBnodes = "[] a [], [], [], [], [], [], [], [], [], [], [], [], [], []. [] a [a []] .";
 		String baseURI = "http://ex.org/";
 
@@ -79,7 +87,7 @@ public class TurtleParserTest {
 				turtleWithManyBnodes.getBytes(StandardCharsets.UTF_8));
 
 		TurtleParser tp = new TurtleParser();
-		tp.parse(is, baseURI, StandardCharsets.UTF_8);
+		tp.parse(is, StandardCharsets.UTF_8, new URI(baseURI));
 
 		int i = 0;
 		int j = 0;

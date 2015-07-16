@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.net.URI;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -21,7 +22,7 @@ import org.kohsuke.MetaInfServices;
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
-import org.semanticweb.yars.parsers.turtle.TurtleParser;
+import org.semanticweb.yars.turtle.TurtleParser;
 import org.semarglproject.rdf.TurtleSerializer;
 import org.semarglproject.sink.CharOutputSink;
 import org.semarglproject.sink.CharSink;
@@ -114,10 +115,10 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			throws IOException, WebApplicationException {
 
 		TurtleParser nxp = new TurtleParser();
-		nxp.parse(entityStream, _uriinfo.getAbsolutePath().toString(),
-				getCharset(mediaType));
 
 		try {
+			nxp.parse(entityStream,
+					getCharset(mediaType), new URI(_uriinfo.getAbsolutePath().toString()));
 			nxp.hasNext();
 		} catch (Exception e) {
 			throw new WebApplicationException(e.getCause());
