@@ -61,4 +61,8 @@ public class TurtleParser implements Iterable<Node[]>, Iterator<Node[]> {
 		return this;
 	}
 
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 }
