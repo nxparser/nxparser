@@ -109,3 +109,5 @@ results in:
 [u'<http://2008.blogtalk.net/node/65>', u'<http://rdfs.org/sioc/ns#content>', u'"We\'ve created a map showing the main places of interest (event locations, restaurants, pubs, shopping locations and tourist sights) during BlogTalk 2008.  The conference venue is shown on the left-hand side of the map.  We will also have a hardcopy for all attendees. View Larger Map"', u'<http://2008.blogtalk.net/sioc/node/65>']
 ```
 	
+#### issues with Eclipse ####
+we had an issue with eclipse not being able to create his folder structure for nxparser-parsers, ```` mvn eclipse:eclipse ```` did the trick.
