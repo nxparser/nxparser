@@ -25,7 +25,7 @@ public class TurtleParserTest2 {
 	public void test() throws IOException, TurtleParseException, org.semanticweb.yars.turtle.ParseException, URISyntaxException {
 		String turtleString = "@prefix ex: <http://example.org/> .\n"
 				+ "<> a ex:document , [ a ex:bla ] ; ex:lsdf ex:123.\n"
-				+ "</213> ex:hasMembers ( ex:SnoopDogg ex:NateDogg ) .\n"
+				+ "</213> ex:hasMembers ( ex:SnoopDogg ex:NateDogg ex:WarrenG ) .\n"
 				+ "<> ex:label \"lskdfsdf\" \n"
 				+ ", \"lskdfsdf\"@de-de  \n"
 				+ ", \"lskdäääääfsdf\"^^ex:datatype , \n \"\"\"dsfsdf\nsdfsdfsdf\ndfsd sdfsdf\nsdfsdf\"\"\""
