@@ -19,9 +19,8 @@ import org.semarglproject.sink.QuadSink;
 import org.semarglproject.source.StreamProcessor;
 
 /**
- * Extracts RDFa from input streams / readers using semargl's RDFa parser to
- * NxParser's data model. Processes the input using TagSoup first in order to
- * deal with dirty HTML.
+ * Extracts JSON-LD from input streams / readers using semargl's JSON-LD parser to
+ * NxParser's data model.
  * 
  * @author Tobias Käfer
  * @author Leonard Lausen
