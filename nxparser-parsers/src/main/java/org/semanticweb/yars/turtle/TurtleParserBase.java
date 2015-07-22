@@ -19,6 +19,7 @@ package org.semanticweb.yars.turtle;
 
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,6 +90,8 @@ public class TurtleParserBase {
     	}
 
     	URI u = URI.create(s.substring(1, s.length()-1));
+        _log.log(Level.FINE, "Creating resource {0}, absolute? {1}", new Object[] { s, u.isAbsolute() });
+
     	if (!u.isAbsolute()) {
     		_log.log(Level.FINE, "Resolving {0} relative to {1}", new Object[] { u, _prologue.getBaseURI() } );
     		u = _prologue.getBaseURI().resolve(u);
@@ -181,6 +184,34 @@ public class TurtleParserBase {
 //    private static Logger parserLog = LoggerFactory.getLogger(ParserLoggerName) ;
 //    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(parserLog) ;
 
+    /**
+     * Resolve relative URI references.
+     * Might be slow, due to creating URI objects.
+     * 
+     * @param name
+     * @param line
+     * @param column
+     * @return
+     * @throws TurtleParseException
+     */
+//    protected String resolveUriRef(String name, int line, int column) throws TurtleParseException {
+//    	URI u = null;
+//		try {
+//			u = new URI(name);
+//		} catch (URISyntaxException e) {
+//			e.printStackTrace();
+//			throw new TurtleParseException(e + " line " + line + " column " + column);
+//		}
+//
+//    	if (!u.isAbsolute()) {
+//    		u = _prologue.getBaseURI().resolve(u);
+//
+//    		return u.toString();
+//    	}
+//
+//    	return name;
+//    }
+
     protected String resolvePName(String qname, int line, int column) throws TurtleParseException {
         // It's legal.
         int idx = qname.indexOf(':') ;
@@ -189,7 +220,9 @@ public class TurtleParserBase {
         String prefix = qname.substring(0, idx) ;
         String local = qname.substring(idx+1) ;
         local = unescapePName(local, line, column) ;
-        
+
+        _log.log(Level.FINE, "Expanding prefix {0}, localname {1}", new Object[] { prefix, local } );
+
         String s = _prologue.expandPrefix(prefix) ;
         if ( s == null ) {
             throw new TurtleParseException("Unresolved prefix: "+qname, line, column) ;

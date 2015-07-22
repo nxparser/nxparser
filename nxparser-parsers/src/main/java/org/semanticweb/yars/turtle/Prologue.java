@@ -41,20 +41,25 @@ public class Prologue {
 		_prefixes = new HashMap<String, String>();
 	}
 
-	public void setPrefix(String prefix, String uri) {
+	public void setPrefix(String prefix, String s) {
 		// strip <>
-		uri = uri.substring(1, uri.length()-1);
+		s = s.substring(1, s.length()-1);
 
 		// empty prefix
-		if (uri.length() == 0) {
-			uri = _baseURI.toString();
-		} else if (uri.length() == 1) {
-			// probably relative URI (# or /)
-			uri = _baseURI.toString() + uri;
+		if (s.length() == 0) {
+			s = _baseURI.toString();
 		}
 
-		_log.log(Level.FINE, "@prefix {0}: {1}", new Object[] { prefix, uri } );
-		_prefixes.put(prefix, uri);
+    	URI u = URI.create(s);
+        _log.log(Level.FINE, "Creating resource {0}, absolute? {1}", new Object[] { s, u.isAbsolute() });
+
+    	if (!u.isAbsolute()) {
+    		_log.log(Level.FINE, "Resolving {0} relative to {1}", new Object[] { u, getBaseURI() } );
+    		u = getBaseURI().resolve(u);
+    	}
+
+		_log.log(Level.FINE, "@prefix {0}: {1}", new Object[] { prefix, u.toString() } );
+		_prefixes.put(prefix, u.toString());
 	}
 
 	public String expandPrefix(String prefix) {
