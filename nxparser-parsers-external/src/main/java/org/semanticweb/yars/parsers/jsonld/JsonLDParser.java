@@ -1,4 +1,4 @@
-package org.semanticweb.yars.parsers.rdfa;
+package org.semanticweb.yars.parsers.jsonld;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -165,9 +165,9 @@ public class JsonLDParser implements Iterator<Node[]>, Iterable<Node[]> {
 					public void addNonLiteral(String arg0, String arg1,
 							String arg2, String arg3) {
 						_deque.add(new Node[] {
-								createBnodeOrResource(arg0, arg3),
+								createBnodeOrResource(arg0, _contextString),
 								new Resource(arg1),
-								createBnodeOrResource(arg2, arg3),
+								createBnodeOrResource(arg2, _contextString),
 								new Resource(arg3) });
 
 					}
@@ -176,7 +176,7 @@ public class JsonLDParser implements Iterator<Node[]>, Iterable<Node[]> {
 					public void addPlainLiteral(String arg0, String arg1,
 							String arg2, String arg3, String arg4) {
 						_deque.add(new Node[] {
-								createBnodeOrResource(arg0, arg4),
+								createBnodeOrResource(arg0, _contextString),
 								new Resource(arg1), new Literal(arg2, arg3),
 								new Resource(arg4) });
 
@@ -186,7 +186,7 @@ public class JsonLDParser implements Iterator<Node[]>, Iterable<Node[]> {
 					public void addTypedLiteral(String arg0, String arg1,
 							String arg2, String arg3, String arg4) {
 						_deque.add(new Node[] {
-								createBnodeOrResource(arg0, arg4),
+								createBnodeOrResource(arg0, _contextString),
 								new Resource(arg1),
 								new Literal(arg2, new Resource(arg3)),
 								new Resource(arg4) });
