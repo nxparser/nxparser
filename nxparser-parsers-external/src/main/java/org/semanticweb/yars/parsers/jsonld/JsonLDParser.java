@@ -168,7 +168,7 @@ public class JsonLDParser implements Iterator<Node[]>, Iterable<Node[]> {
 								createBnodeOrResource(arg0, _contextString),
 								new Resource(arg1),
 								createBnodeOrResource(arg2, _contextString),
-								new Resource(arg3) });
+								_context });
 
 					}
 
@@ -178,7 +178,7 @@ public class JsonLDParser implements Iterator<Node[]>, Iterable<Node[]> {
 						_deque.add(new Node[] {
 								createBnodeOrResource(arg0, _contextString),
 								new Resource(arg1), new Literal(arg2, arg3),
-								new Resource(arg4) });
+								_context });
 
 					}
 
@@ -189,7 +189,7 @@ public class JsonLDParser implements Iterator<Node[]>, Iterable<Node[]> {
 								createBnodeOrResource(arg0, _contextString),
 								new Resource(arg1),
 								new Literal(arg2, new Resource(arg3)),
-								new Resource(arg4) });
+								_context });
 					}
 				}));
 
