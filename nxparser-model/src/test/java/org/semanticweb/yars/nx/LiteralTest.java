@@ -119,4 +119,20 @@ public class LiteralTest {
 		assertEquals("\"\\\"\\\\\\n\\r\u0008\tä'\u0e07\u1ce1\udbc0\udc02\"",
 				l.toString());
 	}
+	
+	@Test
+	public void testWeirdLiteralFromWho(){
+		// found in http://id.who.int/icd/entity/351042657
+		// Literal: "\"A type of periodontal disease and includes localized aggressive periodontitis (LAP), and Generalized aggressive periodontitis (GAP).\n\""@en
+		String s = "\"\\\"A type of periodontal disease and includes localized aggressive periodontitis (LAP), and Generalized aggressive periodontitis (GAP).\\n\\\"\"@en";
+		
+		Literal l = new Literal(s,true);
+
+		// Currently, the rdfxml parser creates Literals using this constructor 
+		Literal l2 = new Literal(l.getLabel(), l.getLanguageTag());
+		
+		assertEquals(l.getLabel(), l2.getLabel());
+		assertEquals(l,l2);
+		
+	}
 }
