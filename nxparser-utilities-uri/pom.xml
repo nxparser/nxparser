@@ -13,5 +13,13 @@
 	<artifactId>nxparser-utilities-uri</artifactId>
 	<packaging>jar</packaging>
 	<name>NxParser Utilities for URI Handling</name>
+	
+	<licenses>
+		<license>
+			<name>Mozilla Public License 2.0</name>
+			<url>http://mozilla.org/MPL/2.0/</url>
+			<comment>This maven module includes the public suffix list, to which the MPL applies.</comment>
+		</license>
+	</licenses>
 
 </project>
