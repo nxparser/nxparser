@@ -18,7 +18,9 @@
 		<license>
 			<name>Mozilla Public License 2.0</name>
 			<url>http://mozilla.org/MPL/2.0/</url>
-			<comment>This maven module includes the public suffix list, to which the MPL applies.</comment>
+			<comments>
+					This maven module includes the public suffix list, to which the MPL applies.
+			</comments>
 		</license>
 	</licenses>
 
