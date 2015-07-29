@@ -12,7 +12,7 @@
 
 	<artifactId>nxparser-parsers-external</artifactId>
 	<packaging>jar</packaging>
-	<name>NxParser Parsers External</name>
+	<name>NxParser Parsers Using External Libraries</name>
 
 	<dependencies>
 		<dependency>
