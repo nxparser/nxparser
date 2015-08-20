@@ -48,12 +48,7 @@
 		<module>nxparser-utilities</module>
 		<module>nxparser-utilities-nx</module>
 		<module>nxparser-utilities-uri</module>
-		<!--
-		Cannot include jax-rs module as it depends on a modified version
-		of the metainf-services, that is not officially published
-
 		<module>nxparser-jax-rs</module>
-		-->
 	</modules>
 
 	<dependencies>
