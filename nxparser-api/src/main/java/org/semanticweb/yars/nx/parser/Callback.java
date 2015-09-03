@@ -1,42 +1,30 @@
 package org.semanticweb.yars.nx.parser;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.semanticweb.yars.nx.Node;
 
 public abstract class Callback {
 
-	public enum State {
-		DOCUMENT_STARTED, DOCUMENT_ENDED
-	};
-
-	State _state = State.DOCUMENT_ENDED;
+	AtomicInteger _openDocuments = new AtomicInteger(0);
 
 	public void startDocument() {
-		if (_state != State.DOCUMENT_ENDED)
-			throw new IllegalStateException("Document already started!");
-		else {
-			startDocumentInternal();
-			_state = State.DOCUMENT_STARTED;
-		}
+		_openDocuments.incrementAndGet();
+		startDocumentInternal();
 	}
-	
+
 	public void endDocument() {
-		if (_state != State.DOCUMENT_STARTED)
-			throw new IllegalStateException("Document already ended!");
-		else {
-			endDocumentInternal();
-			_state = State.DOCUMENT_ENDED;
-		}
+		int i = _openDocuments.decrementAndGet();
+		if (i<0)
+			throw new IllegalStateException("I don't have a document to end.");
+		endDocumentInternal();
 	}
-	
+
 	public void processStatement(Node[] nx) {
-		if (_state != State.DOCUMENT_STARTED)
-			throw new IllegalStateException("Document already ended!");
+		if (_openDocuments.get()<1)
+			throw new IllegalStateException("I don't have a document to write to.");
 		else
 			processStatementInternal(nx);
-	}
-	
-	public State getState() {
-		return _state;
 	}
 
 	abstract protected void startDocumentInternal();
