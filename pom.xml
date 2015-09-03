@@ -61,6 +61,10 @@
 	</dependencies>
 
 	<distributionManagement>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 		<snapshotRepository>
 				<id>ossrh</id>
 				<url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -72,22 +76,6 @@
 		<developerConnection>scm:git:git@github.com:nxparser/nxparser.git</developerConnection>
 		<url>git@github.com:nxparser/nxparser.git</url>
 	</scm>
-
-	<build>
-		<!-- Support for deploying sites to scp://-Urls -->
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>1.0-beta-6</version>
-			</extension>
-			<extension>
-				<groupId>org.jvnet.wagon-svn</groupId>
-				<artifactId>wagon-svn</artifactId>
-				<version>1.9</version>
-			</extension>
-		</extensions>
-	</build>
 
 	<profiles>
 		<profile>
