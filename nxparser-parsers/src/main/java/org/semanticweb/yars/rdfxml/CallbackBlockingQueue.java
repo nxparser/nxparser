@@ -9,7 +9,7 @@ import org.semanticweb.yars.nx.parser.Callback;
 public class CallbackBlockingQueue extends Callback{
 	BlockingQueue<Node[]> _q;
 	InterruptedException _e;
-	
+
 	public CallbackBlockingQueue(BlockingQueue<Node[]> q){
 		_q = q;
 	}
@@ -20,6 +20,10 @@ public class CallbackBlockingQueue extends Callback{
 
 	public Exception getException(){
 		return _e;
+	}
+
+	public boolean documentIsStarted() {
+		return _openDocuments.get() > 0;
 	}
 
 	protected void processStatementInternal(Node[] nx) {
@@ -33,7 +37,7 @@ public class CallbackBlockingQueue extends Callback{
 	protected void startDocumentInternal() {
 		;
 	}
-	
+
 	protected void endDocumentInternal() {
 		processStatement(Nodes.EOM);
 	}

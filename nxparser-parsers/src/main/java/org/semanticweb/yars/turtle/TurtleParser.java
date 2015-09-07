@@ -21,7 +21,7 @@ public class TurtleParser implements Iterable<Node[]>, Iterator<Node[]> {
 	TurtleParserInternal _tpi;
 
 	BlockingDeque<Node[]> _dq;
-	Callback _cb;
+	CallbackBlockingQueue _cb;
 
 	public void parse(InputStream is, Charset cs, URI baseURI)
 			throws TurtleParseException, ParseException {
@@ -48,7 +48,7 @@ public class TurtleParser implements Iterable<Node[]>, Iterator<Node[]> {
 	@Override
 	public boolean hasNext() {
 		return !_dq.isEmpty()
-				|| _cb.getState() != Callback.State.DOCUMENT_ENDED;
+				|| _cb.documentIsStarted();
 	}
 
 	@Override

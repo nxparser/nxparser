@@ -6,7 +6,7 @@ import org.semanticweb.yars.nx.Node;
 
 public abstract class Callback {
 
-	AtomicInteger _openDocuments = new AtomicInteger(0);
+	protected AtomicInteger _openDocuments = new AtomicInteger(0);
 
 	public void startDocument() {
 		_openDocuments.incrementAndGet();
