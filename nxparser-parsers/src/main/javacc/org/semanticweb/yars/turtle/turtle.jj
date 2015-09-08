@@ -194,7 +194,8 @@ void Object(Node s, Node p) throws TurtleParseException: { Node o ; }
   o = BlankNodePropertyList()  { Nodes t = new Nodes(s,p,o) ; 
     emitTriple(token.beginLine, token.beginColumn, t) ; } 
   |
-  Collection()
+  o = Collection() { Nodes t = new Nodes(s,p,o) ; 
+    emitTriple(token.beginLine, token.beginColumn, t) ; } 
 }
 
 /** [13] */
@@ -219,23 +220,25 @@ Node BlankNodePropertyList() throws TurtleParseException : { }
 
 /** [15] */
 Node Collection() throws TurtleParseException : 
-    { Node listHead = nRDFnil ; Node lastCell = null ; Node n ; }
+    { Node listHead = nRDFnil ; Node lastCell = null ; }
 {
-  <LPAREN> (Object(null, null))* <RPAREN> { return null; }
 /*
+  <LPAREN> (Object(null, null))* <RPAREN> { return null; }
+Object bekommt s und p als param
+*/
   <LPAREN> 
   (
     { Node cell = createBNode() ;
-      if ( listHead == nRDFnil )
+      if ( listHead == nRDFnil ) {
          listHead = cell ;
-      if ( lastCell != null )
-        emitTriple(token.beginLine, token.beginColumn,
-                   new Nodes(lastCell, nRDFrest,  cell)) ;
+      }
+      if ( lastCell != null ) {
+        emitTriple(token.beginLine, token.beginColumn, new Nodes(lastCell, nRDFrest,  cell)) ;
+      }
     }
-    n = GraphNode()
+    Object(cell, nRDFfirst)
     {
-      emitTriple(token.beginLine, token.beginColumn,
-                 new Nodes(cell, nRDFfirst,  n)) ;      
+      //emitTriple(token.beginLine, token.beginColumn, new Nodes(cell, nRDFfirst, n)) ;      
       lastCell = cell ;
     }
   ) +
@@ -245,7 +248,6 @@ Node Collection() throws TurtleParseException :
        emitTriple(token.beginLine, token.beginColumn,
                   new Nodes(lastCell, nRDFrest,  nRDFnil)) ;
      return listHead ; }
-*/
 }
 
 /** [16] */
