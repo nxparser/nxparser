@@ -9,15 +9,17 @@ public abstract class Callback {
 	protected AtomicInteger _openDocuments = new AtomicInteger(0);
 
 	public void startDocument() {
-		_openDocuments.incrementAndGet();
 		startDocumentInternal();
+
+		_openDocuments.incrementAndGet();
 	}
 
 	public void endDocument() {
+		endDocumentInternal();
+
 		int i = _openDocuments.decrementAndGet();
 		if (i<0)
 			throw new IllegalStateException("I don't have a document to end.");
-		endDocumentInternal();
 	}
 
 	public void processStatement(Node[] nx) {
