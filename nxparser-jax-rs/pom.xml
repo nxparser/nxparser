@@ -44,14 +44,7 @@
 			<artifactId>
 				nxparser-parsers-external-jsonld-jsonld_java
 			</artifactId>
-			<version>2.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.semanticweb.yars</groupId>
-			<artifactId>
-				nxparser-parsers-external-turtle-jena
-			</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.semarglproject</groupId>
