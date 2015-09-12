@@ -26,15 +26,16 @@ public class TurtleParserTest2 {
 		String turtleString = "@prefix ex: <http://example.org/> .\n"
 				+ "<> a ex:document , [ a ex:bla ] ; ex:lsdf ex:123.\n"
 				+ "</213> ex:hasMembers ( ex:SnoopDogg ex:NateDogg ex:WarrenG ) .\n"
+				+ "<todo> ex:hasList () .\n"
 				+ "<> ex:label \"lskdfsdf\" \n"
 				+ ", \"lskdfsdf\"@de-de  \n"
 				+ ", \"lskdäääääfsdf\"^^ex:datatype , \n \"\"\"dsfsdf\nsdfsdfsdf\ndfsd sdfsdf\nsdfsdf\"\"\""
 				+ " .\n";
-		
+
 		System.err.println("========= INPUT =============");
 		System.err.println(turtleString);
 		System.err.println("======= END INPUT ===========");
-		
+
 		String baseURI = "http://base.uri/";
 
 		InputStream is = new ByteArrayInputStream(

@@ -248,6 +248,7 @@ Object bekommt s und p als param
        emitTriple(token.beginLine, token.beginColumn,
                   new Nodes(lastCell, nRDFrest,  nRDFnil)) ;
      return listHead ; }
+	 | <NIL> { return nRDFnil; }
 }
 
 /** [16] */
