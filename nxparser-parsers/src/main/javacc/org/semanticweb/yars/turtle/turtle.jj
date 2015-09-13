@@ -90,6 +90,10 @@ void Statement() throws TurtleParseException: {}
 /** [3], [4], [5] */
 void Directive() : { Token t ; String iri ; }
 {
+    // TODO: we don't support the SPARQL-style PREFIX and BASE [5s] [6s]
+    // Note to the one who one day implements it:
+    // Those directives don't have a dot and "PREFIX"/"BASE" are case-insensitive.
+
     // Note that @prefix looks like a LANTAG
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
     { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
