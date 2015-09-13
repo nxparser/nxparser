@@ -30,7 +30,6 @@ import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.RDFTestCase;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
-import org.semanticweb.yars.nx.parser.ParseException;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -146,7 +145,7 @@ public class TurtleTestSuite {
 			} catch (ParseException e) {
 				System.err.println(" -- Failed to parse!" + e.getMessage());
 				fail();
-			} catch (org.semanticweb.yars.turtle.ParseException e) {
+			} catch (TurtleParseException e) {
 				System.err.println(" -- Failed to parse!" + e.getMessage());
 				fail();
 			}
@@ -208,6 +207,7 @@ public class TurtleTestSuite {
 
 			URL testDataURL = _action.toURL();
 			boolean failed = false;
+			Exception exc = null;
 			URLConnection urlc = testDataURL.openConnection();
 			TurtleParserInternal rxp = new TurtleParserInternal(
 					urlc.getInputStream(),
@@ -232,6 +232,7 @@ public class TurtleTestSuite {
 				
 			} catch (Exception e) {
 				failed = true;
+				exc = e;
 			}
 
 			if (_type.isAssignableFrom(RDFTestCase.TestCaseNegative.class))
@@ -241,10 +242,18 @@ public class TurtleTestSuite {
 				else
 					System.err.println(" ++ Exception thrown correctly");
 			else
-				if (failed)
+				if (failed) {
 					System.err
 							.println(" -- Parsing should have run through!");
+
+					// To have the exceptions in JUnit nicely presented:
+					if (exc instanceof IOException)
+						throw (IOException) exc;
+					else if (exc instanceof ParseException)
+						throw (ParseException) exc;
 				else
+						throw new RuntimeException(exc);
+				} else
 					System.err.println(" ++ Test Case handled correctly");
 			if (_type.isAssignableFrom(RDFTestCase.TestCaseNegative.class))
 				assertTrue(failed);
