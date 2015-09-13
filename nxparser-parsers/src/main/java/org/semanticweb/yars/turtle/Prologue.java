@@ -28,7 +28,7 @@ import org.semanticweb.yars.nx.Resource;
 
 /**
  * Keep track of prefixes and base URI.
- * 
+ *
  * @author aharth
  */
 public class Prologue {
@@ -77,17 +77,24 @@ public class Prologue {
      * @param baseURI The baseURI to set.
      */
     public void setBaseURI(Resource base) {
-        _baseURI = URI.create(base.getLabel());
-        if (!_baseURI.isAbsolute()) {
-        	throw new IllegalArgumentException("Base URI " + base + " needs to be absolute!");
-        }
+    	setBase(URI.create(base.getLabel()));
     }
 
     public void setBase(URI base) {
-        _baseURI = base;
-        if (!_baseURI.isAbsolute()) {
-        	throw new IllegalArgumentException("Base URI " + base + " needs to be absolute!");
-        }
+		if (_baseURI == null) {
+			// Setting the base URI for the first time. This happens when
+			// parsing starts and we get the document URI.
+			_baseURI = base;
+			if (!_baseURI.isAbsolute()) {
+				throw new IllegalArgumentException("Document URI " + base
+						+ " needs to be absolute!");
+			}
+		} else {
+			// relative base URIs within a document get resolved against the
+			// current base URI.
+			_baseURI = _baseURI.resolve(base);
+		}
+
     }
 
 }
