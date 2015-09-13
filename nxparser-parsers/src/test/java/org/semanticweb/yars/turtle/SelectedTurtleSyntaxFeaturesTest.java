@@ -19,7 +19,7 @@ import org.semanticweb.yars.nx.parser.ParseException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-public class TurtleParserTest2 {
+public class SelectedTurtleSyntaxFeaturesTest {
 
 	@Test
 	public void test() throws IOException, TurtleParseException, org.semanticweb.yars.turtle.ParseException, URISyntaxException {
