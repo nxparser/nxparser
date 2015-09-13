@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -589,8 +588,14 @@ public class NxUtil {
 				}
 
 				// Parse the UTF8 to a Java String
-				String s = new String(bytes.toByteArray(),
-						StandardCharsets.UTF_8);
+				String s = null;
+				try {
+					s = new String(bytes.toByteArray(), "utf-8");
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+//						StandardCharsets.UTF_8);
 				assert s.codePointCount(0, s.length()) == 1; // there should
 																// only be one
 																// character
