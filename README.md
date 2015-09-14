@@ -1,10 +1,18 @@
 # Welcome to NxParser #
 
-NxParser is a Java open source, streaming, non-validating parser for the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the [NQuads format](http://sw.deri.org/2008/07/n-quads/), a extension for the [N-Triples](http://www.w3.org/TR/rdf-testcases/#ntriples) RDF format. Note that the parser handles any combination or number of N-Triples syntax terms on each line (the number of terms per line can also vary).
+NxParser is a Java open source, streaming, non-validating parser for the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the [NQuads format](http://sw.deri.org/2008/07/n-quads/), a extension for the [N-Triples](http://www.w3.org/TR/rdf-testcases/#ntriples) RDF format. Note that the parser handles any combination (cf. [generalised triples](http://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf)) or number of N-Triples syntax terms on each line (the number of terms per line can also vary).
 
 It ate 2 mil. quads (~4GB, (~240MB GZIPped)) on a T60p (Win7, 2.16 GHz)  in ~1 min 35 s (1:18min). Overall, it's more than twice as fast as the previous version when it comes to reading Nx.
 
-Compiles are available in a maven repository. For the time being, it is hosted at Google Code. We plan to go to Maven Central soon. To use the repository, add
+The NxParser is non-validating, meaning that, e.g., it will happily eat non-conformant N-Triples. Also, the NxParser will not parse certain valid N-Triples files where the RDF terms are not separated by whitespace. We pass all positive W3C N-Triples test cases except one, where the RDF terms are not separated by whitespace (surprise!).
+
+## Other formats ##
+The NxParser Parser family also includes a [RDF/XML](http://www.w3.org/TR/rdf-syntax-grammar/) and a [Turtle](http://www.w3.org/TR/turtle/) parser. Moreover, we attached a [JSON-LD](http://json-ld.org/) parser ([jsonld-java](https://github.com/jsonld-java/jsonld-java)) and a [RDFa](http://www.w3.org/TR/rdfa-core/) parser ([semargl](https://github.com/levkhomich/semargl)) such that they emit Triples in the NxParser API.
+
+## Binaries ##
+Compiles are available on Maven Central. The groupId is `org.semanticweb.yars` and the artifactId `nxparser`.
+### Legacy binaries ###
+Find old compiles in the repository on Google Code, which we do not maintain any more. To use it nevertheless, add
 ```xml
 <repository>
  <id>nxparser-repo</id>
@@ -19,9 +27,7 @@ Compiles are available in a maven repository. For the time being, it is hosted a
  </url>
 </repository>
 ```
-to your pom.xml. The groupId is `org.semanticweb.yars` and the artifactId `nxparser`.
-
-The NxParser is non-validating, meaning that, e.g., it will happily eat non-conformant N-Triples. Also, the NxParser will not parse certain valid N-Triples files where the RDF terms are not separated by whitespace. We pass all positive W3C N-Triples test cases except one, where the RDF terms are not separated by whitespace (surprise!).
+to your pom.xml.
 
 ## Code Examples ##
 ### Read Nx from a file ###
