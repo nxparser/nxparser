@@ -160,7 +160,7 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 
 	public String getBaseURIStringdependingOnPutPost() {
 		String baseURI;
-		if (_request.getMethod().equals(HttpMethod.POST))
+		if (HttpMethod.POST.equals(_request.getMethod()))
 			// In case of a POST request, we cannot determine the URI against
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.
@@ -172,7 +172,7 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 
 	public URI getBaseURIdependingOnPutPost() {
 		URI baseURI;
-		if (_request.getMethod().equals(HttpMethod.POST))
+		if (HttpMethod.POST.equals(_request.getMethod()))
 			// In case of a POST request, we cannot determine the URI against
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.
