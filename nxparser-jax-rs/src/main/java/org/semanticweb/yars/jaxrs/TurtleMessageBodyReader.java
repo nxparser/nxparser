@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.net.URI;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -23,7 +22,6 @@ import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.turtle.TurtleParser;
-import org.semanticweb.yars.util.Util;
 import org.semarglproject.rdf.TurtleSerializer;
 import org.semarglproject.sink.CharOutputSink;
 import org.semarglproject.sink.CharSink;
