@@ -23,6 +23,7 @@ import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.turtle.TurtleParser;
+import org.semanticweb.yars.util.Util;
 import org.semarglproject.rdf.TurtleSerializer;
 import org.semarglproject.sink.CharOutputSink;
 import org.semarglproject.sink.CharSink;
@@ -31,7 +32,7 @@ import org.semarglproject.sink.TripleSink;
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
  * href="http://www.w3.org/TR/turtle/">Turtle</a>.
- * 
+ *
  * @author Tobias
  * @see AbstractRDFMessageBodyReaderWriter
  *
@@ -118,7 +119,7 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 
 		try {
 			nxp.parse(entityStream,
-					getCharset(mediaType), new URI(_uriinfo.getAbsolutePath().toString()));
+					getCharset(mediaType), getBaseURIdependingOnPutPost());
 			nxp.hasNext();
 		} catch (Exception e) {
 			throw new WebApplicationException(e.getCause());

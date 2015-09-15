@@ -51,6 +51,11 @@
 			<artifactId>semargl-rdf</artifactId>
 			<version>0.6.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.semanticweb.yars</groupId>
+			<artifactId>nxparser-utilities-uri</artifactId>
+			<version>2.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<description>JAX-RS is the Java API for RESTful Services, and Jersey its reference implementation. This module allows for reading and writing RDF in JAX-RS-code without manually parsing InputStreams, see the JavaDoc for examples.</description>

@@ -14,10 +14,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
@@ -36,7 +34,7 @@ import org.semanticweb.yars.rdfxml.RdfXmlParser;
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
  * href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a>.
- * 
+ *
  * @author Tobias Käfer
  * @see AbstractRDFMessageBodyReaderWriter
  *
@@ -48,9 +46,6 @@ import org.semanticweb.yars.rdfxml.RdfXmlParser;
 public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter {
 	final Logger _log = Logger.getLogger(RdfXmlMessageBodyWriter.class
 			.getName());
-
-	@Context
-	UriInfo _uriinfo;
 
 	XMLOutputFactory _factory = XMLOutputFactory.newInstance();
 	{
@@ -167,7 +162,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 		RdfXmlParser nxp = new RdfXmlParser();
 
 		try {
-			nxp.parse(entityStream, _uriinfo.getAbsolutePath().toString());
+			nxp.parse(entityStream, getBaseURIStringdependingOnPutPost());
 		} catch (ParseException e) {
 			_log.log(Level.WARNING, e.getMessage());
 			throw new BadRequestException(e.getCause());

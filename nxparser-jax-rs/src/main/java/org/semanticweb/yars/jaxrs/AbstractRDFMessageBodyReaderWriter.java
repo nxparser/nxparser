@@ -3,11 +3,16 @@ package org.semanticweb.yars.jaxrs;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 
@@ -22,7 +27,7 @@ import org.semanticweb.yars.nx.Node;
  * This wrapping is required for Java to find out of what class the objects in
  * the {@link Iterable} are. Note that you can use any subclass of
  * {@link Iterable}, eg. Java's collections.
- * 
+ *
  * <p>
  * Example usage (writing RDF):<br />
  * {@code Iterable<Node[]> l = new ArrayList<Node[]>();}<br />
@@ -31,13 +36,19 @@ import org.semanticweb.yars.nx.Node;
  * <br />
  * {@code return Response.ok(ge).build();}
  * </p>
- * 
+ *
  * @author Tobias Käfer
  *
  */
 public abstract class AbstractRDFMessageBodyReaderWriter implements
 		MessageBodyWriter<Iterable<Node[]>>,
 		MessageBodyReader<Iterable<Node[]>> {
+
+	@Context
+	UriInfo _uriinfo;
+
+	@Context
+	Request _request;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -65,7 +76,7 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 	/**
 	 * The method {@link #isReadable(Class, Type, Annotation[], MediaType)}
 	 * checks the first two parameters, here the last two are to be checked.
-	 * 
+	 *
 	 * @see {@link #isReadable(Class, Type, Annotation[], MediaType)}
 	 */
 	abstract boolean isReadableCheckMediatypeAndAnnotations(
@@ -92,7 +103,7 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 	/**
 	 * The method {@link #isWriteable(Class, Type, Annotation[], MediaType)}
 	 * checks the first two parameters, here the last two are to be checked.
-	 * 
+	 *
 	 * @see {@link #isWriteable(Class, Type, Annotation[], MediaType)}
 	 */
 	abstract boolean isWritableCheckMediatypeAndAnnotations(Annotation[] arg2,
@@ -129,7 +140,7 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 	/**
 	 * Determines the {@link Charset} for a given {@link MediaType} defaulting
 	 * to {@link StandardCharsets#UTF_8}.
-	 * 
+	 *
 	 * @param m
 	 *            The {@link MediaType} to be parsed
 	 * @return The found {@link Charset}, or {@link StandardCharsets#UTF_8}.
@@ -145,6 +156,30 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 				return Charset.forName(cp);
 
 		}
+	}
+
+	public String getBaseURIStringdependingOnPutPost() {
+		String baseURI;
+		if (_request.getMethod().equals(HttpMethod.POST))
+			// In case of a POST request, we cannot determine the URI against
+			// which relative URIs should be resolved on this level of
+			// processing. The resolving is to be done on application level.
+			baseURI = org.semanticweb.yars.util.Util.THIS_STRING;
+		else
+			baseURI = _uriinfo.getAbsolutePath().toString();
+		return baseURI;
+	}
+
+	public URI getBaseURIdependingOnPutPost() {
+		URI baseURI;
+		if (_request.getMethod().equals(HttpMethod.POST))
+			// In case of a POST request, we cannot determine the URI against
+			// which relative URIs should be resolved on this level of
+			// processing. The resolving is to be done on application level.
+			baseURI = org.semanticweb.yars.util.Util.THIS_URI;
+		else
+			baseURI = _uriinfo.getAbsolutePath();
+		return baseURI;
 	}
 
 }
