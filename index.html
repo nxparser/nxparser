@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Nxparser by nxparser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Nxparser</h1>
+      <h2 class="project-tagline">A collection of Java parsers for different RDF serialisations.</h2>
+      <a href="https://github.com/nxparser/nxparser" class="btn">View on GitHub</a>
+      <a href="https://github.com/nxparser/nxparser/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/nxparser/nxparser/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="welcome-to-nxparser" class="anchor" href="#welcome-to-nxparser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to NxParser</h1>
+
+<p>NxParser is a Java open source, streaming, non-validating parser for the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the <a href="http://sw.deri.org/2008/07/n-quads/">NQuads format</a>, a extension for the <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a> RDF format. Note that the parser handles any combination (cf. <a href="http://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">generalised triples</a>) or number of N-Triples syntax terms on each line (the number of terms per line can also vary).</p>
+
+<p>It ate 2 mil. quads (~4GB, (~240MB GZIPped)) on a T60p (Win7, 2.16 GHz)  in ~1 min 35 s (1:18min). Overall, it's more than twice as fast as the previous version when it comes to reading Nx.</p>
+
+<p>The NxParser is non-validating, meaning that, e.g., it will happily eat non-conformant N-Triples. Also, the NxParser will not parse certain valid N-Triples files where the RDF terms are not separated by whitespace. We pass all positive W3C N-Triples test cases except one, where the RDF terms are not separated by whitespace (surprise!).</p>
+
+<h2>
+<a id="other-formats" class="anchor" href="#other-formats" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other formats</h2>
+
+<p>The NxParser Parser family also includes a <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> and a <a href="http://www.w3.org/TR/turtle/">Turtle</a> parser. Moreover, we attached a <a href="http://json-ld.org/">JSON-LD</a> parser (<a href="https://github.com/jsonld-java/jsonld-java">jsonld-java</a>) and a <a href="http://www.w3.org/TR/rdfa-core/">RDFa</a> parser (<a href="https://github.com/levkhomich/semargl">semargl</a>) such that they emit Triples in the NxParser API.</p>
+
+<h2>
+<a id="other-features" class="anchor" href="#other-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other features</h2>
+
+<p>To build Jersey / Jax-RS-based Web Apps, you can make use of our provider that automatically (de)serialises RDF for you.</p>
+
+<h2>
+<a id="binaries" class="anchor" href="#binaries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Binaries</h2>
+
+<p>Compiles are available on Maven Central. The groupId is <code>org.semanticweb.yars</code> and the artifactId <code>nxparser</code>.</p>
+
+<h3>
+<a id="legacy-binaries" class="anchor" href="#legacy-binaries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Legacy binaries</h3>
+
+<p>Find old compiles in the repository on Google Code, which we do not maintain any more. To use it nevertheless, add</p>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">repository</span>&gt;
+ &lt;<span class="pl-ent">id</span>&gt;nxparser-repo&lt;/<span class="pl-ent">id</span>&gt;
+ &lt;<span class="pl-ent">url</span>&gt;
+  http://nxparser.googlecode.com/svn/repository
+ &lt;/<span class="pl-ent">url</span>&gt;
+&lt;/<span class="pl-ent">repository</span>&gt;
+&lt;<span class="pl-ent">repository</span>&gt;
+ &lt;<span class="pl-ent">id</span>&gt;nxparser-snapshots&lt;/<span class="pl-ent">id</span>&gt;
+ &lt;<span class="pl-ent">url</span>&gt;
+  http://nxparser.googlecode.com/svn/snapshots
+ &lt;/<span class="pl-ent">url</span>&gt;
+&lt;/<span class="pl-ent">repository</span>&gt;</pre></div>
+
+<p>to your pom.xml.</p>
+
+<h2>
+<a id="code-examples" class="anchor" href="#code-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Examples</h2>
+
+<h3>
+<a id="read-nx-from-a-file" class="anchor" href="#read-nx-from-a-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Read Nx from a file</h3>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">FileInputStream</span> is <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">FileInputStream</span>(<span class="pl-s"><span class="pl-pds">"</span>path/to/file.nq<span class="pl-pds">"</span></span>);
+
+<span class="pl-smi">NxParser</span> nxp <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">NxParser</span>();
+nxp<span class="pl-k">.</span>parse(is);
+
+<span class="pl-k">for</span> (<span class="pl-k">Node</span>[] nx <span class="pl-k">:</span> nxp)
+  <span class="pl-c">// prints the subject, eg. &lt;http://example.org/&gt;</span>
+  <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(nx[<span class="pl-c1">0</span>]);</pre></div>
+
+<h3>
+<a id="use-a-blank-node" class="anchor" href="#use-a-blank-node" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use a blank node</h3>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-c">// true means you are supplying proper N-Triples RDF terms that do not need to be processed</span>
+<span class="pl-smi">Resource</span> subjRes <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Resource</span>(<span class="pl-s"><span class="pl-pds">"</span>&lt;http://example.org/123&gt;<span class="pl-pds">"</span></span>, <span class="pl-c1">true</span>);
+<span class="pl-smi">Resource</span> predRes <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Resource</span>(<span class="pl-s"><span class="pl-pds">"</span>&lt;http://example.org/123&gt;<span class="pl-pds">"</span></span>, <span class="pl-c1">true</span>);
+<span class="pl-smi">BNode</span> bn <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">BNode</span>(<span class="pl-s"><span class="pl-pds">"</span>_:bnodeId<span class="pl-pds">"</span></span>, <span class="pl-c1">true</span>);
+
+<span class="pl-k">Node</span>[] triple <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Node</span>[]{subjRes, predRes, bn};
+<span class="pl-c">// yields &lt;http://example.org/123&gt; &lt;http://example.org/123&gt; _:bnodeId</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-smi">Arrays</span><span class="pl-k">.</span>toString(triple));</pre></div>
+
+<h3>
+<a id="use-unicode-characters" class="anchor" href="#use-unicode-characters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use Unicode-characters</h3>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> japaneseString <span class="pl-k">=</span> (<span class="pl-s"><span class="pl-pds">"</span>祝福は、チーズのメーカーです。<span class="pl-pds">"</span></span>);
+<span class="pl-smi">Literal</span> japaneseLiteral <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Literal</span>(japaneseString, <span class="pl-s"><span class="pl-pds">"</span>ja<span class="pl-pds">"</span></span>);
+
+<span class="pl-c">// yields "\u795D\u798F\u306F\u3001\u30C1\u30FC\u30BA\u306E\u30E1\u30FC\u30AB\u30FC\u3067\u3059\u3002"@ja</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(japaneseLiteral);
+
+<span class="pl-c">// yields 祝福は、チーズのメーカーです。</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(japaneseLiteral<span class="pl-k">.</span>getLabel());</pre></div>
+
+<h3>
+<a id="use-datatyped-literals" class="anchor" href="#use-datatyped-literals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use datatyped literals</h3>
+
+<p>Example: Get a Calendar object from an <code>xsd:dateTime</code>-typed Literal</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">Literal</span> dtl; <span class="pl-c">// parser-generated</span>
+<span class="pl-smi">XSDDateTime</span> dt <span class="pl-k">=</span> (<span class="pl-smi">XSDDateTime</span>)<span class="pl-smi">DatatypeFactory</span><span class="pl-k">.</span>getDatatype(dtl); 
+<span class="pl-smi">GregorianCalendar</span> cal <span class="pl-k">=</span> dt<span class="pl-k">.</span>getValue();</pre></div>
+
+<h3>
+<a id="use-from-python" class="anchor" href="#use-from-python" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use from Python</h3>
+
+<p>Provided you use the Jython implementation (thanks to Uldis Bojars, this is saved from his now offline blog).</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> sys
+sys.path.append(<span class="pl-s"><span class="pl-pds">"</span>./nxparser.jar<span class="pl-pds">"</span></span>)
+
+<span class="pl-k">from</span> org.semanticweb.yars.nx.parser <span class="pl-k">import</span> <span class="pl-k">*</span>
+<span class="pl-k">from</span> java.io <span class="pl-k">import</span> FileInputStream
+<span class="pl-k">from</span> java.util.zip <span class="pl-k">import</span> GZIPInputStream
+
+<span class="pl-k">def</span> <span class="pl-en">all_triples</span>(<span class="pl-smi">fname</span>, <span class="pl-smi">use_gzip</span><span class="pl-k">=</span><span class="pl-c1">False</span>):
+  in_file <span class="pl-k">=</span> FileInputStream(fname)
+  <span class="pl-k">if</span> use_gzip:
+      in_file <span class="pl-k">=</span> GZIPInputStream(in_file)
+
+  nxp <span class="pl-k">=</span> NxParser()
+  nxp.parse(in_file)
+
+  <span class="pl-k">while</span> nxp.hasNext():
+    triple <span class="pl-k">=</span> nxp.next()
+    n3 <span class="pl-k">=</span> ([i.toString() <span class="pl-k">for</span> i <span class="pl-k">in</span> triple])
+    <span class="pl-k">yield</span> n3</pre></div>
+
+<p>The code above defines a generator function which will yield a stream of NQuad records. We can now add some demo code in order to see it in action:</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">def</span> <span class="pl-en">main</span>():
+  gzfname <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>sioc-btc-2009.gz<span class="pl-pds">"</span></span>
+
+  <span class="pl-k">for</span> line <span class="pl-k">in</span> all_triples(gzfname, <span class="pl-smi">use_gzip</span><span class="pl-k">=</span><span class="pl-c1">True</span>):
+    <span class="pl-k">print</span> line
+
+  <span class="pl-k">if</span> <span class="pl-c1">__name__</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>__main__<span class="pl-pds">"</span></span>:
+    main()</pre></div>
+
+<p>results in:</p>
+
+<div class="highlight highlight-source-python"><pre>[<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://2008.blogtalk.net/node/29&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://rdfs.org/sioc/ns#Post&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://2008.blogtalk.net/sioc/node/29&gt;<span class="pl-pds">'</span></span>]
+[<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://2008.blogtalk.net/node/65&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://rdfs.org/sioc/ns#content&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>"We<span class="pl-cce">\'</span>ve created a map showing the main places of interest (event locations, restaurants, pubs, shopping locations and tourist sights) during BlogTalk 2008.  The conference venue is shown on the left-hand side of the map.  We will also have a hardcopy for all attendees. View Larger Map"<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>&lt;http://2008.blogtalk.net/sioc/node/65&gt;<span class="pl-pds">'</span></span>]</pre></div>
+
+<h4>
+<a id="issues-with-eclipse" class="anchor" href="#issues-with-eclipse" aria-hidden="true"><span class="octicon octicon-link"></span></a>issues with Eclipse</h4>
+
+<p>we had an issue with eclipse not being able to create his folder structure for nxparser-parsers, <code>mvn eclipse:eclipse</code> did the trick.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/nxparser/nxparser">Nxparser</a> is maintained by <a href="https://github.com/nxparser">nxparser</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
