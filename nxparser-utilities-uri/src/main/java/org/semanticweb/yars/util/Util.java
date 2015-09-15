@@ -2,7 +2,6 @@ package org.semanticweb.yars.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 
 public class Util {
 
@@ -26,7 +25,7 @@ public class Util {
 		}
 	}
 
-	public static URI getPossiblyRelativisedUriString(URI uri) {
+	public static URI getPossiblyRelativisedUri(URI uri) {
 
 		URI ret = uri;
 

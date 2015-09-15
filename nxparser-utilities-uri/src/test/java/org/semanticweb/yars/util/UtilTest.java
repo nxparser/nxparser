@@ -22,7 +22,7 @@ public class UtilTest {
 		for (String relativeUriString : relativeUriStrings) {
 			URI relativeUri = new URI(relativeUriString);
 			URI r = Util.THIS_URI.resolve(relativeUri);
-			URI result = Util.getPossiblyRelativisedUriString(r);
+			URI result = Util.getPossiblyRelativisedUri(r);
 			System.err.println("Relative URI: " + relativeUri);
 			System.err.println("Long URI:     " + r);
 			System.err.println("Relativised:  " + result);
