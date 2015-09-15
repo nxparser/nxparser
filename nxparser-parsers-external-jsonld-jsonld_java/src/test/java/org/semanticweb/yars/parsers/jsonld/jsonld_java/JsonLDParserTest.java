@@ -1,4 +1,4 @@
-package org.semanticweb.yars.parsers.jsonld;
+package org.semanticweb.yars.parsers.jsonld.jsonld_java;
 
 import static org.junit.Assert.assertEquals;
 
