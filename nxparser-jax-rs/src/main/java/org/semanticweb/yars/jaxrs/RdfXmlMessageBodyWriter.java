@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,7 +64,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 		XMLStreamWriter xmlwriter;
 		try {
 			xmlwriter = _factory.createXMLStreamWriter(entityStream,
-					StandardCharsets.UTF_8.name());
+					UTF_8.name());
 
 			xmlwriter.writeStartDocument("UTF-8", "1.0");
 			xmlwriter.writeStartElement("rdf:RDF");
@@ -184,5 +183,5 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 	}
 
 	public static final MediaType RDF_XML_MEDIATYPE = new MediaType(
-			"application", "rdf+xml", StandardCharsets.UTF_8.name());
+			"application", "rdf+xml", UTF_8.name());
 }

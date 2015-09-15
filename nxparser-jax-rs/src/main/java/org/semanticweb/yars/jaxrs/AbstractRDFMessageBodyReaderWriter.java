@@ -5,8 +5,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
@@ -43,6 +41,8 @@ import org.semanticweb.yars.nx.Node;
 public abstract class AbstractRDFMessageBodyReaderWriter implements
 		MessageBodyWriter<Iterable<Node[]>>,
 		MessageBodyReader<Iterable<Node[]>> {
+
+	static Charset UTF_8 = Charset.forName("utf-8"); // StandardCharsets.UTF_8
 
 	@Context
 	UriInfo _uriinfo;
@@ -147,11 +147,11 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 	 */
 	public static Charset getCharset(MediaType m) {
 		if (m == null)
-			return StandardCharsets.UTF_8;
+			return UTF_8;
 		else {
 			String cp = m.getParameters().get(MediaType.CHARSET_PARAMETER);
 			if (cp == null)
-				return StandardCharsets.UTF_8;
+				return UTF_8;
 			else
 				return Charset.forName(cp);
 

@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 import org.semanticweb.yars.nx.BNode;
@@ -20,6 +20,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class SelectedTurtleSyntaxFeaturesTest {
+
+	static Charset UTF_8 = Charset.forName("utf-8"); // StandardCharsets.UTF_8
 
 	@Test
 	public void test() throws IOException, TurtleParseException, org.semanticweb.yars.turtle.ParseException, URISyntaxException {
@@ -39,17 +41,17 @@ public class SelectedTurtleSyntaxFeaturesTest {
 		String baseURI = "http://base.uri/";
 
 		InputStream is = new ByteArrayInputStream(
-				turtleString.getBytes(StandardCharsets.UTF_8));
+				turtleString.getBytes(UTF_8));
 
 		TurtleParser tp = new TurtleParser();
-		tp.parse(is, StandardCharsets.UTF_8, new URI(baseURI));
+		tp.parse(is, UTF_8, new URI(baseURI));
 
 		Model nxparserModel = createModelFromNodesCollection(tp);
 
 		Model turtleModel = ModelFactory.createDefaultModel();
 
 		is = new ByteArrayInputStream(
-				turtleString.getBytes(StandardCharsets.UTF_8));
+				turtleString.getBytes(UTF_8));
 		turtleModel.read(is, baseURI, "TURTLE");
 
 		assertTrue(nxparserModel.isIsomorphicWith(turtleModel));
@@ -71,7 +73,7 @@ public class SelectedTurtleSyntaxFeaturesTest {
 		sw.close();
 
 		InputStream is2 = new ByteArrayInputStream(sw.getBuffer().toString()
-				.getBytes(StandardCharsets.UTF_8));
+				.getBytes(UTF_8));
 		modelTest.read(is2, "", "N-TRIPLES");
 		is2.close();
 
@@ -85,10 +87,10 @@ public class SelectedTurtleSyntaxFeaturesTest {
 		String baseURI = "http://ex.org/";
 
 		InputStream is = new ByteArrayInputStream(
-				turtleWithManyBnodes.getBytes(StandardCharsets.UTF_8));
+				turtleWithManyBnodes.getBytes(UTF_8));
 
 		TurtleParser tp = new TurtleParser();
-		tp.parse(is, StandardCharsets.UTF_8, new URI(baseURI));
+		tp.parse(is, UTF_8, new URI(baseURI));
 
 		int i = 0;
 		int j = 0;

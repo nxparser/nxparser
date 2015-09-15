@@ -1,11 +1,11 @@
 package org.semanticweb.yars.turtle;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 import org.semanticweb.yars.nx.Literal;
@@ -14,10 +14,12 @@ import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
 /**
  * Turtle Parser test cases.
- * 
+ *
  * @author Tobias Käfer
  */
 public class TurtleParserTest {
+
+	static Charset UTF_8 = Charset.forName("utf-8"); // StandardCharsets.UTF_8
 
 	@Test
 	public void relativeURIandRDFtypeAndMultilineTest()
@@ -26,8 +28,8 @@ public class TurtleParserTest {
 		tp.parse(
 				new ByteArrayInputStream(("</a> a \"b\"^^<http://ex.org/> .\n"
 						+ "</a> a \"b\"^^<http://ex.org/> .\n")
-						.getBytes(StandardCharsets.UTF_8)),
-				StandardCharsets.UTF_8, new URI("http://example.org/123/"));
+						.getBytes(UTF_8)),
+				UTF_8, new URI("http://example.org/123/"));
 
 		for (Node[] nx : tp) {
 			Nodes nodes = new Nodes(nx);

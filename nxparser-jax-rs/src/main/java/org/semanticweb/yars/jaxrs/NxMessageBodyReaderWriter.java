@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
@@ -40,11 +39,11 @@ public class NxMessageBodyReaderWriter extends
 		AbstractRDFMessageBodyReaderWriter {
 
 	static final MediaType NTRIPLES_MEDIATYPE = new MediaType("application",
-			"n-triples", StandardCharsets.UTF_8.name());
+			"n-triples", UTF_8.name());
 	static final MediaType NQUADS_MEDIATYPE = new MediaType("application",
-			"n-quads", StandardCharsets.UTF_8.name());
+			"n-quads", UTF_8.name());
 	static final MediaType TURTLE_MEDIATYPE = new MediaType("text", "turtle",
-			StandardCharsets.UTF_8.name());
+			UTF_8.name());
 
 	@Override
 	boolean isReadableCheckMediatypeAndAnnotations(Annotation[] annotations,
@@ -66,7 +65,7 @@ public class NxMessageBodyReaderWriter extends
 			OutputStream entityStream) throws IOException,
 			WebApplicationException {
 		Charset cs = getCharset(mediaType);
-		byte[] newLineBytes = System.lineSeparator().getBytes(cs);
+		byte[] newLineBytes = System.getProperty("line.separator").getBytes(cs);
 		for (Node[] nx : arg0) {
 			if (nx.length > 3 && mediaType.equals(NTRIPLES_MEDIATYPE))
 				nx = new Node[] { nx[0], nx[1], nx[2] };
