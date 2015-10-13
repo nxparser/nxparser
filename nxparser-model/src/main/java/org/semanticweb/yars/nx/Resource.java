@@ -19,7 +19,7 @@ public class Resource implements Node, Serializable {
 	private static Logger _log = Logger.getLogger(Resource.class.getName());
 
 	/** The value of the Iri in N-Triples syntax (including <>) . */
-	String _data;
+	protected String _data;
 
 	// version number for serialisation
 	public static final long serialVersionUID = 2l;
@@ -48,7 +48,7 @@ public class Resource implements Node, Serializable {
 				// maybe throw Exception, or just be silent
 				_log.log(Level.WARNING, "Empty string not allowed.");
 
-				_data = iri;
+				_data = "<>";
 			} else if (iri.charAt(0) != '<') {
 				_data = ("<" + NxUtil.escapeIRI(iri) + ">");
 			} else {
