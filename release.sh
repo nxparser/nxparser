@@ -12,5 +12,9 @@ mvn release:prepare
 # Release with skipped tests and snapshot dependencies allowed
 #mvn release:prepare -Darguments="-DskipTests" -DignoreSnapshots
 
+# Release to maven central
+mvn release:perform -P release
+
 # Clean release configuration
 mvn release:clean
+
