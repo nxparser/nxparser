@@ -88,6 +88,12 @@
 					<tagNameFormat>@{project.version}</tagNameFormat>
 					<scmCommentPrefix xml:space="preserve">Release: </scmCommentPrefix>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<configuration>
+						<!--
+                          During release:perform, enable the "release" profile
+                         -->
+						<releaseProfiles>release</releaseProfiles>
+					</configuration>
 				</configuration>
 			</plugin>
 		</plugins>
