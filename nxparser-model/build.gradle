@@ -1,0 +1,5 @@
+
+description = 'NxParser Model'
+dependencies {
+  compile project(':nxparser-commons')
+}

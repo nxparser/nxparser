@@ -1,0 +1,9 @@
+
+description = 'NxParser Utilities for Nx Handling'
+dependencies {
+  compile project(':nxparser-commons')
+  compile project(':nxparser-model')
+  compile project(':nxparser-parsers')
+  compile project(':nxparser-serialisers')
+  compile project(':nxparser-utilities')
+}

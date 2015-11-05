@@ -1,0 +1,8 @@
+
+description = 'NxParser Parser for JSON-LD using jsonld-java'
+dependencies {
+  compile project(':nxparser-model')
+    compile group: 'com.github.jsonld-java', name: 'jsonld-java', version:'0.6.0'
+  testCompile project(':nxparser-parsers')
+    testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.9'
+}

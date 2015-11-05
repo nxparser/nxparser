@@ -1,0 +1,5 @@
+
+description = 'NxParser Model Datatypes'
+dependencies {
+  compile project(':nxparser-model')
+}

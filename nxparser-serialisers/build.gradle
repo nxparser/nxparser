@@ -1,0 +1,5 @@
+
+description = 'NxParser Serialisers'
+dependencies {
+  compile project(':nxparser-api')
+}

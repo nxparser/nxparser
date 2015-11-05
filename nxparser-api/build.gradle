@@ -1,0 +1,5 @@
+
+description = 'NxParser APIs'
+dependencies {
+  compile project(':nxparser-model')
+}
