@@ -22,3 +22,6 @@ bin/
 
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Gradle
+build
