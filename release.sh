@@ -13,7 +13,7 @@ mvn release:prepare
 #mvn release:prepare -Darguments="-DskipTests" -DignoreSnapshots
 
 # Release to maven central
-mvn release:perform -P release
+mvn release:perform
 
 # Clean release configuration
 mvn release:clean
