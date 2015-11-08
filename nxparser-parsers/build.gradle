@@ -9,7 +9,7 @@ plugins {
 
 
 /*
- * General
+ * Configuration
  */
 description = 'NxParser Parsers'
 
@@ -21,15 +21,20 @@ description = 'NxParser Parsers'
  */
 dependencies {
 	
+	
 	/*
-	 * Compile dependencies
+	 * Compile Dependencies
 	 */
+	
+	// NxParser
 	compile project(':nxparser-api')
 	
 	
 	/*
-	 * Compile dependencies
+	 * Test Dependencies
 	 */
+	
+	// External
 	testCompile(group: 'org.apache.jena', name: 'jena-arq', version:'2.11.1') {
 		exclude(module: 'slf4j-log4j12')
 		exclude(module: 'log4j')
@@ -43,7 +48,7 @@ dependencies {
 
 
 /*
- * Configuration
+ * Plugin Configuration
  */
 sourceSets {
 	main {

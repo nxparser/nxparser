@@ -1,11 +1,31 @@
-
+/*
+ * Configuration
+ */
 description = 'NxParser Readers/Writers for JAX-RS'
+
+
+
+
+/*
+ * Dependencies
+ */
 dependencies {
-  compile project(':nxparser-parsers')
-    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version:'2.0.1'
-    compile group: 'org.kohsuke.metainf-services', name: 'metainf-services', version:'1.6'
-    compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version:'2.17'
-  compile project(':nxparser-parsers-external-jsonld-jsonld_java')
-    compile group: 'org.semarglproject', name: 'semargl-rdf', version:'0.6.1'
-  compile project(':nxparser-utilities-uri')
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-parsers')
+	compile project(':nxparser-parsers-external-jsonld-jsonld_java')
+	compile project(':nxparser-utilities-uri')
+	
+	// External
+	compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version:'2.0.1'
+	compile group: 'org.kohsuke.metainf-services', name: 'metainf-services', version:'1.6'
+	compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version:'2.17'
+	compile group: 'org.semarglproject', name: 'semargl-rdf', version:'0.6.1'
+	
+	
 }

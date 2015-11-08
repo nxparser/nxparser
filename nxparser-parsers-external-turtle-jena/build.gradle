@@ -1,12 +1,26 @@
 /*
+ * Configuration
+ */
+description = 'NxParser Parser for Turtle using Jena'
+
+
+
+
+/*
  * Dependencies
  */
 dependencies {
 	
+	
 	/*
-	 * Compile dependencies
+	 * Compile Dependencies
 	 */
+	
+	// NxParser
 	compile project(':nxparser-model')
+	
+	// External
 	compile 'org.apache.jena:jena-arq:2.13.0'
+	
 	
 }

@@ -1,5 +1,23 @@
-
+/*
+ * Configuration
+ */
 description = 'NxParser Model Datatypes'
+
+
+
+
+/*
+ * Dependencies
+ */
 dependencies {
-  compile project(':nxparser-model')
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-model')
+	
+	
 }

@@ -1,5 +1,23 @@
-
+/*
+ * Configuration
+ */
 description = 'NxParser Serialisers'
+
+
+
+
+/*
+ * Dependencies
+ */
 dependencies {
-  compile project(':nxparser-api')
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-api')
+	
+	
 }

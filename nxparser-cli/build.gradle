@@ -1,8 +1,28 @@
-
+/*
+ * Configuration
+ */
 description = 'NxParser Command Line Interface'
+
+
+
+
+/*
+ * Dependencies
+ */
 dependencies {
-    compile group: 'commons-cli', name: 'commons-cli', version:'1.1'
-  compile project(':nxparser-utilities-nx')
-  compile project(':nxparser-parsers')
-  compile project(':nxparser-utilities-uri')
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-utilities-nx')
+	compile project(':nxparser-parsers')
+	compile project(':nxparser-utilities-uri')
+	
+	// External
+	compile group: 'commons-cli', name: 'commons-cli', version:'1.1'
+	
+	
 }

@@ -1,16 +1,30 @@
 /*
+ * Configuration
+ */
+description = 'NxParser Untested part of the NxParser 1 Command Line Interface'
+
+
+
+
+/*
  * Dependencies
  */
 dependencies {
 	
+	
 	/*
-	 * Compile dependencies
+	 * Compile Dependencies
 	 */
+	
+	// NxParser
 	compile project(':nxparser-cli')
 	compile project(':nxparser-parsers')
 	compile project(':nxparser-untested-utilities-nx')
 	compile project(':nxparser-utilities')
 	compile project(':nxparser-utilities-nx')
+	
+	// External
 	compile 'commons-cli:commons-cli:1.1'
+	
 	
 }
