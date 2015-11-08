@@ -1,2 +1,2 @@
 gradle:
-  script: "./gradlew build -x test"
+  script: "./gradlew build"
