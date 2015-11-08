@@ -1,0 +1,15 @@
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	/*
+	 * Compile dependencies
+	 */
+	compile project(':nxparser-commons')
+	compile project(':nxparser-model')
+	compile project(':nxparser-model-datatypes')
+	compile project(':nxparser-parsers')
+	compile project(':nxparser-serialisers')
+	
+}

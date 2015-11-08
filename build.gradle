@@ -1,26 +1,19 @@
-allprojects  {
-  apply plugin: 'maven'
+apply plugin: 'eclipse'
 
-  group = 'org.semanticweb.yars'
-version = '2.3-SNAPSHOT'
+allprojects {
+	version = '0.3.4-SNAPSHOT'
 }
 
 subprojects {
-  apply plugin: 'java'
-  sourceCompatibility = 1.5
-  targetCompatibility = 1.5
-
-  
-  repositories {
-    mavenLocal()
-    
-    maven { url "http://repo.maven.apache.org/maven2" }
-  }
-
-  
-  dependencies {
-    testCompile group: 'junit', name: 'junit', version:'4.12'
-}
-
-  
+	apply plugin: 'eclipse'
+	apply plugin: 'java'
+	
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+	
+	dependencies {
+		testCompile group: 'junit', name: 'junit', version:'4.12'
+	}
 }

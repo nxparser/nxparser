@@ -1,0 +1,12 @@
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	/*
+	 * Compile dependencies
+	 */
+	compile project(':nxparser-model')
+	compile 'org.semarglproject:semargl-jsonld:0.6.1'
+	
+}

@@ -1,28 +1,17 @@
-rootProject.name = 'nxparser'
 include ':nxparser-api'
 include ':nxparser-cli'
 include ':nxparser-commons'
+include ':nxparser-jax-rs'
 include ':nxparser-model'
 include ':nxparser-model-datatypes'
 include ':nxparser-parsers'
-include ':nxparser-parsers-external-rdfa-semargl'
 include ':nxparser-parsers-external-jsonld-jsonld_java'
+include ':nxparser-parsers-external-jsonld-semargl'
+include ':nxparser-parsers-external-rdfa-semargl'
+include ':nxparser-parsers-external-turtle-jena'
 include ':nxparser-serialisers'
+include ':nxparser-untested-cli'
+include ':nxparser-untested-utilities-nx'
 include ':nxparser-utilities'
 include ':nxparser-utilities-nx'
 include ':nxparser-utilities-uri'
-include ':nxparser-jax-rs'
-
-project(':nxparser-api').projectDir = "$rootDir/nxparser-api" as File
-project(':nxparser-cli').projectDir = "$rootDir/nxparser-cli" as File
-project(':nxparser-commons').projectDir = "$rootDir/nxparser-commons" as File
-project(':nxparser-model').projectDir = "$rootDir/nxparser-model" as File
-project(':nxparser-model-datatypes').projectDir = "$rootDir/nxparser-model-datatypes" as File
-project(':nxparser-parsers').projectDir = "$rootDir/nxparser-parsers" as File
-project(':nxparser-parsers-external-rdfa-semargl').projectDir = "$rootDir/nxparser-parsers-external-rdfa-semargl" as File
-project(':nxparser-parsers-external-jsonld-jsonld_java').projectDir = "$rootDir/nxparser-parsers-external-jsonld-jsonld_java" as File
-project(':nxparser-serialisers').projectDir = "$rootDir/nxparser-serialisers" as File
-project(':nxparser-utilities').projectDir = "$rootDir/nxparser-utilities" as File
-project(':nxparser-utilities-nx').projectDir = "$rootDir/nxparser-utilities-nx" as File
-project(':nxparser-utilities-uri').projectDir = "$rootDir/nxparser-utilities-uri" as File
-project(':nxparser-jax-rs').projectDir = "$rootDir/nxparser-jax-rs" as File

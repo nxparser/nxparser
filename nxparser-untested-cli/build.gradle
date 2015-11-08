@@ -1,0 +1,16 @@
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	/*
+	 * Compile dependencies
+	 */
+	compile project(':nxparser-cli')
+	compile project(':nxparser-parsers')
+	compile project(':nxparser-untested-utilities-nx')
+	compile project(':nxparser-utilities')
+	compile project(':nxparser-utilities-nx')
+	compile 'commons-cli:commons-cli:1.1'
+	
+}

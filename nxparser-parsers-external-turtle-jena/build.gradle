@@ -1,0 +1,12 @@
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	/*
+	 * Compile dependencies
+	 */
+	compile project(':nxparser-model')
+	compile 'org.apache.jena:jena-arq:2.13.0'
+	
+}
