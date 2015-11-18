@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.semanticweb.yars</groupId>
 		<artifactId>nxparser</artifactId>
-		<version>2.3-SNAPSHOT</version>
+		<version>2.3.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>nxparser-parsers-external-jsonld-jsonld_java</artifactId>
@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java</artifactId>
-			<version>0.6.0</version>
+			<version>0.7.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.semanticweb.yars</groupId>
