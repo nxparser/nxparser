@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import org.semanticweb.yars.nx.Node;
 
+import com.github.jsonldjava.core.DocumentLoader;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -20,11 +21,15 @@ public class JsonLDparser implements Iterable<Node[]> {
 
 	JsonLDtripleCallback _callback;
 
+	static final DocumentLoader _dl = new DocumentLoader();
+
 	public void parse(final InputStream in, final String sourceURI)
 			throws JsonLdError, IOException {
 		_callback = new JsonLDtripleCallback(sourceURI);
 
 		final JsonLdOptions options = new JsonLdOptions(sourceURI);
+
+		options.setDocumentLoader(_dl);
 
 		JsonLdProcessor
 				.toRDF(JsonUtils.fromInputStream(in), _callback, options);
@@ -33,6 +38,10 @@ public class JsonLDparser implements Iterable<Node[]> {
 	@Override
 	public Iterator<Node[]> iterator() {
 		return _callback.getNx().iterator();
+	}
+
+	public static DocumentLoader getDocumentLoader() {
+		return _dl;
 	}
 
 }
