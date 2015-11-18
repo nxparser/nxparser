@@ -1,0 +1,23 @@
+/*
+ * Configuration
+ */
+description = 'NxParser Model'
+
+
+
+
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-commons')
+	
+	
+}

@@ -1,0 +1,26 @@
+/*
+ * Configuration
+ */
+description = 'NxParser Parsers for JSON-LD using semargl'
+
+
+
+
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-model')
+	
+	// External
+	compile 'org.semarglproject:semargl-jsonld:0.6.1'
+	
+	
+}

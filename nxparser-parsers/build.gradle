@@ -1,0 +1,76 @@
+/*
+ * Plugins
+ */
+plugins {
+	id "ca.coglinc.javacc" version "2.3.1"
+}
+
+
+
+
+/*
+ * Configuration
+ */
+
+// Description
+description = 'NxParser Parsers'
+
+// Exclude failing tests
+sourceSets {
+   test {
+        java {
+            srcDir 'src/test/java'
+            exclude '**/*NTriplesSyntaxTestSuite*'
+            exclude '**/*NQuadsSyntaxTestSuite*'
+            exclude '**/*RdfXmlTestSuite*'
+            exclude '**/*TurtleTestSuite*'
+       }
+   }
+}
+
+
+
+
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-api')
+	
+	
+	/*
+	 * Test Dependencies
+	 */
+	
+	// External
+	testCompile(group: 'org.apache.jena', name: 'jena-arq', version:'2.11.1') {
+		exclude(module: 'slf4j-log4j12')
+		exclude(module: 'log4j')
+	}
+	testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.6.4'
+	testCompile group: 'org.slf4j', name: 'log4j-over-slf4j', version:'1.7.12'
+	
+}
+
+
+
+
+/*
+ * Plugin Configuration
+ */
+sourceSets {
+	main {
+		java {
+			srcDir compileJavacc.outputDirectory
+		}
+	}
+}
+
+eclipseClasspath.dependsOn("compileJavacc")

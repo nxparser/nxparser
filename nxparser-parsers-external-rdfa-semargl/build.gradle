@@ -1,0 +1,28 @@
+/*
+ * Configuration
+ */
+description = 'NxParser Parser for RDFa using semargl'
+
+
+
+
+/*
+ * Dependencies
+ */
+dependencies {
+	
+	
+	/*
+	 * Compile Dependencies
+	 */
+	
+	// NxParser
+	compile project(':nxparser-model')
+	
+	// External
+	compile group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version:'1.2'
+	compile group: 'org.semarglproject', name: 'semargl-rdfa', version:'0.6.1'
+	compile group: 'org.semarglproject', name: 'semargl-jsonld', version:'0.6.1'
+	
+		
+}
