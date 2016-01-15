@@ -1,5 +1,7 @@
 package org.semanticweb.yars.jaxrs;
 
+import java.util.Arrays;
+
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.FeatureContext;
 
@@ -20,9 +22,11 @@ public class JerseyAutoDiscoverable implements AutoDiscoverable {
 		Configuration config = context.getConfiguration();
 
 		Class<?>[] classes = { NxMessageBodyReaderWriter.class,
-				RdfXmlMessageBodyWriter.class, TurtleMessageBodyReader.class };
+				RdfXmlMessageBodyWriter.class, TurtleMessageBodyReader.class,
+				JsonLdMessageBodyReader.class };
 
 		for (Class<?> clazz : classes) {
+			System.err.println("registering" + Arrays.toString(classes));
 			if (!config.isRegistered(clazz))
 				context.register(clazz);
 		}
