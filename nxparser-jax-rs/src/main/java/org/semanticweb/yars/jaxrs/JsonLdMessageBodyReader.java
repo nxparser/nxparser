@@ -72,7 +72,6 @@ public class JsonLdMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 		try {
 			jlp.parse(entityStream, getBaseURIdependingOnPutPost().toString());
 		} catch (JsonLdError e) {
-			System.err.println(e);
 			if (e.getType() == Error.LOADING_DOCUMENT_FAILED)
 				throw new IOException(e);
 			else

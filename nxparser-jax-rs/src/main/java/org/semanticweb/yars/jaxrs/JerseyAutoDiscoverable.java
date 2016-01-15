@@ -26,6 +26,7 @@ public class JerseyAutoDiscoverable implements AutoDiscoverable {
 				JsonLdMessageBodyReader.class };
 
 		for (Class<?> clazz : classes) {
+			System.err.println("registering" + Arrays.toString(classes));
 			if (!config.isRegistered(clazz))
 				context.register(clazz);
 		}
