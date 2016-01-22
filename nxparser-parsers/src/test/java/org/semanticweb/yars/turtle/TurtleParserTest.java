@@ -12,6 +12,7 @@ import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
+import org.semanticweb.yars.utils.CallbackIterator;
 /**
  * Turtle Parser test cases.
  *

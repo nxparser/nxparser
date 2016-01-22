@@ -1,4 +1,4 @@
-package org.semanticweb.yars.turtle;
+package org.semanticweb.yars.utils;
 
 import java.util.Iterator;
 import java.util.concurrent.BlockingDeque;

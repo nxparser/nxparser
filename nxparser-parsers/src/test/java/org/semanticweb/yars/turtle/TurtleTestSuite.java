@@ -27,6 +27,7 @@ import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.RDFTestCase;
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.NxParser;
+import org.semanticweb.yars.utils.CallbackIterator;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;

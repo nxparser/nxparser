@@ -22,6 +22,7 @@ import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.turtle.TurtleParser;
+import org.semanticweb.yars.utils.CallbackIterator;
 import org.semarglproject.rdf.TurtleSerializer;
 import org.semarglproject.sink.CharOutputSink;
 import org.semarglproject.sink.CharSink;
@@ -113,16 +114,25 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
 
-		TurtleParser nxp = new TurtleParser(entityStream,
+		TurtleParser parser = new TurtleParser(entityStream,
 				getCharset(mediaType), getBaseURIdependingOnPutPost());
 
+		CallbackIterator cs = new CallbackIterator();
+
 		try {
-			nxp.hasNext();
+			parser.parse(cs);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			cs.hasNext();
 		} catch (Exception e) {
 			throw new WebApplicationException(e.getCause());
 		}
 
-		return nxp;
+		return cs;
 	}
 
 }

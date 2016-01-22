@@ -19,11 +19,10 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.kohsuke.MetaInfServices;
-import org.semanticweb.yars.nx.BNode;
-import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.parsers.external.json.jsonld_java.JsonLDparser;
-import org.semanticweb.yars.turtle.TurtleParser;
+import org.semanticweb.yars.utils.CallbackIterator;
+import org.semanticweb.yars.utils.ErrorHandlerImpl;
 
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdError.Error;
@@ -68,16 +67,26 @@ public class JsonLdMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
 
-		JsonLDparser jlp = new JsonLDparser();
-		try {
-			jlp.parse(entityStream, getBaseURIdependingOnPutPost().toString());
-		} catch (JsonLdError e) {
-			if (e.getType() == Error.LOADING_DOCUMENT_FAILED)
-				throw new IOException(e);
-			else
-				throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+		JsonLDparser jlp = new JsonLDparser(entityStream, getBaseURIdependingOnPutPost());
+		ErrorHandlerImpl eh = new ErrorHandlerImpl();
+
+		jlp.setErrorHandler(eh);
+
+		CallbackIterator cs = new CallbackIterator();
+
+		jlp.parse(cs);
+
+		if (eh.getFatalError() != null) {
+			Exception ex = eh.getFatalError();
+			if (ex instanceof JsonLdError) {
+				JsonLdError e = (JsonLdError)ex;
+				if (e.getType() == Error.LOADING_DOCUMENT_FAILED)
+					throw new IOException(e);
+				else
+					throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+			}
 		}
-		return jlp;
+		return cs;
 	}
 
 	@Override

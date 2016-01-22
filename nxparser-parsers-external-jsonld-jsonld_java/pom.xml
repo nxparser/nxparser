@@ -14,6 +14,11 @@
 	<name>NxParser Parser for JSON-LD using jsonld-java</name>
 
 	<dependencies>
+	  <dependency>
+ 	    <groupId>org.semanticweb.yars</groupId>
+			<artifactId>nxparser-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.semanticweb.yars</groupId>
 			<artifactId>nxparser-model</artifactId>
