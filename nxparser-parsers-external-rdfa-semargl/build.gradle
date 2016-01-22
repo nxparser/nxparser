@@ -17,6 +17,7 @@ dependencies {
 	 */
 	
 	// NxParser
+	compile project(':nxparser-api')
 	compile project(':nxparser-model')
 	
 	// External
