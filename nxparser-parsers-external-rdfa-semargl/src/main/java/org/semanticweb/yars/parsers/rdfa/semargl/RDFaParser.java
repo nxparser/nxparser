@@ -63,6 +63,7 @@ public class RDFaParser implements RdfParser {
 		_baseURIstring = baseURI.toString();
 	}
 
+	@Override
 	public void parse(final Callback cb) {
 		StreamProcessor sp = new StreamProcessor(RdfaParser.connect(new QuadSink() {
 

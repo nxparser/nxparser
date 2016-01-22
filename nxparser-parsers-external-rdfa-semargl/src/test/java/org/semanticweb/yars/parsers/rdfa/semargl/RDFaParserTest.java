@@ -1,6 +1,6 @@
 package org.semanticweb.yars.parsers.rdfa.semargl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.OutputStream;
