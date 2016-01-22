@@ -3,7 +3,7 @@ package org.semanticweb.yars.nx.namespace;
 import org.semanticweb.yars.nx.Resource;
 
 public class HTTP {
-	public final static String NS = "http://www.w3.org/2006/http#";
+	public final static String NS = "http://www.w3.org/2011/http#";
 
 	//headers
 	public final static Resource CONNECTION = new Resource(NS+"Connection");
