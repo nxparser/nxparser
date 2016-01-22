@@ -121,7 +121,7 @@ public class TurtleTestSuite {
 	}
 
 	@Test
-	public void test() throws IOException, ParseException {
+	public void test() throws IOException, ParseException, InterruptedException {
 		if (_result != null) {
 
 			// test w/ gold standard

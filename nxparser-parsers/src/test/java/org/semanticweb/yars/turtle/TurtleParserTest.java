@@ -23,7 +23,7 @@ public class TurtleParserTest {
 
 	@Test
 	public void relativeURIandRDFtypeAndMultilineTest()
-			throws TurtleParseException, ParseException, URISyntaxException {
+			throws TurtleParseException, ParseException, URISyntaxException, InterruptedException {
 		TurtleParser tp = new TurtleParser();
 		tp.parse(
 				new ByteArrayInputStream(("</a> a \"b\"^^<http://ex.org/> .\n"

@@ -68,7 +68,7 @@ PARSER_END(TurtleParserInternal)
 
 // --- Entry point
 
-void parse(Callback callback, URI base) throws TurtleParseException: {
+void parse(Callback callback, URI base) throws TurtleParseException, InterruptedException: {
 // maybe get base here as well
 _callback = callback;
 _prologue.setBase(base);
@@ -81,10 +81,16 @@ _prologue.setBase(base);
 }
 
 /** [2] in Turtle spec */
-void Statement() throws TurtleParseException: {}
+void Statement() throws TurtleParseException, InterruptedException: {}
 {
   (Directive() | Triples() )
   <DOT>
+  {
+			// ideally, parser itself throws an InterruptedException
+			if (Thread.currentThread().isInterrupted()) {
+				throw new InterruptedException();
+			}
+  }
 }
 
 /** [3], [4], [5] */

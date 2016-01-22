@@ -24,18 +24,18 @@ public class TurtleParser implements Iterable<Node[]>, Iterator<Node[]> {
 	CallbackBlockingQueue _cb;
 
 	public void parse(InputStream is, Charset cs, URI baseURI)
-			throws TurtleParseException, ParseException {
+			throws TurtleParseException, ParseException, InterruptedException {
 		_tpi = new TurtleParserInternal(is, cs.name());
 		init(baseURI);
 	}
 
 	public void parse(Reader r, URI baseURI)
-			throws TurtleParseException, ParseException {
+			throws TurtleParseException, ParseException, InterruptedException {
 		_tpi = new TurtleParserInternal(r);
 		init(baseURI);
 	}
 
-	private void init(URI baseURI) throws TurtleParseException, ParseException {
+	private void init(URI baseURI) throws TurtleParseException, ParseException, InterruptedException {
 		_dq = new LinkedBlockingDeque<Node[]>();
 		_cb = new CallbackBlockingQueue(_dq) {
 			protected void endDocumentInternal() {
