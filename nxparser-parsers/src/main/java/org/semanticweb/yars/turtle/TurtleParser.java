@@ -39,9 +39,17 @@ public class TurtleParser implements RdfParser {
 		try {
 			_tpi.parse(cb, _base);
 		} catch (TurtleParseException e) {
-			_eh.fatalError(e);
+			if (_eh != null) {
+				_eh.fatalError(e);
+//			} else {
+//				_log.log(Level.INFO, e);
+			}
 		} catch (ParseException e) {
-			_eh.fatalError(e);
+			if (_eh != null) {
+				_eh.fatalError(e);
+//			} else {
+//				_log.log(Level.INFO, e);
+			}
 		}
 	}
 }

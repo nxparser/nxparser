@@ -28,7 +28,7 @@ import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Resource;
 import org.semanticweb.yars.nx.parser.ParseException;
-import org.semanticweb.yars.rdfxml.RdfXmlParser;
+import org.semanticweb.yars.rdfxml.RdfXmlParserIterator;
 
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
@@ -158,7 +158,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		RdfXmlParser nxp = new RdfXmlParser();
+		RdfXmlParserIterator nxp = new RdfXmlParserIterator();
 
 		try {
 			nxp.parse(entityStream, getBaseURIStringdependingOnPutPost());

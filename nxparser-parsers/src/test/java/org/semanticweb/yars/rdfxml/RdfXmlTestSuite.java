@@ -110,7 +110,7 @@ public class RdfXmlTestSuite extends TestCase {
 					+ " with n-triples at " + _uris[1]);
 
 			InputStream is = testDataURL.openStream();
-			RdfXmlParser rxp = new RdfXmlParser();
+			RdfXmlParserIterator rxp = new RdfXmlParserIterator();
 			try {
 				rxp.parse(is, _uris[0].toString());
 			} catch (ParseException e) {
@@ -169,7 +169,7 @@ public class RdfXmlTestSuite extends TestCase {
 			URL testDataURL = _uris[0].toURL();
 			boolean failed = false;
 			InputStream is = testDataURL.openStream();
-			RdfXmlParser rxp = new RdfXmlParser();
+			RdfXmlParserIterator rxp = new RdfXmlParserIterator();
 			try {
 				rxp.parse(is, _uris[0].toString());
 				PrintStream ps = new PrintStream(new DevNull());
