@@ -24,14 +24,14 @@ public class TurtleParserTest {
 	@Test
 	public void relativeURIandRDFtypeAndMultilineTest()
 			throws TurtleParseException, ParseException, URISyntaxException, InterruptedException {
-		TurtleParser tp = new TurtleParser();
-		tp.parse(
-				new ByteArrayInputStream(("</a> a \"b\"^^<http://ex.org/> .\n"
-						+ "</a> a \"b\"^^<http://ex.org/> .\n")
-						.getBytes(UTF_8)),
-				UTF_8, new URI("http://example.org/123/"));
+		TurtleParser tp = new TurtleParser(new ByteArrayInputStream(("</a> a \"b\"^^<http://ex.org/> .\n"
+				+ "</a> a \"b\"^^<http://ex.org/> .\n")
+				.getBytes(UTF_8)), UTF_8, new URI("http://example.org/123/"));
 
-		for (Node[] nx : tp) {
+		CallbackIterator it = new CallbackIterator();
+		tp.parse(it);
+
+		for (Node[] nx : it) {
 			Nodes nodes = new Nodes(nx);
 			assertEquals(
 					nodes,

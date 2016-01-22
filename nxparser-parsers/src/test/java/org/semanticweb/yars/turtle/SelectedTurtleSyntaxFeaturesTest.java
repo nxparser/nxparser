@@ -1,6 +1,7 @@
 package org.semanticweb.yars.turtle;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,10 +44,12 @@ public class SelectedTurtleSyntaxFeaturesTest {
 		InputStream is = new ByteArrayInputStream(
 				turtleString.getBytes(UTF_8));
 
-		TurtleParser tp = new TurtleParser();
-		tp.parse(is, UTF_8, new URI(baseURI));
+		TurtleParser tp = new TurtleParser(is, UTF_8, new URI(baseURI));
 
-		Model nxparserModel = createModelFromNodesCollection(tp);
+		CallbackIterator it = new CallbackIterator();
+		tp.parse(it);
+
+		Model nxparserModel = createModelFromNodesCollection(it);
 
 		Model turtleModel = ModelFactory.createDefaultModel();
 
@@ -89,13 +92,15 @@ public class SelectedTurtleSyntaxFeaturesTest {
 		InputStream is = new ByteArrayInputStream(
 				turtleWithManyBnodes.getBytes(UTF_8));
 
-		TurtleParser tp = new TurtleParser();
-		tp.parse(is, UTF_8, new URI(baseURI));
+		TurtleParser tp = new TurtleParser(is, UTF_8, new URI(baseURI));
+
+		CallbackIterator it = new CallbackIterator();
+		tp.parse(it);
 
 		int i = 0;
 		int j = 0;
 
-		for (Node[] nx : tp) {
+		for (Node[] nx : it) {
 			++i;
 			for (Node n : nx) {
 				if (n instanceof BNode) {

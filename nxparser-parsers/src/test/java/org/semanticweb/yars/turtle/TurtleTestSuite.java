@@ -1,6 +1,7 @@
 package org.semanticweb.yars.turtle;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,10 +17,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -137,24 +134,18 @@ public class TurtleTestSuite {
 			URL goldStandardURL = _result.toURL();
 			
 			URLConnection urlc = testDataURL.openConnection();
-			TurtleParser rxp = new TurtleParser();
-			try {
-				rxp.parse(urlc.getInputStream(), Charset.forName(urlc
+			TurtleParser tp = new TurtleParser(urlc.getInputStream(), Charset.forName(urlc
 						.getContentEncoding() == null ? "utf-8" : urlc
 						.getContentEncoding()), _action);
-			} catch (ParseException e) {
-				System.err.println(" -- Failed to parse!" + e.getMessage());
-				fail();
-			} catch (TurtleParseException e) {
-				System.err.println(" -- Failed to parse!" + e.getMessage());
-				fail();
-			}
+
+			CallbackIterator it = new CallbackIterator();
+			tp.parse(it);
 
 			boolean containsBnode = false;
 			Collection<Nodes> testData = new HashSet<Nodes>();
 			Collection<Nodes> goldStandard = new HashSet<Nodes>();
 
-			for (Node[] nx : rxp) {
+			for (Node[] nx : it) {
 				if (nx[0] instanceof BNode || nx[2] instanceof BNode)
 					containsBnode = true;
 				testData.add(new Nodes(nx));

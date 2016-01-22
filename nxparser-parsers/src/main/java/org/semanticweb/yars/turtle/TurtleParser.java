@@ -3,6 +3,7 @@ package org.semanticweb.yars.turtle;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
+import java.nio.charset.Charset;
 
 import org.semanticweb.yars.nx.parser.Callback;
 import org.semanticweb.yars.nx.parser.ErrorHandler;
@@ -18,8 +19,8 @@ public class TurtleParser implements RdfParser {
 		_base = base;
 	}
 
-	public TurtleParser(InputStream is, String encoding, URI base) {
-		_tpi = new TurtleParserInternal(is, encoding);
+	public TurtleParser(InputStream is, Charset charset, URI base) {
+		_tpi = new TurtleParserInternal(is, charset.name());
 		_base = base;
 	}
 

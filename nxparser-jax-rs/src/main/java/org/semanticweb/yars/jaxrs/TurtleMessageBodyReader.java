@@ -113,11 +113,10 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
 
-		TurtleParser nxp = new TurtleParser();
+		TurtleParser nxp = new TurtleParser(entityStream,
+				getCharset(mediaType), getBaseURIdependingOnPutPost());
 
 		try {
-			nxp.parse(entityStream,
-					getCharset(mediaType), getBaseURIdependingOnPutPost());
 			nxp.hasNext();
 		} catch (Exception e) {
 			throw new WebApplicationException(e.getCause());
