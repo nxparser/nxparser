@@ -5,6 +5,7 @@ package org.semanticweb.yars.nx.parser;
  * 
  * The general constructor for parsers should include:
  * RdfParser(InputStream is, URI base)
+ * RdfParser(InputStream is, String encoding, URI base)
  * RdfParser(Reader r, URI base)
  * 
  * If you want to explicitely specify a charset, please use the Reader constructor.
