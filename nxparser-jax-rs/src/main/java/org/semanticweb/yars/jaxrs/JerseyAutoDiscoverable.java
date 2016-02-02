@@ -1,7 +1,5 @@
 package org.semanticweb.yars.jaxrs;
 
-import java.util.Arrays;
-
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.FeatureContext;
 
@@ -10,7 +8,7 @@ import org.kohsuke.MetaInfServices;
 
 /**
  * To automatically register the classes with Jersey.
- * 
+ *
  * @author Tobias Käfer
  *
  */
@@ -26,7 +24,6 @@ public class JerseyAutoDiscoverable implements AutoDiscoverable {
 				JsonLdMessageBodyReader.class };
 
 		for (Class<?> clazz : classes) {
-			System.err.println("registering" + Arrays.toString(classes));
 			if (!config.isRegistered(clazz))
 				context.register(clazz);
 		}
