@@ -21,8 +21,7 @@ dependencies {
 	compile project(':nxparser-model')
 	
 	// External
-	//compile group: 'com.github.jsonld-java', name: 'jsonld-java', version:'0.8.0'
-	compile 'com.github.fekepp:jsonld-java:master-SNAPSHOT'
+	compile group: 'com.github.jsonld-java', name: 'jsonld-java', version:'0.8.0'
 	
 	
 	/*
