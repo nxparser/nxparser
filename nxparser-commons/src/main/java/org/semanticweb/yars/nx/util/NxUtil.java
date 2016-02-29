@@ -738,7 +738,7 @@ public class NxUtil {
 				end++;
 			}
 		} // If path doesn't end with / or only is "/", we have to add the last segment manually
-		if (!path.equals("") && (path.charAt(path.length() - 1) != '/' || path.length() == 1)) {
+		if (!"".equals(path)) {// && (path.charAt(path.length() - 1) != '/' || "/".equals(path))) {
 			in.addLast(path.substring(start));
 		}
 

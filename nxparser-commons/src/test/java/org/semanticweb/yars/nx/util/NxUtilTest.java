@@ -42,6 +42,7 @@ public class NxUtilTest {
 		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg:80/"));
 		assertEquals("http://example.org/", NxUtil.normalize("HTTp://eXAMple.oRg:/"));
 		assertEquals("http://example.org:8080/", NxUtil.normalize("HTTp://eXAMple.oRg:8080/"));
+		assertEquals("http://example.org/1/2/3/", NxUtil.normalize("http://example.org/1/2/3/"));
 	}
 	
 	@Test
