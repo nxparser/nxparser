@@ -30,9 +30,9 @@ import com.github.jsonldjava.core.JsonLdError.Error;
 
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
- * href="http://www.w3.org/TR/turtle/">Turtle</a>.
+ * href="https://www.w3.org/TR/json-ld/">JSON-LD</a>.
  *
- * @author Tobias
+ * @author Tobias Käfer
  * @see AbstractRDFMessageBodyReaderWriter
  *
  */
