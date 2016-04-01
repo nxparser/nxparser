@@ -22,6 +22,7 @@ dependencies {
 	compile project(':nxparser-parsers')
 	compile project(':nxparser-serialisers')
 	compile project(':nxparser-utilities')
+	compile project(':nxparser-utilities-uri')
 	
 	
 }
