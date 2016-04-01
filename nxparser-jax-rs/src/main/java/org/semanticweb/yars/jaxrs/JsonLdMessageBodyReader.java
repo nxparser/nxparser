@@ -21,6 +21,7 @@ import javax.ws.rs.ext.Provider;
 import org.kohsuke.MetaInfServices;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.parsers.external.json.jsonld_java.JsonLDparser;
+import org.semanticweb.yars.parsers.external.json.jsonld_java.JsonLDserialiser;
 import org.semanticweb.yars.utils.CallbackIterator;
 import org.semanticweb.yars.utils.ErrorHandlerImpl;
 
@@ -55,10 +56,7 @@ public class JsonLdMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 	@Override
 	boolean isWritableCheckMediatypeAndAnnotations(Annotation[] annotations,
 			MediaType mt) {
-		// return JSONLD_MEDIATYPE.isCompatible(mt);
-		// not implemented yet...
-		return false;
-
+		return JSONLD_MEDIATYPE.isCompatible(mt);
 	}
 
 	@Override
@@ -90,12 +88,16 @@ public class JsonLdMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 	}
 
 	@Override
-	public void writeTo(Iterable<Node[]> arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4,
-			MultivaluedMap<String, Object> arg5, OutputStream arg6) throws IOException, WebApplicationException {
-		throw new WebApplicationException("{ \"message\":\"Not yet implemented...\"}",
-				Response.Status.UNSUPPORTED_MEDIA_TYPE);
-		// TODO Auto-generated method stub
-		
+	public void writeTo(Iterable<Node[]> t, Class<?> type, Type genericType,
+			Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, Object> httpHeaders,
+			OutputStream entityStream) throws IOException, WebApplicationException {
+		JsonLDserialiser jls = new JsonLDserialiser(entityStream, UTF_8, getBaseURIdependingOnPutPost());
+
+		jls.startDocument();
+		for (Node[] nx : t)
+			jls.processStatement(nx);
+		jls.endDocument();
 	}
 
 }
