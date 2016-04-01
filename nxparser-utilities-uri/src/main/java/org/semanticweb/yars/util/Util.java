@@ -36,4 +36,37 @@ public class Util {
 
 		return ret;
 	}
+	
+	private static final URI SAME_DOCUMENT_REFERENCE ;
+	
+	static {
+		String uristring = "http://ex.org/123"; 
+		try {
+			SAME_DOCUMENT_REFERENCE = new URI(uristring).relativize(new URI(uristring));
+		} catch (URISyntaxException e) {
+			// should not happen
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Fiddling with URIs to handle
+	 * <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4708535">
+	 * Java bug #4708535</a>, which says that {@link URI#resolve(URI)} is buggy
+	 * when it comes to the same document reference, ie. relative URIs that are
+	 * "".
+	 * 
+	 * @param uriToResolveAgainst
+	 *            The URI to resolve against
+	 * @param possiblyRelaitveUriToResolve
+	 *            The possibly relative URI
+	 * @return The possibly relative URI resolved against the other URI with
+	 *         proper handling of the same document reference
+	 */
+	public static URI properlyResolve(URI uriToResolveAgainst, URI possiblyRelaitveUriToResolve) {
+		if (SAME_DOCUMENT_REFERENCE.equals(possiblyRelaitveUriToResolve)) 
+			return uriToResolveAgainst;
+		else 
+			return uriToResolveAgainst.resolve(possiblyRelaitveUriToResolve);
+	}
 }
