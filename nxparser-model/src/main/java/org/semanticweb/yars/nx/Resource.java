@@ -46,7 +46,7 @@ public class Resource implements Node, Serializable {
 		if (!isNTriples) {
 			if (iri == null || iri.length() == 0) {
 				// maybe throw Exception, or just be silent
-				_log.log(Level.WARNING, "Empty string not allowed.");
+				_log.log(Level.FINE, "Empty string not allowed.");
 
 				_data = "<>";
 			} else if (iri.charAt(0) != '<') {
