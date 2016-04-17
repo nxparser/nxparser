@@ -52,13 +52,13 @@ public class NodesReResolvingIterator implements Iterable<Node[]>, Iterator<Node
 		for (int i = 0; i < nx.length; ++i)
 			if (nx[i] instanceof Resource) {
 				Resource r = (Resource)nx[i];
-				if (r.getLabel().startsWith(Util.THIS_SCHEME_AND_AUTHORITY))
+				if (r.getLabel().toLowerCase().startsWith(Util.THIS_SCHEME_AND_AUTHORITY))
 					try {
-						URI relativeURI = Util.THIS_URI.relativize(r.toURI());
+						URI relativeURI = Util.getPossiblyRelativisedUri(r.toURI());
 						URI resolvedURI = Util.properlyResolve(_uriToResolveAgainst, relativeURI);
 						r = new Resource("<" + resolvedURI.toString() + ">", true);
 					} catch (URISyntaxException e) {
-						LOG.log(Level.WARNING, "Stumbled upon a bad URI: ", e);
+						LOG.log(Level.WARNING, "Stumbled upon a bad URI: {0}", e);
 					}
 				nx[i] = r;
 			} else if (nx[i] instanceof BNode) {

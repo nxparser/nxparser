@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.util.Util;
@@ -75,5 +76,20 @@ public class NodesReResolvingIteratorTest {
 		URI resolvedURI = Util.properlyResolve(uriToResolveAgainst, relative);
 		
 		assertEquals(new URI(base + "123/234"),resolvedURI);
+	}
+	
+	@Ignore("known issue: relativising \"up\" the path does not work (Java Bug #6226081)")
+	@Test
+	public void resolvingTestURIotherDirectoryTowardsRoot() throws URISyntaxException {
+		URI wellknown = Util.THIS_URI;
+		URI relative = wellknown.relativize(new URI(Util.THIS_SCHEME_AND_AUTHORITY + "r/1#t0"));
+		
+		String base = "http://ex.org/";
+		
+		URI uriToResolveAgainst = new URI(base + "123/");
+		
+		URI resolvedURI = Util.properlyResolve(uriToResolveAgainst, relative);
+		
+		assertEquals(new URI(base + "r/1#t0"),resolvedURI);
 	}
 }
