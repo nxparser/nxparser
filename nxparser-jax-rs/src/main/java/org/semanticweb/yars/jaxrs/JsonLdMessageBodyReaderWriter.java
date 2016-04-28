@@ -34,8 +34,6 @@ import org.semanticweb.yars.utils.ErrorHandlerImpl;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdError.Error;
 
-import jersey.repackaged.com.google.common.collect.Lists;
-
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
  * href="https://www.w3.org/TR/json-ld/">JSON-LD</a>.

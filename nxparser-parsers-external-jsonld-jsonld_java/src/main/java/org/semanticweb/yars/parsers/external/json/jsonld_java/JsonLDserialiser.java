@@ -180,12 +180,13 @@ public class JsonLDserialiser extends Callback {
 			}
 			
 			JsonUtils.writePrettyPrint(_writer, processor);
+			//TODO: What should we do with the exceptions?
 		} catch (JsonLdError e) {
-			log.log(Level.WARNING, "An Error occurred: {0}", e);
+			log.log(Level.WARNING, "An Error occurred:", e);
 		} catch (JsonGenerationException e) {
-			log.log(Level.WARNING, "An Error occurred: {0}", e);
+			log.log(Level.WARNING, "An Error occurred:", e);
 		} catch (IOException e) {
-			log.log(Level.WARNING, "An Error occurred: {0}", e);
+			log.log(Level.WARNING, "An Error occurred:", e.getMessage());
 		}
 	}
 
