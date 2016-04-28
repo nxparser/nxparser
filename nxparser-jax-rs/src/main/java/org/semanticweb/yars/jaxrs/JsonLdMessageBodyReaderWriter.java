@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +33,8 @@ import org.semanticweb.yars.utils.ErrorHandlerImpl;
 
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdError.Error;
+
+import jersey.repackaged.com.google.common.collect.Lists;
 
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
@@ -102,6 +107,18 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 				JsonLDserialiser.defaultJsonLDdocumentForm.getUriString());
 
 		JsonLDdocumentForm jlp;
+		
+		// Checking if the servlet code is annotated to use a custom context
+		for (Annotation annotation : annotations) {
+			List<String> remoteContexts = null; 
+			if (JsonLDremoteContext.class.isAssignableFrom(annotation.annotationType())) {
+				if (remoteContexts == null)
+					remoteContexts = new LinkedList<String>();
+				remoteContexts.addAll(Arrays.asList(((JsonLDremoteContext) annotation).value()));
+			}
+			if (remoteContexts != null)
+				jls.setContext(remoteContexts);
+		}
 
 		if (JsonLDserialiser.JsonLDdocumentForm.isJsonLDprofileUriString(profileUriString))
 			jlp = JsonLDdocumentForm.getJsonLDdocumentFormForProfileURIstring(profileUriString);
