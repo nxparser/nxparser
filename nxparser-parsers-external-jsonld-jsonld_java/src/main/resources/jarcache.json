@@ -1,0 +1,12 @@
+[
+  {
+  	"Content-Location": "http://prefix.cc/context.jsonld",
+  	"X-Classpath": "cached_remote_contexts/prefixcc-context_2016-04-27.jsonld",
+  	"Content-Type": "application/ld+json"
+  },
+  {
+  	"Content-Location": "http://prefix.cc/context",
+  	"X-Classpath": "cached_remote_contexts/prefixcc-context_2016-04-27.jsonld",
+  	"Content-Type": "application/ld+json"
+  }
+]

@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -22,6 +24,7 @@ import org.kohsuke.MetaInfServices;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.parsers.external.json.jsonld_java.JsonLDparser;
 import org.semanticweb.yars.parsers.external.json.jsonld_java.JsonLDserialiser;
+import org.semanticweb.yars.parsers.external.json.jsonld_java.JsonLDserialiser.JsonLDdocumentForm;
 import org.semanticweb.yars.utils.CallbackIterator;
 import org.semanticweb.yars.utils.ErrorHandlerImpl;
 
@@ -36,11 +39,13 @@ import com.github.jsonldjava.core.JsonLdError.Error;
  * @see AbstractRDFMessageBodyReaderWriter
  *
  */
-@Consumes({ "application/ld+json" })
-@Produces({ "application/ld+json" })
+@Consumes({ "application/ld+json", "application/json" })
+@Produces({ "application/ld+json", "application/json" })
 @Provider
 @MetaInfServices({ MessageBodyReader.class, MessageBodyWriter.class })
-public class JsonLdMessageBodyReader extends AbstractRDFMessageBodyReaderWriter {
+public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderWriter {
+	
+	private static final Logger log = Logger.getLogger(JsonLdMessageBodyReaderWriter.class.getName());
 
 	@Context
 	UriInfo _uriinfo;
@@ -93,6 +98,20 @@ public class JsonLdMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException {
 		JsonLDserialiser jls = new JsonLDserialiser(entityStream, UTF_8, getBaseURIdependingOnPutPost());
+		String profileUriString = mediaType.getParameters().getOrDefault("profile",
+				JsonLDserialiser.defaultJsonLDdocumentForm.getUriString());
+
+		JsonLDdocumentForm jlp;
+
+		if (JsonLDserialiser.JsonLDdocumentForm.isJsonLDprofileUriString(profileUriString))
+			jlp = JsonLDdocumentForm.getJsonLDdocumentFormForProfileURIstring(profileUriString);
+		else {
+			jlp = JsonLDserialiser.defaultJsonLDdocumentForm;
+			log.log(Level.WARNING, "Using default JsonLDdocumentForm, because I got a bad profile URI for the form: {0}",
+					new Object[] { profileUriString });
+		}
+		
+		jls.setDocumentForm(jlp);
 
 		jls.startDocument();
 		for (Node[] nx : t)

@@ -21,7 +21,7 @@ public class JerseyAutoDiscoverable implements AutoDiscoverable {
 
 		Class<?>[] classes = { NxMessageBodyReaderWriter.class,
 				RdfXmlMessageBodyWriter.class, TurtleMessageBodyReader.class,
-				JsonLdMessageBodyReader.class };
+				JsonLdMessageBodyReaderWriter.class };
 
 		for (Class<?> clazz : classes) {
 			if (!config.isRegistered(clazz))
