@@ -6,8 +6,10 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,7 +55,17 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 	@Context
 	UriInfo _uriinfo;
 	
+	static final String JSONLD_MEDIATYPE_PROFILE_PARAMETER = "profile";
+	
 	static final MediaType JSONLD_MEDIATYPE = new MediaType("application", "ld+json", UTF_8.name());
+	static final MediaType JSONLD_MEDIATYPE_WITH_DEFAULT_PROFILE;
+
+	static {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put(MediaType.CHARSET_PARAMETER, UTF_8.name());
+		parameters.put(JSONLD_MEDIATYPE_PROFILE_PARAMETER, JsonLDserialiser.defaultJsonLDdocumentForm.getUriString());
+		JSONLD_MEDIATYPE_WITH_DEFAULT_PROFILE = new MediaType("application", "ld+json", parameters);
+	}
 
 	@Override
 	boolean isReadableCheckMediatypeAndAnnotations(Annotation[] annotations,
@@ -101,7 +113,7 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException {
 		JsonLDserialiser jls = new JsonLDserialiser(entityStream, UTF_8, getBaseURIdependingOnPutPost());
-		String profileUriString = mediaType.getParameters().getOrDefault("profile",
+		String profileUriString = mediaType.getParameters().getOrDefault(JSONLD_MEDIATYPE_PROFILE_PARAMETER,
 				JsonLDserialiser.defaultJsonLDdocumentForm.getUriString());
 
 		JsonLDdocumentForm jlp;
@@ -121,9 +133,10 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 		if (JsonLDserialiser.JsonLDdocumentForm.isJsonLDprofileUriString(profileUriString))
 			jlp = JsonLDdocumentForm.getJsonLDdocumentFormForProfileURIstring(profileUriString);
 		else {
+			log.log(Level.WARNING, "Using default JsonLDdocumentForm \"{1}\", because I got a bad profile URI: {0}",
+					new Object[] { profileUriString, JsonLDserialiser.defaultJsonLDdocumentForm.name() });
 			jlp = JsonLDserialiser.defaultJsonLDdocumentForm;
-			log.log(Level.WARNING, "Using default JsonLDdocumentForm, because I got a bad profile URI for the form: {0}",
-					new Object[] { profileUriString });
+			httpHeaders.putSingle("Content-Type", JSONLD_MEDIATYPE_WITH_DEFAULT_PROFILE);
 		}
 		
 		jls.setDocumentForm(jlp);
