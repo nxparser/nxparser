@@ -22,6 +22,11 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.semanticweb.yars.apache.commons</groupId>
+			<artifactId>commons-rdf-api</artifactId>
+			<version>0.2.0-incubating</version>
+		</dependency>
 	</dependencies>
 
 </project>

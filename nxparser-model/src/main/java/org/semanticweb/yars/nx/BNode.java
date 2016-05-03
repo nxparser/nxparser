@@ -6,6 +6,8 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.rdf.api.BlankNode;
+import org.semanticweb.yars.nx.commonsrdf.Term;
 import org.semanticweb.yars.nx.parser.ParseException;
 
 /**
@@ -14,7 +16,7 @@ import org.semanticweb.yars.nx.parser.ParseException;
  * @author Andreas Harth
  * @author Tobias Kaefer
  */
-public class BNode implements Node {
+public class BNode implements Term, BlankNode {
 	private static Logger _log = Logger.getLogger(BNode.class.getName());
 
 	final static String PREFIX = "_:";
@@ -153,5 +155,15 @@ public class BNode implements Node {
 			_log.log(Level.WARNING, "Exception: {}", e.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public String ntriplesString() {
+		return toString();
+	}
+
+	@Override
+	public String uniqueReference() {
+		return toString();
 	}
 }

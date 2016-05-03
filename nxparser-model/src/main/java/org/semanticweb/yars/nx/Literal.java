@@ -3,6 +3,8 @@ package org.semanticweb.yars.nx;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.rdf.api.IRI;
+import org.semanticweb.yars.nx.commonsrdf.Term;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
@@ -15,7 +17,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
  * @author Tobias Kaefer
  * @author Leonard Lausen
  */
-public class Literal implements Node {
+public class Literal implements Term, nxparser.org.apache.commons.rdf.api.Literal {
 	private static Logger _log = Logger.getLogger(Literal.class.getName());
 
 	/** The entire string in N-Triples syntax, including "", @ or ^^ . */
@@ -164,6 +166,7 @@ public class Literal implements Node {
 	 * @return a) the resource if one is supplied, b) null pointer, if there is
 	 *         no such resource
 	 */
+	@Override
 	public Resource getDatatype() {
 		int i = _data.lastIndexOf("\"");
 		String str = _data.substring(i + 1);
@@ -202,4 +205,15 @@ public class Literal implements Node {
 	public int compareTo(Node n) {
 		return toString().compareTo(n.toString());
 	}
+
+	@Override
+	public String ntriplesString() {
+		return toString();
+	}
+
+	@Override
+	public String getLexicalForm() {
+		return getLabel();
+	}
+
 }

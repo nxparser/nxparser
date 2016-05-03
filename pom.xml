@@ -49,6 +49,7 @@
 		<module>nxparser-utilities-nx</module>
 		<module>nxparser-utilities-uri</module>
 		<module>nxparser-jax-rs</module>
+		<module>commonsrdf-java6</module>
 	</modules>
 
 	<dependencies>

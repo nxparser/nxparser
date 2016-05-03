@@ -6,6 +6,8 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.rdf.api.IRI;
+import org.semanticweb.yars.nx.commonsrdf.Term;
 import org.semanticweb.yars.nx.util.NxUtil;
 
 /**
@@ -15,7 +17,7 @@ import org.semanticweb.yars.nx.util.NxUtil;
  * @author Tobias Kaefer
  * @author Leonard Lausen
  */
-public class Resource implements Node, Serializable {
+public class Resource implements Term, Serializable, IRI {
 	private static Logger _log = Logger.getLogger(Resource.class.getName());
 
 	/** The value of the Iri in N-Triples syntax (including <>) . */
@@ -130,5 +132,15 @@ public class Resource implements Node, Serializable {
 	@Override
 	public int compareTo(Node n) {
 		return toString().compareTo(n.toString());
+	}
+
+	@Override
+	public String ntriplesString() {
+		return toString();
+	}
+
+	@Override
+	public String getIRIString() {
+		return getLabel();
 	}
 }
