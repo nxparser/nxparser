@@ -24,7 +24,7 @@ public class TurtleParserTest {
 
 	@Test
 	public void relativeURIandRDFtypeAndMultilineTest()
-			throws TurtleParseException, ParseException, URISyntaxException, InterruptedException {
+			throws ParseException, URISyntaxException, InterruptedException, org.semanticweb.yars.nx.parser.ParseException {
 		TurtleParser tp = new TurtleParser(new ByteArrayInputStream(("</a> a \"b\"^^<http://ex.org/> .\n"
 				+ "</a> a \"b\"^^<http://ex.org/> .\n")
 				.getBytes(UTF_8)), UTF_8, new URI("http://example.org/123/"));

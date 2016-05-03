@@ -18,8 +18,7 @@ public class SerialisationTest {
 		
 		Set<Nodes> set = new HashSet<Nodes>();
 		
-		NxParser nxp = new NxParser();
-		nxp.parse(new FileInputStream("src/test/resources/foaf.nt"));
+		NxParser nxp = new NxParser(new FileInputStream("src/test/resources/foaf.nt"));
 		
 		int i = 0;
 		while (nxp.hasNext()) {

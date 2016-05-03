@@ -26,7 +26,7 @@ public class SelectedTurtleSyntaxFeaturesTest {
 	static Charset UTF_8 = Charset.forName("utf-8"); // StandardCharsets.UTF_8
 
 	@Test
-	public void test() throws IOException, TurtleParseException, org.semanticweb.yars.turtle.ParseException, URISyntaxException, InterruptedException {
+	public void test() throws IOException, org.semanticweb.yars.turtle.ParseException, URISyntaxException, InterruptedException, ParseException {
 		String turtleString = "@prefix ex: <http://example.org/> .\n"
 				+ "<> a ex:document , [ a ex:bla ] ; ex:lsdf ex:123.\n"
 				+ "</213> ex:hasMembers ( ex:SnoopDogg ex:NateDogg ex:WarrenG ) .\n"

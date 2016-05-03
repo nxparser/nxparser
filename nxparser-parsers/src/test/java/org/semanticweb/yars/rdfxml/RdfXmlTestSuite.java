@@ -128,8 +128,7 @@ public class RdfXmlTestSuite extends TestCase {
 				testData.add(new Nodes(nx));
 			}
 
-			NxParser nxp = new NxParser();
-			nxp.parse(goldStandardURL.openStream());
+			NxParser nxp = new NxParser(goldStandardURL.openStream());
 
 			for (Node[] nx : nxp) {
 				goldStandard.add(new Nodes(nx));

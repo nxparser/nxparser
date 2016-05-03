@@ -119,7 +119,7 @@ public class TurtleTestSuite {
 	}
 
 	@Test
-	public void test() throws IOException, ParseException, InterruptedException {
+	public void test() throws IOException, ParseException, InterruptedException, org.semanticweb.yars.nx.parser.ParseException {
 		if (_result != null) {
 
 			// test w/ gold standard
@@ -152,8 +152,7 @@ public class TurtleTestSuite {
 				testData.add(new Nodes(nx));
 			}
 
-			NxParser nxp = new NxParser();
-			nxp.parse(goldStandardURL.openStream());
+			NxParser nxp = new NxParser(goldStandardURL.openStream());
 
 			for (Node[] nx : nxp) {
 				goldStandard.add(new Nodes(nx));

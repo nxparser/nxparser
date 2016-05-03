@@ -175,8 +175,7 @@ public class SortIterator implements Iterator<Node[]>, Iterable<Node[]>{
 					is = new GZIPInputStream(is, 8192);
 				}
 				
-				NxParser nxp = new NxParser();
-				nxp.parse(is, StandardCharsets.UTF_8);
+				NxParser nxp = new NxParser(is, StandardCharsets.UTF_8);
 
 				PleaseCloseTheDoorWhenYouLeaveIterator<Node[]> it = new PleaseCloseTheDoorWhenYouLeaveIterator<Node[]>(
 						nxp, is);

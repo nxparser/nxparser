@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -21,6 +22,7 @@ import org.kohsuke.MetaInfServices;
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
+import org.semanticweb.yars.nx.parser.ParseException;
 import org.semanticweb.yars.turtle.TurtleParser;
 import org.semanticweb.yars.utils.CallbackIterator;
 import org.semarglproject.rdf.TurtleSerializer;
@@ -124,6 +126,8 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (ParseException e) {
+			throw new BadRequestException(e);
 		}
 
 		try {

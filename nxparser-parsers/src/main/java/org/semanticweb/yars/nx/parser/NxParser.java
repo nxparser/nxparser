@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,46 +43,107 @@ import org.semanticweb.yars.nx.Variable;
  * @author Andreas Harth
  * @author Tobias Kaefer
  */
-public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
+public class NxParser implements Iterator<Node[]>, Iterable<Node[]>, RdfParser {
 
 	private static Logger _log = Logger.getLogger(NxParser.class.getName());
+	
+	public enum Interaction {
+		undefined, iterator, callback
+	}
+	
+	private Interaction _interaction = Interaction.undefined;
 
 	private int _lineNo = 0;
 	private String _line = null;
+	private BufferedReader _br = null;
 	private Iterator<String> _stringIt = null;
 	private Node[] next = null;
-
-	public Iterator<Node[]> parse(Reader r) {
-		return parse(new BufferedReader(r));
+	
+	private ErrorHandler _eh = null;
+	
+	public NxParser(InputStream is, URI baseURI) {
+		this(is);
 	}
 
-	public Iterator<Node[]> parse(InputStream is, Charset cs) {
-		return parse(new BufferedReader(new InputStreamReader(is, cs)));
+	public NxParser(InputStream is) {
+		this(new InputStreamReader(is));
+	}
+	
+	public NxParser(InputStream is, Charset cs, URI baseURI){
+		this(is, cs);
 	}
 
-	public Iterator<Node[]> parse(InputStream is) {
-		return parse(new BufferedReader(new InputStreamReader(is)));
+	public NxParser(InputStream is, Charset cs) {
+		this(new InputStreamReader(is, cs));
 	}
 
-	public Iterator<Node[]> parse(BufferedReader br) {
-		return parse(stringItFromBufferedReader(br));
+	public NxParser(Reader r, URI baseURI) {
+		this(r);
 	}
-
-	public Iterator<Node[]> parse(Iterable<String> iterable) {
-		return parse(iterable.iterator());
+	
+	public NxParser(Reader r) {
+		_br = new BufferedReader(r);
 	}
-
-	public Iterator<Node[]> parse(Iterator<String> iterator) {
-		_stringIt = iterator;
+	
+	public NxParser(Iterable<String> it) {
+		this(it.iterator());
+	}
+	
+	public NxParser(Iterator<String> it) {
+		_interaction = Interaction.iterator;
+		_stringIt = it;
 		loadNext();
-		return this;
+	}
+
+	public void parse(Callback cb) throws IOException, ParseException {
+		if (!EnumSet.of(Interaction.undefined,Interaction.callback).contains(_interaction))
+			throw new IllegalStateException();
+		_interaction = Interaction.callback;
+
+		String line = null;
+		Node[] nx = null;
+		
+		cb.startDocument();
+		
+		while ((line =_br.readLine()) != null) {
+			++ _lineNo;
+			if (isEntirelyWhitespaceOrEmpty(line))
+				continue;
+			try {
+				nx = parseNodesInternal(line);
+			} catch (ParseException e) {
+				_eh.warning(e);
+			}
+			if (nx == null || nx.length == 0)
+				continue;
+			cb.processStatement(nx);
+		}
+
+		cb.endDocument();
+	}
+	
+	private void initForIteratorModelIfNecessary() {
+		if (_interaction == Interaction.callback)
+			throw new IllegalStateException();
+		if (_stringIt == null) {
+			_interaction = Interaction.iterator;
+			_stringIt = stringItFromBufferedReader(_br);
+			loadNext();
+		}
 	}
 
 	public boolean hasNext() {
+		if (_interaction == Interaction.callback)
+			throw new IllegalStateException();
+		initForIteratorModelIfNecessary();
+
 		return next != null;
 	}
 
 	public Node[] next(){
+		if (_interaction == Interaction.callback)
+			throw new IllegalStateException();
+		initForIteratorModelIfNecessary();
 		if(next==null)
 			throw new NoSuchElementException();
 		Node[] now = next;
@@ -340,6 +403,12 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]> {
 			}
 
 		};
+	}
+
+	@Override
+	public void setErrorHandler(ErrorHandler eh) {
+		_eh = eh;
+		
 	}
 
 	/*

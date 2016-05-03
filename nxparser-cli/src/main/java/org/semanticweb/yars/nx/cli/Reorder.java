@@ -71,8 +71,7 @@ public class Reorder {
 		OutputStream os = Main.getMainOutputStream(cmd);
 		int ticks = Main.getTicks(cmd);
 		
-		NxParser nxp = new NxParser();
-		nxp.parse(is);
+		NxParser nxp = new NxParser(is);
 		Iterator<Node[]> it = nxp;
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));

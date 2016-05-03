@@ -1,5 +1,7 @@
 package org.semanticweb.yars.nx.parser;
 
+import java.io.IOException;
+
 /**
  * The interface for parsers with callbacks (push).
  * 
@@ -26,5 +28,5 @@ public interface RdfParser {
 	/** register error handler */
 	public void setErrorHandler(ErrorHandler eh);
 	/** start parsing and invoke methods on callback, report errors to error handler if there is one registered */
-	public void parse(Callback cb) throws InterruptedException;
+	public void parse(Callback cb) throws InterruptedException, ParseException, InternalParserError, IOException;
 }

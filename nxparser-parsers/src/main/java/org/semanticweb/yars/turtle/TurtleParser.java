@@ -35,21 +35,11 @@ public class TurtleParser implements RdfParser {
 	}
 
 	@Override
-	public void parse(Callback cb) throws InterruptedException {
+	public void parse(Callback cb) throws InterruptedException, org.semanticweb.yars.nx.parser.ParseException {
 		try {
 			_tpi.parse(cb, _base);
-		} catch (TurtleParseException e) {
-			if (_eh != null) {
-				_eh.fatalError(e);
-//			} else {
-//				_log.log(Level.INFO, e);
-			}
 		} catch (ParseException e) {
-			if (_eh != null) {
-				_eh.fatalError(e);
-//			} else {
-//				_log.log(Level.INFO, e);
-			}
+			throw new org.semanticweb.yars.nx.parser.ParseException(e);
 		}
 	}
 }

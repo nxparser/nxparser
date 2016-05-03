@@ -28,8 +28,7 @@ public class SortIteratorTest {
 			// won't happen, because I have just entered the URL
 		}
 
-		NxParser nxp = new NxParser();
-		nxp.parse(new GZIPInputStream(u.openStream()));
+		NxParser nxp = new NxParser(new GZIPInputStream(u.openStream()));
 		
 		SortArgs sa = new SortArgs(nxp);
 		

@@ -117,8 +117,8 @@ public class Sort {
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Main.getMainOutputStream(cmd)));
 		int ticks = Main.getTicks(cmd);
 		
-		NxParser nxp = new NxParser();
-		nxp.parse(is);
+		NxParser nxp = new NxParser(is);
+
 		Iterator<Node[]> it = nxp;
 		
 		if(cmd.hasOption("re")){
