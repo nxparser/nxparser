@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,8 +15,10 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
@@ -52,6 +56,9 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 				Boolean.TRUE);
 	}
 
+	@Context
+	UriInfo uriinfo;
+
 	@Override
 	public void writeTo(Iterable<Node[]> t, Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType,
@@ -87,7 +94,8 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			try {
 				xmlwriter.writeStartElement("rdf:Description");
 				if (na[0] instanceof Resource) {
-					xmlwriter.writeAttribute("rdf:about", na[0].getLabel());
+					URI u = uriinfo.relativize(((Resource)na[0]).toURI());
+					xmlwriter.writeAttribute("rdf:about", u.toString());
 				} else if (na[0] instanceof BNode) {
 					xmlwriter.writeAttribute("rdf:nodeID", na[0].getLabel());
 				}
@@ -114,7 +122,8 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 				if (na[2] instanceof BNode) {
 					xmlwriter.writeAttribute("rdf:nodeID", na[2].getLabel());
 				} else if (na[2] instanceof Resource) {
-					xmlwriter.writeAttribute("rdf:resource", na[2].getLabel());
+					URI u = uriinfo.relativize(((Resource)na[2]).toURI());
+					xmlwriter.writeAttribute("rdf:resource", u.toString());
 				} else if (na[2] instanceof Literal) {
 					Literal l = (Literal) na[2];
 
@@ -138,6 +147,9 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 				// rdf:Description
 				xmlwriter.writeEndElement();
 			} catch (XMLStreamException e) {
+				_log.log(Level.WARNING, e.getMessage());
+				throw new ServerErrorException(500, e.getCause());
+			} catch (URISyntaxException e) {
 				_log.log(Level.WARNING, e.getMessage());
 				throw new ServerErrorException(500, e.getCause());
 			}
