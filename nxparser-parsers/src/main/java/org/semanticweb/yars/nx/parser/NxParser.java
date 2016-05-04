@@ -95,7 +95,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]>, RdfParser {
 		loadNext();
 	}
 
-	public void parse(Callback cb) throws IOException, ParseException {
+	public void parse(Callback cb) throws IOException, ParseException, InterruptedException {
 		if (!EnumSet.of(Interaction.undefined,Interaction.callback).contains(_interaction))
 			throw new IllegalStateException();
 		_interaction = Interaction.callback;
@@ -104,24 +104,27 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]>, RdfParser {
 		Node[] nx = null;
 		
 		cb.startDocument();
-		
-		while ((line =_br.readLine()) != null) {
-			++ _lineNo;
-			if (isEntirelyWhitespaceOrEmpty(line))
-				continue;
-			try {
-				nx = parseNodesInternal(line);
-			} catch (ParseException e) {
-				_eh.warning(e);
+		try (BufferedReader br = _br){
+			while ((line = br.readLine()) != null) {
+				if (Thread.interrupted())
+					throw new InterruptedException();
+				++_lineNo;
+				if (isEntirelyWhitespaceOrEmpty(line))
+					continue;
+				try {
+					nx = parseNodesInternal(line);
+				} catch (ParseException e) {
+					_eh.warning(e);
+				}
+				if (nx == null || nx.length == 0)
+					continue;
+				cb.processStatement(nx);
 			}
-			if (nx == null || nx.length == 0)
-				continue;
-			cb.processStatement(nx);
+		} finally {
+			cb.endDocument();
 		}
-
-		cb.endDocument();
 	}
-	
+
 	private void initForIteratorModelIfNecessary() {
 		if (_interaction == Interaction.callback)
 			throw new IllegalStateException();
