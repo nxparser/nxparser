@@ -82,7 +82,7 @@ public class NodesReResolvingIteratorTest {
 	@Test
 	public void resolvingTestURIotherDirectoryTowardsRoot() throws URISyntaxException {
 		URI wellknown = Util.THIS_URI;
-		URI relative = wellknown.relativize(new URI(Util.THIS_SCHEME_AND_AUTHORITY + "r/1#t0"));
+		URI relative = wellknown.relativize(new URI(Util.THIS_SCHEME_AND_AUTHORITY_STRING + "r/1#t0"));
 		
 		String base = "http://ex.org/";
 		

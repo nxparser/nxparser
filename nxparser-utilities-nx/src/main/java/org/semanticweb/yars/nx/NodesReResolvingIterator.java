@@ -52,7 +52,7 @@ public class NodesReResolvingIterator implements Iterable<Node[]>, Iterator<Node
 		for (int i = 0; i < nx.length; ++i)
 			if (nx[i] instanceof Resource) {
 				Resource r = (Resource)nx[i];
-				if (r.getLabel().toLowerCase().startsWith(Util.THIS_SCHEME_AND_AUTHORITY))
+				if (r.getLabel().toLowerCase().startsWith(Util.THIS_SCHEME_AND_AUTHORITY_STRING))
 					try {
 						URI relativeURI = Util.getPossiblyRelativisedUri(r.toURI());
 						URI resolvedURI = Util.properlyResolve(_uriToResolveAgainst, relativeURI);

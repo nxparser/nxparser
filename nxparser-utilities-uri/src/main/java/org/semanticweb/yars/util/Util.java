@@ -2,6 +2,8 @@ package org.semanticweb.yars.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,9 +14,9 @@ public class Util {
 	private Util() {
 	}
 
-	public static final String THIS_SCHEME_AND_AUTHORITY = "http://this.nxparser.github.io/";
-	public static final String THIS_STRING = THIS_SCHEME_AND_AUTHORITY
-			+ "reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/";
+	public static final String THIS_SCHEME_AND_AUTHORITY_STRING = "http://this.nxparser.github.io";
+	public static final String THIS_PATH_STRING = "/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/";
+	public static final String THIS_STRING = THIS_SCHEME_AND_AUTHORITY_STRING + THIS_PATH_STRING;
 
 	/**
 	 * The well-known URI to handle relative URIs in the N-Triples bases internal data model of NxParser:
@@ -22,6 +24,8 @@ public class Util {
 	 * {@code http://this.nxparser.github.io/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/ }
 	 */
 	public static final URI THIS_URI;
+	
+	public static final Path THIS_PATH = Paths.get(THIS_PATH_STRING);
 
 	static {
 		try {
@@ -37,27 +41,29 @@ public class Util {
 
 	/**
 	 * Get URI relativised to {@link #THIS_URI} if it is on the same scheme and
-	 * authority. As we are currently building on Java's URI implementation, we
-	 * are subject to
-	 * <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6226081">
-	 * Java bug #6226081</a>, which says that we can only relativise if 
-	 * {@link #THIS_URI} is a prefix of the URI supplied.
-	 * 
+	 * authority.
+	 *
 	 * @param uri The URI to get relativised
 	 * @return The relativised URI
 	 */
 	public static URI getPossiblyRelativisedUri(URI uri) {
+		// Implemented abusing Java7's {@link Path}, which is intended for file
+		// paths, for http URIs.
 
 		URI ret = uri;
 
 		if (THIS_URI.getScheme().equalsIgnoreCase(uri.getScheme())
 				&& THIS_URI.getAuthority().equals(uri.getAuthority())) {
-			// TODO: handle URIs that traverse up the path hierarchy (Java Bug #6226081)
-			uri = uri.normalize();
-			ret = Util.THIS_URI.relativize(uri);
-			if (uri.equals(ret))
-				LOG.log(Level.WARNING, "Probably fell victim to Java Bug #6226081 - cannot relativise \"up\" the path: {0}",
-						uri);
+			
+			// Chopping off scheme and authority to process the URI using Path
+			String uripathstring = uri.toString();
+			uripathstring = uripathstring.substring(THIS_SCHEME_AND_AUTHORITY_STRING.length(), uripathstring.length());
+		
+			try {
+				ret = new URI(THIS_PATH.relativize(Paths.get(uripathstring)).toString());
+			} catch (URISyntaxException e) {
+				LOG.log(Level.WARNING, "Had an issue relativising URI {0}", new Object[] { uri });
+			}
 		}
 
 		return ret;
