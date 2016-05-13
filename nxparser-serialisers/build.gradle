@@ -16,7 +16,7 @@ dependencies {
 	 * Compile Dependencies
 	 */
 	
-	// NxParser
+	// Internal
 	compile project(':nxparser-api')
 	
 	

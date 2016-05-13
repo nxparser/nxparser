@@ -16,7 +16,7 @@ dependencies {
 	 * Compile Dependencies
 	 */
 	
-	// NxParser
+	// Internal
 	compile project(':nxparser-parsers')
 	compile project(':nxparser-parsers-external-jsonld-jsonld_java')
 	compile project(':nxparser-utilities-uri')

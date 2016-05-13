@@ -16,7 +16,7 @@ dependencies {
 	 * Compile Dependencies
 	 */
 	
-	// NxParser
+	// Internal
 	compile project(':nxparser-api')
 	compile project(':nxparser-model')
 	
@@ -28,7 +28,7 @@ dependencies {
 	 * Test Dependencies
 	 */
 	
-	// NxParser
+	// External
 	testCompile project(':nxparser-parsers')
 	
 	// External
