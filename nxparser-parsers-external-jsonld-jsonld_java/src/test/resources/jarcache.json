@@ -1,0 +1,7 @@
+[
+  {
+  	"Content-Location": "http://schema.org/",
+  	"X-Classpath": "cached_remote_contexts/schemaorg-context-20160513.jsonld",
+  	"Content-Type": "application/ld+json"
+  }
+]

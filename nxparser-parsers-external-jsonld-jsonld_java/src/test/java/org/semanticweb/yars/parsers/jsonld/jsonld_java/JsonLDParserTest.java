@@ -31,6 +31,8 @@ public class JsonLDParserTest {
 	public void test() throws JsonLdError, IOException, ParseException, URISyntaxException {
 
 		// Default Person from http://json-ld.org/playground/index.html
+		
+		// we use a cached remote context, see jarcache.json in src/test/resources
 
 		String s = "{" + " \"@context\": \"http://schema.org/\", "
 				+ " \"@type\": \"Person\", "
@@ -144,6 +146,9 @@ public class JsonLDParserTest {
 
 	@Test
 	public void test3() throws JsonLdError, IOException, InitializationError, URISyntaxException {
+		
+		// we use a cached remote context, see jarcache.json in src/test/resources
+		
 		String s = "{  "
 				+ "\"@context\": "
 				+ "\"http://schema.org/\", "
