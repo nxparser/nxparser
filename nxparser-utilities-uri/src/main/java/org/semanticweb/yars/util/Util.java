@@ -60,7 +60,7 @@ public class Util {
 			uripathstring = uripathstring.substring(THIS_SCHEME_AND_AUTHORITY_STRING.length(), uripathstring.length());
 		
 			try {
-				ret = new URI(THIS_PATH.relativize(Paths.get(uripathstring)).toString());
+				ret = new URI(THIS_PATH.relativize(Paths.get(uripathstring)).toString()).normalize();
 			} catch (URISyntaxException e) {
 				LOG.log(Level.WARNING, "Had an issue relativising URI {0}", new Object[] { uri });
 			}

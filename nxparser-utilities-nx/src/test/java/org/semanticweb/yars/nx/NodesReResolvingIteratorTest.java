@@ -1,13 +1,11 @@
 package org.semanticweb.yars.nx;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.util.Util;
 
 public class NodesReResolvingIteratorTest {
@@ -78,18 +76,18 @@ public class NodesReResolvingIteratorTest {
 		assertEquals(new URI(base + "123/234"),resolvedURI);
 	}
 	
-	@Ignore("known issue: relativising \"up\" the path does not work (Java Bug #6226081)")
 	@Test
 	public void resolvingTestURIotherDirectoryTowardsRoot() throws URISyntaxException {
-		URI wellknown = Util.THIS_URI;
-		URI relative = wellknown.relativize(new URI(Util.THIS_SCHEME_AND_AUTHORITY_STRING + "r/1#t0"));
+		String relativePathString = "../r/1#t0";
+		String pathStringToResolve = "/123/";
+		URI relative = Util.getPossiblyRelativisedUri(new URI(Util.THIS_STRING + relativePathString));
 		
-		String base = "http://ex.org/";
+		String base = "http://ex.org";
 		
-		URI uriToResolveAgainst = new URI(base + "123/");
+		URI uriToResolveAgainst = new URI(base + pathStringToResolve);
 		
 		URI resolvedURI = Util.properlyResolve(uriToResolveAgainst, relative);
-		
-		assertEquals(new URI(base + "r/1#t0"),resolvedURI);
+
+		assertEquals(new URI(base + pathStringToResolve + relativePathString).normalize(), resolvedURI);
 	}
 }
