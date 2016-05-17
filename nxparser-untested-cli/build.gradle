@@ -16,7 +16,7 @@ dependencies {
 	 * Compile Dependencies
 	 */
 	
-	// NxParser
+	// Internal
 	compile project(':nxparser-cli')
 	compile project(':nxparser-parsers')
 	compile project(':nxparser-untested-utilities-nx')
