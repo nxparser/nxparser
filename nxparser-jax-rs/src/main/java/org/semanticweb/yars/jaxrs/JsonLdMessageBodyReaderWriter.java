@@ -57,8 +57,8 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 	
 	static final String JSONLD_MEDIATYPE_PROFILE_PARAMETER = "profile";
 	
-	static final MediaType JSONLD_MEDIATYPE = new MediaType("application", "ld+json", UTF_8.name());
-	static final MediaType JSONLD_MEDIATYPE_WITH_DEFAULT_PROFILE;
+	public static final MediaType JSONLD_MEDIATYPE = new MediaType("application", "ld+json", UTF_8.name());
+	public static final MediaType JSONLD_MEDIATYPE_WITH_DEFAULT_PROFILE;
 
 	static {
 		Map<String, String> parameters = new HashMap<String, String>();

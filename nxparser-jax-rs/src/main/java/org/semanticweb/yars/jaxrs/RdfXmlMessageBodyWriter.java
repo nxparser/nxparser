@@ -94,6 +94,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			try {
 				xmlwriter.writeStartElement("rdf:Description");
 				if (na[0] instanceof Resource) {
+					System.err.println(((Resource)na[0]).toURI());
 					URI u = uriinfo.relativize(((Resource)na[0]).toURI());
 					xmlwriter.writeAttribute("rdf:about", u.toString());
 				} else if (na[0] instanceof BNode) {

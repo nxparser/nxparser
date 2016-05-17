@@ -38,11 +38,11 @@ import org.semanticweb.yars.nx.parser.ExceptionCollectingNxParser;
 public class NxMessageBodyReaderWriter extends
 		AbstractRDFMessageBodyReaderWriter {
 
-	static final MediaType NTRIPLES_MEDIATYPE = new MediaType("application",
+	public static final MediaType NTRIPLES_MEDIATYPE = new MediaType("application",
 			"n-triples", UTF_8.name());
-	static final MediaType NQUADS_MEDIATYPE = new MediaType("application",
+	public static final MediaType NQUADS_MEDIATYPE = new MediaType("application",
 			"n-quads", UTF_8.name());
-	static final MediaType TURTLE_MEDIATYPE = new MediaType("text", "turtle",
+	public static final MediaType TURTLE_MEDIATYPE = new MediaType("text", "turtle",
 			UTF_8.name());
 
 	@Override
