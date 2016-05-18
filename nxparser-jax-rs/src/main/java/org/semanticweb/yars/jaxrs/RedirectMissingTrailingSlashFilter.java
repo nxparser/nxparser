@@ -24,7 +24,8 @@ public class RedirectMissingTrailingSlashFilter implements ContainerRequestFilte
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		if (!requestContext.getUriInfo().getPath().endsWith("/")) {
+		String path = requestContext.getUriInfo().getAbsolutePath().getPath();
+		if (path == null || !path.endsWith("/")) {
 			requestContext.abortWith(Response.status(Status.MOVED_PERMANENTLY)
 					.location(requestContext.getUriInfo().getAbsolutePathBuilder().path("/").build()).build());
 
