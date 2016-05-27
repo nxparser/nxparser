@@ -36,7 +36,7 @@ public class LDP {
 	/**
 	 * Namespace of the Linked Data Platform (LDP).
 	 */
-	public static final String NS = "https://www.w3.org/ns/ldp#";
+	public static final String NS = "http://www.w3.org/ns/ldp#";
 
 	/**
 	 * A HTTP-addressable resource whose lifecycle is managed by a LDP server.
