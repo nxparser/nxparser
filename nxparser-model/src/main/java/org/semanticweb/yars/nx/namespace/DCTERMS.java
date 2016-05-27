@@ -15,4 +15,5 @@ public class DCTERMS {
 	public final static Resource TITLE = new Resource(NS+"title");
 	public final static Resource DESCRIPTION = new Resource(NS+"description");
 	public final static Resource DATE = new Resource(NS+"date");
+	public final static Resource CREATED = new Resource(NS+"created");
 }
