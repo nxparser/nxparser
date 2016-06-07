@@ -41,6 +41,9 @@ public class Main {
 //				sb.append("\n\tStats             Analyse the NQ file and print some nice stats");
 				sb.append("\n\tSort              Sort some data");
 //				sb.append("\n\tMergeSort         Merge-sort pre-sorted files");
+				sb.append("\n\tPatch             Patch files for a bug that emitted BNodes as Resources\n"
+						+ "                            (fixed some time in 2012)");
+				
 				
 				_log.severe(USAGE);
 				_log.severe(sb.toString());
