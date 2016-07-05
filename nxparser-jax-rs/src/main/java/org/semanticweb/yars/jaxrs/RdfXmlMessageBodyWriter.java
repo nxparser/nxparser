@@ -113,9 +113,10 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 					}
 				}
 				if (namespace == null || localname == null) {
-					_log.log(Level.INFO,
-							"couldn't separate namespace and localname {0}",
+					_log.log(Level.WARNING,
+							"could not separate namespace and localname for {0}",
 							na[1]);
+					xmlwriter.writeEndElement();
 					continue;
 				}
 				xmlwriter.writeStartElement(namespace, localname);
