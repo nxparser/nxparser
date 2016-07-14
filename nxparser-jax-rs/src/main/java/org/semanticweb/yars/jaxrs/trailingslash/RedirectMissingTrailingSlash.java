@@ -1,4 +1,4 @@
-package org.semanticweb.yars.jaxrs;
+package org.semanticweb.yars.jaxrs.trailingslash;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
