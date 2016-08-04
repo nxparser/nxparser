@@ -1,5 +1,6 @@
 package org.semanticweb.yars.nx.namespace;
 
+import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Resource;
 
 public class XSD {
@@ -16,6 +17,8 @@ public class XSD {
 	public static final Resource LANGUAGE = new Resource(NS+"language");
 
 	public static final Resource BOOLEAN = new Resource(NS+"boolean");
+	public static final Literal XSD_TRUE = new Literal("true", XSD.BOOLEAN);
+	public static final Literal XSD_FALSE = new Literal("false", XSD.BOOLEAN);
 
 	public static final Resource DECIMAL = new Resource(NS+"decimal");
 	public static final Resource FLOAT = new Resource(NS+"float");
