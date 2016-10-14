@@ -6,13 +6,27 @@
 	<artifactId>nxparser</artifactId>
 	<version>1.2.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>NXParser</name>
+	<name>NxParser</name>
 	<url>https://github.com/nxparser/nxparser</url>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/nxparser/nxparser/issues</url>
 	</issueManagement>
+
+	<licenses>
+		<license>
+			<name>BSD 3-Clause License</name>
+			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<organization>NxParser</organization>
+			<organizationUrl>https://github.com/nxparser/nxparser</organizationUrl>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
