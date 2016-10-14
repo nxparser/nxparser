@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.semanticweb.yars</groupId>
 	<artifactId>nxparser</artifactId>
-	<version>1.2.8-SNAPSHOT</version>
+	<version>1.2.8</version>
 	<packaging>jar</packaging>
 	<name>NXParser</name>
 	<url>https://github.com/nxparser/nxparser</url>
@@ -36,7 +35,7 @@
 		<connection>scm:git:https://github.com/nxparser/nxparser.git</connection>
 		<developerConnection>scm:git:git@github.com:nxparser/nxparser.git</developerConnection>
 		<url>git@github.com:nxparser/nxparser.git</url>
-	  <tag>HEAD</tag>
+	  <tag>1.2.8</tag>
   	</scm>
 
 	<dependencies>
@@ -129,12 +128,10 @@
 								</goals>
 								<configuration>
 									<transformers>
-										<transformer
-											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+										<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 											<mainClass>org.semanticweb.yars.nx.cli.Main</mainClass>
 										</transformer>
-										<transformer
-											implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+										<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 									</transformers>
 									<shadedArtifactAttached>true</shadedArtifactAttached>
 									<shadedClassifierName>with-dependencies</shadedClassifierName>
