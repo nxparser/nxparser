@@ -62,6 +62,8 @@ public class JsonLDserialiser extends Callback {
 		_triples = new LinkedList<Node[]>();
 
 		_options = new JsonLdOptions(baseURI.toString());
+	    _options.setUseNativeTypes(true);
+	    _options.setCompactArrays(true);
 		_documentForm = defaultJsonLDdocumentForm;
 		_context = null;
 	}
