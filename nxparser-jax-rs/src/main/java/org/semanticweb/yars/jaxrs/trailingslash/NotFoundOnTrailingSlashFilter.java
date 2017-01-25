@@ -2,7 +2,6 @@ package org.semanticweb.yars.jaxrs.trailingslash;
 
 import java.io.IOException;
 
-import javax.annotation.Priority;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -24,7 +23,6 @@ public class NotFoundOnTrailingSlashFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		String path = requestContext.getUriInfo().getAbsolutePath().getPath();
 		if (path != null && path.endsWith("/")) {
-			System.out.println("Iwsa here");
 			throw new NotFoundException();
 
 		}
