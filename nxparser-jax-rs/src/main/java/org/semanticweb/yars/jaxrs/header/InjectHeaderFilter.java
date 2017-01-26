@@ -1,8 +1,6 @@
 package org.semanticweb.yars.jaxrs.header;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -17,8 +15,8 @@ import javax.ws.rs.ext.Provider;
  *
  */
 @Provider
-@InjectLinkHeader(value = "")
-public class InjectLinkHeaderFilter implements ContainerResponseFilter {
+@InjectHeaders(value = {})
+public class InjectHeaderFilter implements ContainerResponseFilter {
 
 	@Context
 	private ResourceInfo rInfo;
@@ -27,17 +25,17 @@ public class InjectLinkHeaderFilter implements ContainerResponseFilter {
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
 			throws IOException {
 
-		Set<String> links = new HashSet<String>();
-		
-		InjectLinkHeader ilh_class = rInfo.getResourceClass().getAnnotation(InjectLinkHeader.class);
-		InjectLinkHeader ilh_method = rInfo.getResourceMethod().getAnnotation(InjectLinkHeader.class);
+		InjectHeaders[] ihs_class = rInfo.getResourceClass().getAnnotationsByType(InjectHeaders.class);
+		InjectHeaders[] ihs_method = rInfo.getResourceMethod().getAnnotationsByType(InjectHeaders.class);
 
-		for (InjectLinkHeader ilh : new InjectLinkHeader[] { ilh_class, ilh_method }) {
-			if (ilh != null)
-				links.add(ilh.value());
-		}
-		
-		for (String link : links)
-			responseContext.getHeaders().add("Link", link);
+		addAllHeaders(responseContext, ihs_class);
+		addAllHeaders(responseContext, ihs_method);
+
+	}
+
+	private void addAllHeaders(ContainerResponseContext responseContext, InjectHeaders[] ihs) {
+		for (InjectHeaders ih : ihs)
+			for (HeaderField hf : ih.value())
+				responseContext.getHeaders().add(hf.name(), hf.value());
 	}
 }
