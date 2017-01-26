@@ -10,7 +10,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 
 /**
- * A replacement for Jersey's DeclarativeLinkingFeature, which is currently in beta.
+ * A replacement for Jersey's DeclarativeLinkingFeature, which is currently in
+ * beta.
+ * 
  * @author Tobias Käfer
  *
  */
@@ -25,17 +27,16 @@ public class InjectHeaderFilter implements ContainerResponseFilter {
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
 			throws IOException {
 
-		InjectHeaders[] ihs_class = rInfo.getResourceClass().getAnnotationsByType(InjectHeaders.class);
-		InjectHeaders[] ihs_method = rInfo.getResourceMethod().getAnnotationsByType(InjectHeaders.class);
+		InjectHeaders ihs_class = rInfo.getResourceClass().getAnnotation(InjectHeaders.class);
+		InjectHeaders ihs_method = rInfo.getResourceMethod().getAnnotation(InjectHeaders.class);
 
-		addAllHeaders(responseContext, ihs_class);
-		addAllHeaders(responseContext, ihs_method);
+		addAllHeaders(responseContext, ihs_class.value());
+		addAllHeaders(responseContext, ihs_method.value());
 
 	}
 
-	private void addAllHeaders(ContainerResponseContext responseContext, InjectHeaders[] ihs) {
-		for (InjectHeaders ih : ihs)
-			for (HeaderField hf : ih.value())
-				responseContext.getHeaders().add(hf.name(), hf.value());
+	private void addAllHeaders(ContainerResponseContext responseContext, HeaderField[] ihs) {
+		for (HeaderField hf : ihs)
+			responseContext.getHeaders().add(hf.name(), hf.value());
 	}
 }
