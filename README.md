@@ -10,11 +10,11 @@ The NxParser is non-validating, meaning that, e.g., it will happily eat non-conf
 The NxParser Parser family also includes a [RDF/XML](http://www.w3.org/TR/rdf-syntax-grammar/) and a [Turtle](http://www.w3.org/TR/turtle/) parser. Moreover, we attached a [JSON-LD](http://json-ld.org/) parser ([jsonld-java](https://github.com/jsonld-java/jsonld-java)) and a [RDFa](http://www.w3.org/TR/rdfa-core/) parser ([semargl](https://github.com/levkhomich/semargl)) such that they emit Triples in the NxParser API.
 
 ## Binaries ##
-Compiles are available on Maven Central. The groupId is `org.semanticweb.yars` and the artifactId `nxparser`.
+Compiles are available on Maven Central. The groupId is `org.semanticweb.yars`. Depending on what part you need, you have to choose the artifactId accordingly: For example, if you only want to use the data model, use `nxparser-model`. If you want to make use of the parsers, use `nxparser-parsers`. If you want to use the RDF support for JAX-RS, use `nxparser-jax-rs`. The modules are linked as required.
 ```xml
 <dependency>
   <groupId>org.semanticweb.yars</groupId>
-  <artifactId>nxparser-cli</artifactId>
+  <artifactId>nxparser-parsers</artifactId>
   <version>2.3.3</version>
 </dependency>
 
