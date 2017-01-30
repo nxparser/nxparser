@@ -11,6 +11,15 @@ The NxParser Parser family also includes a [RDF/XML](http://www.w3.org/TR/rdf-sy
 
 ## Binaries ##
 Compiles are available on Maven Central. The groupId is `org.semanticweb.yars` and the artifactId `nxparser`.
+```xml
+<dependency>
+  <groupId>org.semanticweb.yars</groupId>
+  <artifactId>nxparser-cli</artifactId>
+  <version>2.3.3</version>
+</dependency>
+
+```
+
 ### Legacy binaries ###
 Find old compiles in the repository on Google Code, which we do not maintain any more. To use it nevertheless, add
 ```xml
