@@ -44,10 +44,13 @@ public class AcceptPostNxPSupportedRdfMediaTypesContainerResponseFilter implemen
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
 			throws IOException {
 		Set<String> httpMethods = new HashSet<String>();
+		AcceptPostNxPrdfSerialisations annotation = rInfo.getResourceMethod().getAnnotation(AcceptPostNxPrdfSerialisations.class);
+		if (annotation != null)
 		httpMethods.addAll(Arrays
-				.asList(rInfo.getResourceMethod().getAnnotation(AcceptPostNxPrdfSerialisations.class).value()));
+				.asList(annotation.value()));
+		annotation = rInfo.getResourceClass().getAnnotation(AcceptPostNxPrdfSerialisations.class);
 		httpMethods.addAll(Arrays
-				.asList(rInfo.getResourceClass().getAnnotation(AcceptPostNxPrdfSerialisations.class).value()));
+				.asList(annotation.value()));
 
 		if (httpMethods.contains(requestContext.getMethod())
 				&& responseContext.getAllowedMethods().contains(HttpMethod.POST))

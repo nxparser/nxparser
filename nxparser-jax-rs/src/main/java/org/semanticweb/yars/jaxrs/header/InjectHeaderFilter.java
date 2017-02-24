@@ -28,10 +28,11 @@ public class InjectHeaderFilter implements ContainerResponseFilter {
 			throws IOException {
 
 		InjectHeaders ihs_class = rInfo.getResourceClass().getAnnotation(InjectHeaders.class);
+		if (ihs_class != null)
+			addAllHeaders(responseContext, ihs_class.value());
 		InjectHeaders ihs_method = rInfo.getResourceMethod().getAnnotation(InjectHeaders.class);
-
-		addAllHeaders(responseContext, ihs_class.value());
-		addAllHeaders(responseContext, ihs_method.value());
+		if (ihs_method != null)
+			addAllHeaders(responseContext, ihs_method.value());
 
 	}
 
