@@ -1,7 +1,7 @@
 openjdk-7-jdk:
   tags:
     - docker
-  image: openjdk:7-jdk
+  image: openjdk:7u121-jdk
   script:
     - "./gradlew build"
 
