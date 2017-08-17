@@ -1,11 +1,14 @@
 package org.semanticweb.yars.parsers.rdfa.semargl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.nio.charset.Charset;
 
+import org.ccil.cowan.tagsoup.Parser;
+import org.ccil.cowan.tagsoup.XMLWriter;
 import org.ccil.cowan.tagsoup.jaxp.SAXParserImpl;
 import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
@@ -18,6 +21,8 @@ import org.semarglproject.rdf.ParseException;
 import org.semarglproject.rdf.rdfa.RdfaParser;
 import org.semarglproject.sink.QuadSink;
 import org.semarglproject.source.StreamProcessor;
+import org.semarglproject.vocab.RDFa;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -130,7 +135,13 @@ public class RDFaParser implements RdfParser {
 		// for cleaning the HTML
 		XMLReader reader = null;
 		try {
-			reader = SAXParserImpl.newInstance(null).getXMLReader();
+			SAXParserImpl parser = SAXParserImpl.newInstance(null);
+
+			// If we encounter HTML5 problems, we may have to look into:
+			// https://github.com/UniversityofWarwick/tagsoup-html5
+			// parser.setProperty(Parser.schemaProperty, new HTML5Schema());
+			reader = parser.getXMLReader();
+
 		} catch (SAXException e) {
 			if (_eh != null) {
 				_eh.fatalError(e);
@@ -138,6 +149,12 @@ public class RDFaParser implements RdfParser {
 			}
 		}
 		sp.setProperty(StreamProcessor.XML_READER_PROPERTY, reader);
+
+		// Setting RDFa processing to version 1.1 by default, which is more
+		// liberal than version 1.0 and comes with default prefixes
+		// The default prefixes help with the TagSoup processed data, where
+		// xmlns declarations are swallowed.
+//		sp.setProperty(RdfaParser.RDFA_VERSION_PROPERTY, RDFa.VERSION_11);
 
 		try {
 			switch (_inputDataContents) {
