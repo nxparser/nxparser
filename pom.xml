@@ -43,6 +43,7 @@
 		<module>nxparser-model-datatypes</module>
 		<module>nxparser-parsers</module>
 		<module>nxparser-parsers-external-rdfa-semargl</module>
+		<module>nxparser-parsers-external-rdfa-semargl-tagsoup</module>
 		<module>nxparser-parsers-external-jsonld-jsonld_java</module>
 		<module>nxparser-serialisers</module>
 		<module>nxparser-utilities</module>
