@@ -22,6 +22,9 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -31,8 +34,9 @@ import org.semanticweb.yars.nx.BNode;
 import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Resource;
-import org.semanticweb.yars.nx.parser.ParseException;
-import org.semanticweb.yars.rdfxml.RdfXmlParserIterator;
+import org.semanticweb.yars.rdfxml.RdfXmlParserBase;
+import org.semanticweb.yars.utils.CallbackIterator;
+import org.xml.sax.SAXException;
 
 /**
  * A {@link MessageBodyReader} and {@link MessageBodyWriter} for <a
@@ -54,6 +58,23 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 	{
 		_factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
 				Boolean.TRUE);
+	}
+
+	private SAXParser _parser;
+	{
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		factory.setValidating(false);
+
+		try {
+			_parser = factory.newSAXParser();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Context
@@ -171,14 +192,17 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		RdfXmlParserIterator nxp = new RdfXmlParserIterator();
+
+		CallbackIterator nxp = new CallbackIterator();
 
 		try {
-			nxp.parse(entityStream, getBaseURIdependingOnPostOrNot(httpHeaders).toString());
-		} catch (ParseException e) {
+			RdfXmlParserBase rxpb = new RdfXmlParserBase(getBaseURIdependingOnPostOrNot(httpHeaders).toString(), nxp);
+			_parser.parse(entityStream, rxpb);
+		} catch (SAXException e) {
 			_log.log(Level.WARNING, e.getMessage());
 			throw new BadRequestException(e.getCause());
 		}
+
 		return nxp;
 	}
 
