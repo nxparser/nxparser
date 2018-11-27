@@ -163,18 +163,6 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 		}
 	}
 
-	public String getBaseURIStringdependingOnPutPost() {
-		String baseURI;
-		if (HttpMethod.POST.equals(_request.getMethod()))
-			// In case of a POST request, we cannot determine the URI against
-			// which relative URIs should be resolved on this level of
-			// processing. The resolving is to be done on application level.
-			baseURI = org.semanticweb.yars.util.Util.THIS_STRING;
-		else
-			baseURI = _uriinfo.getAbsolutePath().toString();
-		return baseURI;
-	}
-
 	/**
 	 * Determines the base URI of the request. This base URI is meant to facilitate
 	 * resolving relative URIs against the request URI. Considers an injected

@@ -174,7 +174,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 		RdfXmlParserIterator nxp = new RdfXmlParserIterator();
 
 		try {
-			nxp.parse(entityStream, getBaseURIStringdependingOnPutPost());
+			nxp.parse(entityStream, getBaseURIdependingOnPostOrNot(httpHeaders).toString());
 		} catch (ParseException e) {
 			_log.log(Level.WARNING, e.getMessage());
 			throw new BadRequestException(e.getCause());
