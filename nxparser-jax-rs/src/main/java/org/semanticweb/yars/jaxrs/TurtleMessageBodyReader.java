@@ -117,7 +117,7 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			throws IOException, WebApplicationException {
 
 		TurtleParser parser = new TurtleParser(entityStream,
-				getCharset(mediaType), getBaseURIdependingOnPutPost());
+				getCharset(mediaType), getBaseURIdependingOnPostOrNot(httpHeaders));
 
 		CallbackIterator cs = new CallbackIterator();
 

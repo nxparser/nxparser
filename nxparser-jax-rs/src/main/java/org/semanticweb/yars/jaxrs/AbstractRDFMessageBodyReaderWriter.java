@@ -5,11 +5,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
+
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -43,6 +47,7 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 		MessageBodyReader<Iterable<Node[]>> {
 
 	static Charset UTF_8 = Charset.forName("utf-8"); // StandardCharsets.UTF_8
+	static final String REQUEST_URI_HEADER = "X-nxparser-requestURI";
 
 	@Context
 	UriInfo _uriinfo;
@@ -170,15 +175,40 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 		return baseURI;
 	}
 
-	public URI getBaseURIdependingOnPutPost() {
-		URI baseURI;
-		if (HttpMethod.POST.equals(_request.getMethod()))
+	/**
+	 * Determines the base URI of the request. This base URI is meant to facilitate
+	 * resolving relative URIs against the request URI. Considers an injected
+	 * {@link UriInfo} when used from a server implementation and
+	 * {@link AbstractRDFMessageBodyReaderWriter.REQUEST_URI_HEADER} when used from
+	 * a client implementation.
+	 * 
+	 * @param httpHeaders
+	 *            HTTP headers to determine the request URI using the well-known
+	 *            header when used in a JAX-RS client implementation.
+	 * @return The request URI, or {@link THIS_URI} when used in a JAX-RS server
+	 *         implementation in case of an incoming POST request.
+	 */
+	@SuppressWarnings("unchecked")
+	public URI getBaseURIdependingOnPostOrNot(@SuppressWarnings("rawtypes") MultivaluedMap httpHeaders) {
+		URI baseURI = null;
+		if (_request != null && HttpMethod.POST.equals(_request.getMethod()))
 			// In case of a POST request, we cannot determine the URI against
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.
 			baseURI = org.semanticweb.yars.util.Util.THIS_URI;
-		else
+		else if (_uriinfo != null)
 			baseURI = _uriinfo.getAbsolutePath();
+		else
+			try {
+				String requestURIstring = (String) httpHeaders.getFirst(REQUEST_URI_HEADER);
+				if (requestURIstring != null)
+					baseURI = URI.create(requestURIstring);
+			} catch (Exception e) {
+				throw new ServerErrorException("Exception occurred determining base URI", Status.INTERNAL_SERVER_ERROR,
+						e);
+			}
+		if (baseURI == null)
+			throw new ServerErrorException("Could not determine base URI", Status.INTERNAL_SERVER_ERROR);
 		return baseURI;
 	}
 

@@ -85,7 +85,7 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
 
-		JsonLDparser jlp = new JsonLDparser(entityStream, getBaseURIdependingOnPutPost());
+		JsonLDparser jlp = new JsonLDparser(entityStream, getBaseURIdependingOnPostOrNot(httpHeaders));
 		ErrorHandlerImpl eh = new ErrorHandlerImpl();
 
 		jlp.setErrorHandler(eh);
@@ -112,7 +112,7 @@ public class JsonLdMessageBodyReaderWriter extends AbstractRDFMessageBodyReaderW
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException {
-		JsonLDserialiser jls = new JsonLDserialiser(entityStream, UTF_8, getBaseURIdependingOnPutPost());
+		JsonLDserialiser jls = new JsonLDserialiser(entityStream, UTF_8, getBaseURIdependingOnPostOrNot(httpHeaders));
 		String profileUriString = mediaType.getParameters().get(JSONLD_MEDIATYPE_PROFILE_PARAMETER);
 		if (profileUriString == null) {
 			profileUriString = JsonLDserialiser.defaultJsonLDdocumentForm.getUriString();
