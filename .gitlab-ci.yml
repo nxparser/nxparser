@@ -4,10 +4,3 @@ openjdk-8-jdk:
   image: openjdk:8-jdk-slim
   script:
     - "./gradlew clean build --info"
-
-openjdk-9-jdk:
-  tags:
-    - docker
-  image: openjdk:9-jdk-slim
-  script:
-    - "./gradlew clean build --info"
