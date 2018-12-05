@@ -1,13 +1,13 @@
-openjdk-7-jdk:
-  tags:
-    - docker
-  image: openjdk:7u121-jdk
-  script:
-    - "./gradlew build"
-
 openjdk-8-jdk:
   tags:
     - docker
-  image: openjdk:8-jdk
+  image: openjdk:8-jdk-slim
   script:
-    - "./gradlew build"
+    - "./gradlew clean build --info"
+
+openjdk-9-jdk:
+  tags:
+    - docker
+  image: openjdk:9-jdk-slim
+  script:
+    - "./gradlew clean build --info"
