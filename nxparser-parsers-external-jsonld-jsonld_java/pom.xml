@@ -28,6 +28,7 @@
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java</artifactId>
 			<version>0.8.3</version>
+			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>org.semanticweb.yars</groupId>
