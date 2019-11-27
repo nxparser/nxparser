@@ -115,7 +115,11 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			try {
 				xmlwriter.writeStartElement("rdf:Description");
 				if (na[0] instanceof Resource) {
-					URI u = uriinfo.relativize(((Resource)na[0]).toURI());
+					// Can't rely on relativisation due to bugs:
+					// * https://bugs.openjdk.java.net/browse/JDK-6523089
+					// * https://github.com/eclipse-ee4j/jersey/issues/4326
+//					URI u = uriinfo.relativize(((Resource)na[0]).toURI());
+					URI u = ((Resource)na[0]).toURI();
 					xmlwriter.writeAttribute("rdf:about", u.toString());
 				} else if (na[0] instanceof BNode) {
 					xmlwriter.writeAttribute("rdf:nodeID", na[0].getLabel());
@@ -144,7 +148,9 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 				if (na[2] instanceof BNode) {
 					xmlwriter.writeAttribute("rdf:nodeID", na[2].getLabel());
 				} else if (na[2] instanceof Resource) {
-					URI u = uriinfo.relativize(((Resource)na[2]).toURI());
+					// See above remark on relativization.
+//					URI u = uriinfo.relativize(((Resource)na[2]).toURI());
+					URI u = ((Resource)na[2]).toURI();
 					xmlwriter.writeAttribute("rdf:resource", u.toString());
 				} else if (na[2] instanceof Literal) {
 					Literal l = (Literal) na[2];
