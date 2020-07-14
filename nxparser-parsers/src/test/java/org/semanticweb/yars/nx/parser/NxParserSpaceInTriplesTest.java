@@ -167,4 +167,17 @@ public class NxParserSpaceInTriplesTest {
 
 	}
 
+	@Test
+	public void testLiteralWhereCharacterNumberOfFullstopPositionIsWhitespace() throws ParseException {
+		// for GitHub issue #22
+		Node[] goldStandard;
+		String line;
+
+		goldStandard = new Node[] { new BNode("_:x", true), new BNode("_:y", true),
+				new Literal("abc", new Resource("<http://www.w3.org/2001/XMLSchema#string>", true)) };
+		line = "_:x _:y \"abc\"^^<http://www.w3.org/2001/XMLSchema#string> .";
+
+		assertArrayEquals(goldStandard, NxParser.parseNodesInternal(line));
+
+	}
 }
