@@ -264,7 +264,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]>, RdfParser {
 				// bnode.
 				endIndex = startIndex;
 				while (!((line.charAt(endIndex) == '.' && (endIndex + 2 >= line
-						.length() || Character.isWhitespace(endIndex + 1))) || Character
+						.length() || Character.isWhitespace(line.charAt(endIndex + 1)))) || Character
 						.isWhitespace(line.charAt(endIndex)))) {
 					// (fullstop at endIndex and (at endIndex+1, whitespace or
 					// line end )) OR whitespace at endIndex ends the thing.
@@ -290,7 +290,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]>, RdfParser {
 				// ^^ if the number of backslashes in front of a quote is even,
 				// the found quote is the literal-delimiting one.
 				while (!((line.charAt(endIndex) == '.' && (endIndex + 2 >= line
-						.length() || Character.isWhitespace(endIndex + 1))) || Character
+						.length() || Character.isWhitespace(line.charAt(endIndex + 1)))) || Character
 						.isWhitespace(line.charAt(endIndex)))) {
 					// (fullstop at endIndex and (at endIndex+1, whitespace or
 					// line end )) OR whitespace at endIndex ends the thing.
@@ -304,7 +304,7 @@ public class NxParser implements Iterator<Node[]>, Iterable<Node[]>, RdfParser {
 				// variable.
 				endIndex = startIndex;
 				while (!((line.charAt(endIndex) == '.' && (endIndex + 2 >= line
-						.length() || Character.isWhitespace(endIndex + 1))) || Character
+						.length() || Character.isWhitespace(line.charAt(endIndex + 1)))) || Character
 						.isWhitespace(line.charAt(endIndex)))) {
 					// (fullstop at endIndex and (at endIndex+1, whitespace or
 					// line end )) OR whitespace at endIndex ends the thing.
