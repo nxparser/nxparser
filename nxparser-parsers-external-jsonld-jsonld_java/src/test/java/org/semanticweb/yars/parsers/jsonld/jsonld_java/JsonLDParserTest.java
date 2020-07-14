@@ -27,14 +27,11 @@ public class JsonLDParserTest {
 	@Test
 	public void test() throws JsonLdError, IOException, ParseException {
 
-		// Default Person from http://json-ld.org/playground/index.html
-
-		String s = "{" + " \"@context\": \"http://schema.org/\", "
-				+ " \"@type\": \"Person\", "
-				+ " \"name\": \"Jane Doe\", "
-				+ " \"jobTitle\": \"Professor\", "
-				+ " \"telephone\": \"(425) 123-4567\", "
-				+ " \"url\": \"http://www.janedoe.com\"" + "}";
+		String s = "{\n" +
+				"  \"@context\": { \"foaf\":\"http://xmlns.com/foaf/0.1/\", \"name\":\"foaf:name\" },\n" +
+				"  \"@type\": \"foaf:Person\",\n" +
+				"  \"name\": \"John\"\n" +
+				"}";
 
 		System.err.println("Testing using:");
 		System.err.println(s);
@@ -58,11 +55,8 @@ public class JsonLDParserTest {
 		String[] goldStandardStrings = new String[] {
 				// added xsd:string to the literals such that we can compare on
 				// the rdf term level.
-				"_:b0 <http://schema.org/jobTitle> \"Professor\"^^<http://www.w3.org/2001/XMLSchema#string> .",
-				"_:b0 <http://schema.org/name> \"Jane Doe\"^^<http://www.w3.org/2001/XMLSchema#string> .",
-				"_:b0 <http://schema.org/telephone> \"(425) 123-4567\"^^<http://www.w3.org/2001/XMLSchema#string> .",
-				"_:b0 <http://schema.org/url> <http://www.janedoe.com> .",
-				"_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> ." };
+				"_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .",
+				"_:b0 <http://xmlns.com/foaf/0.1/name> \"John\"^^<http://www.w3.org/2001/XMLSchema#string> ." };
 
 		System.err.println();
 		System.err.println("Gold Standard:");
@@ -123,8 +117,7 @@ public class JsonLDParserTest {
 	@Test
 	public void test3() throws JsonLdError, IOException, InitializationError {
 		String s = "{  "
-				+ "\"@context\": "
-				+ "\"http://schema.org/\", "
+				+ "\"@context\": {\"s\":\"http://schema.org/\", \"term1\" : \"s:term1\", \"term2\" : \"s:term2\", \"term3\" : \"s:term3\", \"term4\" : \"s:term4\", \"term5\" : \"s:term5\"},"
 				+ "\"@id\": \"http://schema.org/id1\",  "
 				+ "\"@type\": \"t1\",  "
 				+ "\"term1\": \"v1\",  "
