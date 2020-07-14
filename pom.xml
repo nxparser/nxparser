@@ -73,9 +73,8 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/nxparser/nxparser.git</connection>
-		<developerConnection>scm:git:git@github.com:nxparser/nxparser.git</developerConnection>
-		<url>git@github.com:nxparser/nxparser.git</url>
-	  <tag>HEAD</tag>
+		<developerConnection>scm:git:https://github.com/nxparser/nxparser.git</developerConnection>
+		<url>scm:git:https://github.com/nxparser/nxparser.git</url>
   </scm>
 	
 	<build>
