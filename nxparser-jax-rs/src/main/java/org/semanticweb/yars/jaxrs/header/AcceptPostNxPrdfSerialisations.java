@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.NameBinding;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.NameBinding;
 
 /**
  * Annotation to resources that are supposed to return an Accept-Post header.

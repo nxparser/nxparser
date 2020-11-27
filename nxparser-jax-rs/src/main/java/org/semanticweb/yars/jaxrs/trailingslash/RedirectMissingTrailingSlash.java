@@ -3,7 +3,7 @@ package org.semanticweb.yars.jaxrs.trailingslash;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.ws.rs.NameBinding;
+import jakarta.ws.rs.NameBinding;
 
 /**
  * Annotation to cause the following behaviour:

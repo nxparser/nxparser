@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.ext.Provider;
 
 import org.semanticweb.yars.jaxrs.JsonLdMessageBodyReaderWriter;
 import org.semanticweb.yars.jaxrs.NxMessageBodyReaderWriter;

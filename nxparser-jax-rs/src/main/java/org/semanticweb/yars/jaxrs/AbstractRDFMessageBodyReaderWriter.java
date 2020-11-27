@@ -6,17 +6,17 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.ServerErrorException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.ServerErrorException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.GenericEntity;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
 
 import org.semanticweb.yars.nx.Node;
 

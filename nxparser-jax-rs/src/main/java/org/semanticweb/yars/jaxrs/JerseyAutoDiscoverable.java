@@ -1,7 +1,7 @@
 package org.semanticweb.yars.jaxrs;
 
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.FeatureContext;
 
 import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 import org.kohsuke.MetaInfServices;
