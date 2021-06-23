@@ -44,10 +44,5 @@
 			<artifactId>semargl-jsonld</artifactId>
 			<version>0.7</version>
 		</dependency>
-		<dependency>
-			<groupId>org.semanticweb.yars</groupId>
-			<artifactId>nxparser-api</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
 	</dependencies>
 </project>
