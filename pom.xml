@@ -4,7 +4,7 @@
 
 	<groupId>org.semanticweb.yars</groupId>
 	<artifactId>nxparser</artifactId>
-	<version>3.0.1</version>
+	<version>3.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>NxParser</name>
 	<url>https://github.com/nxparser/nxparser</url>
@@ -76,7 +76,7 @@
 		<connection>scm:git:https://github.com/nxparser/nxparser.git</connection>
 		<developerConnection>scm:git:https://github.com/nxparser/nxparser.git</developerConnection>
 		<url>https://github.com/nxparser/nxparser.git</url>
-	  <tag>3.0.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 	
 	<build>
