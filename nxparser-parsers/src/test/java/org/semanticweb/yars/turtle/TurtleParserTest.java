@@ -12,6 +12,7 @@ import org.semanticweb.yars.nx.Literal;
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
 import org.semanticweb.yars.nx.Resource;
+import org.semanticweb.yars.nx.namespace.XSD;
 import org.semanticweb.yars.utils.CallbackIterator;
 /**
  * Turtle Parser test cases.
@@ -45,6 +46,23 @@ public class TurtleParserTest {
 									new Literal("\"b\"^^<http://ex.org/>", true) }));
 		}
 
+	}
+
+	@Test
+	public void decimalOrTripleEndTest() throws InterruptedException, org.semanticweb.yars.nx.parser.ParseException {
+		
+		TurtleParser tp = new TurtleParser(new ByteArrayInputStream(("<#a> <#value> 3.")
+				.getBytes(UTF_8)), UTF_8, URI.create("http://example.org/"));
+		CallbackIterator it = new CallbackIterator();
+		tp.parse(it);
+		
+		Nodes nx = new Nodes(it.next());
+		assertEquals(nx, new Nodes(
+				new Node[] {
+						new Resource("<http://example.org/#a>", true),
+						new Resource("<http://example.org/#value>", true),
+						new Literal("3",XSD.INTEGER)
+				}));
 	}
 
 }

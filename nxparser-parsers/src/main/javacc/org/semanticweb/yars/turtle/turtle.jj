@@ -380,7 +380,7 @@ TOKEN [IGNORE_CASE] :
 |   < INTEGER: (["-","+"])? <DIGITS> >
 |
    < DECIMAL: (["-","+"])? 
-              ((<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+)
+              ((<DIGITS>)* "." (<DIGITS>)+ )
    >
       // Required exponent.
 |  < DOUBLE:
