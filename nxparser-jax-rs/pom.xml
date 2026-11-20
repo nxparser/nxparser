@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-common</artifactId>
-			<version>3.0.0-RC2</version>
+			<version>3.0.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

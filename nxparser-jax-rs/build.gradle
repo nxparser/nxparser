@@ -22,10 +22,11 @@ dependencies {
 	compile project(':nxparser-utilities-uri')
 	
 	// External
-	compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version:'2.1'
-	compile group: 'org.kohsuke.metainf-services', name: 'metainf-services', version:'1.6'
-	compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version:'2.27'
+	compile group: 'jakarta.ws.rs', name: 'jakarta.ws.rs-api', version:'3.0.0'
+	compile group: 'org.kohsuke.metainf-services', name: 'metainf-services', version:'1.11'
+	compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version:'3.0.0'
 	compile group: 'org.semarglproject', name: 'semargl-rdf', version:'0.6.1'
+	compile group: 'javax.xml', name: 'jaxp-api', version:'1.4.2'
 	
 	
 }
