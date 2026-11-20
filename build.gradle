@@ -57,6 +57,8 @@ subprojects {
 	 */
 	apply plugin: 'eclipse'
 	apply plugin: 'java'
+	apply plugin: 'maven-publish'
+	
 	
 	
 	/*
@@ -87,5 +89,12 @@ subprojects {
 		
 	}
 	
-	
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
 }
