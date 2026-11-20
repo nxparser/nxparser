@@ -179,7 +179,22 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 	@SuppressWarnings("unchecked")
 	public URI getBaseURIdependingOnPostOrNot(@SuppressWarnings("rawtypes") MultivaluedMap httpHeaders) {
 		URI baseURI = null;
-		if (_request != null && HttpMethod.POST.equals(_request.getMethod()))
+
+		boolean isIncomingPostRequest = false;
+		if (_request != null) {
+			String method = null;
+			try {
+				method = _request.getMethod();
+			} catch (NullPointerException e) {
+				// this deals with Apache CXF client behaviour
+			}
+			if (method != null) {
+				if (HttpMethod.POST.equalsIgnoreCase(method)) {
+					isIncomingPostRequest = true;
+				}
+			}
+		}
+		if (isIncomingPostRequest)
 			// In case of a POST request, we cannot determine the URI against
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.
