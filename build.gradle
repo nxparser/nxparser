@@ -1,7 +1,22 @@
 /*
  * Plugins
  */
-apply plugin: 'eclipse'
+plugins {
+    id 'maven-publish'
+}
+apply plugin: 'java'
+
+
+group = 'com.github.nxparser'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 
 
 
