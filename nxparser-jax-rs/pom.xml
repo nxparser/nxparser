@@ -24,11 +24,13 @@
 			<artifactId>jakarta.ws.rs-api</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxp-api</artifactId>
 			<version>1.4.2</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>
 			<artifactId>metainf-services</artifactId>
